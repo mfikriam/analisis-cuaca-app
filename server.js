@@ -1,7 +1,30 @@
-const dotenv = require('dotenv');
+// Import dotenv and run its configurations
+require('dotenv').config();
 
-dotenv.config({ path: './config.env' });
+const { Sequelize } = require('sequelize');
+
+// Import App.js
 const app = require('./app');
+
+// Connect to Database
+const sequelize = new Sequelize(
+  process.env.MYSQL_DATABASE,
+  process.env.MYSQL_USERNAME,
+  process.env.MYSQL_PASSWORD,
+  {
+    host: process.env.MYSQL_HOST,
+    dialect: 'mysql',
+  },
+);
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('MySQL Connection has been established successfully.');
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database: ', error);
+  });
 
 // Start Server
 const port = process.env.PORT || 3000;
