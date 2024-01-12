@@ -17,6 +17,7 @@
     "import/no-extraneous-dependencies": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }]
+    "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
+    "spaced-comment": "off"
   }
 }
