@@ -1,4 +1,6 @@
 const { Sequelize } = require('sequelize');
+const userSchema = require('./userModel');
+const kecelakaanSchema = require('./kecelakaanModel');
 
 // Connect to Database
 const sequelize = new Sequelize(
@@ -11,4 +13,14 @@ const sequelize = new Sequelize(
   },
 );
 
-module.exports = { sequelize };
+const User = sequelize.define('user', userSchema, {
+  underscored: true,
+});
+const Kecelakaan = sequelize.define('kecelakaan', kecelakaanSchema, {
+  underscored: true,
+});
+
+User.hasMany(Kecelakaan);
+Kecelakaan.belongsTo(User);
+
+module.exports = { sequelize, User, Kecelakaan };

@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('./index');
 
 const userSchema = {
   email: {
@@ -33,8 +32,4 @@ const userSchema = {
   },
 };
 
-const User = sequelize.define('user', userSchema, {
-  underscored: true,
-});
-
-module.exports = User;
+module.exports = userSchema;
