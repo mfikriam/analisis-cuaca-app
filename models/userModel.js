@@ -27,12 +27,14 @@ const userSchema = {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
-  isAdmin: {
+  is_admin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
 };
 
-const User = sequelize.define('user', userSchema);
+const User = sequelize.define('user', userSchema, {
+  underscored: true,
+});
 
 module.exports = User;
