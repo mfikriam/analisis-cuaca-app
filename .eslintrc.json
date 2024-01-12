@@ -10,14 +10,23 @@
     "ecmaVersion": "latest"
   },
   "rules": {
+    "spaced-comment": "off",
     "no-console": "off",
-    "linebreak-style": "off",
+    "consistent-return": "off",
+    "func-names": "off",
+    "object-shorthand": "off",
+    "no-process-exit": "off",
+    "no-param-reassign": "off",
+    "no-return-await": "off",
     "no-underscore-dangle": "off",
-    "camelcase": "off",
-    "import/no-extraneous-dependencies": "off",
-    "object-curly-newline": "off",
-    "operator-linebreak": "off",
+    "class-methods-use-this": "off",
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-    "spaced-comment": "off"
+    "import/no-extraneous-dependencies": "off",
+    "import/no-useless-path-segments": "off",
+    "prefer-arrow-callback": "off",
+    "arrow-body-style": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off"
   }
 }

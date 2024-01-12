@@ -1,6 +1,13 @@
 // Import dotenv and run its configurations
 require('dotenv').config();
 
+// Shut down when uncaught exception appear
+process.on('uncaughtException', (err) => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log(err);
+  process.exit(1);
+});
+
 // Import App.js
 const app = require('./app');
 
@@ -20,7 +27,7 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
-// Error Handling
+// Shut down when unhandled rejection appear
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLER REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);

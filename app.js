@@ -4,6 +4,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 
 // Start express app
@@ -31,5 +33,12 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to my application.' });
 });
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// ? Error Handler/Middleware
+app.use(globalErrorHandler);
 
 module.exports = app;
