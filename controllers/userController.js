@@ -1,66 +1,122 @@
 // const { Op } = require('sequelize');
 const User = require('../models/userModel');
 
-// Create and Save a new Tutorial
-exports.create = (req, res) => {
-  const newUser = {
-    email: 'test@gmail.com',
-    password: 'test123',
-  };
+exports.create = async (req, res) => {
+  try {
+    const newUser = await User.create(req.body);
 
-  User.create(newUser)
-    .then((data) => {
-      // res.send(data);
-      console.log(data);
-      res.status(201).json({
-        status: 'success',
-        data: {
-          user: newUser,
-        },
-      });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message,
-      });
+    res.status(201).json({
+      status: 'success',
+      data: {
+        user: newUser,
+      },
     });
-  // Validate request
-  // if (!req.body.title) {
-  //   res.status(400).send({
-  //     message: 'Content can not be empty!',
-  //   });
-  //   return;
-  // }
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      error,
+    });
+  }
 };
 
-// Retrieve all Tutorials from the database.
-exports.findAll = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not defined yet!',
-  });
+exports.findAll = async (req, res) => {
+  try {
+    const users = await User.findAll();
+
+    res.status(200).json({
+      status: 'success',
+      results: users.length,
+      data: {
+        users,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
 };
 
-// Find a single Tutorial with an id
-exports.findOne = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not defined yet!',
-  });
+exports.findOne = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      res.status(404).json({
+        status: 'fail',
+        message: `Cannot find User with id=${userId}`,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
 };
 
-// Update a Tutorial by the id in the request
-exports.update = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not defined yet!',
-  });
+exports.update = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      res.status(404).json({
+        status: 'fail',
+        message: `Cannot find User with id=${userId}`,
+      });
+      return;
+    }
+
+    await User.update(req.body, { where: { id: userId } });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
 };
 
-// Delete a Tutorial with the specified id in the request
-exports.delete = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not defined yet!',
-  });
+exports.delete = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      res.status(404).json({
+        status: 'fail',
+        message: `Cannot find User with id=${userId}`,
+      });
+      return;
+    }
+
+    await User.destroy({ where: { id: userId } });
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error,
+    });
+  }
 };
