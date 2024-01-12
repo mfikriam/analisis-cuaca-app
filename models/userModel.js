@@ -26,9 +26,9 @@ const userSchema = {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
-  is_admin: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+  role: {
+    type: DataTypes.STRING(20),
+    defaultValue: 'user',
   },
 };
 

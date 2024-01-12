@@ -10,10 +10,13 @@ const sequelize = new Sequelize(
   {
     host: process.env.MYSQL_HOST,
     dialect: 'mysql',
+    define: {
+      freezeTableName: true,
+    },
   },
 );
 
-const User = sequelize.define('user', userSchema, {
+const User = sequelize.define('users', userSchema, {
   underscored: true,
 });
 const Kecelakaan = sequelize.define('kecelakaan', kecelakaanSchema, {
