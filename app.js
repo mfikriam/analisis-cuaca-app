@@ -4,6 +4,8 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
+const userRouter = require('./routes/userRoutes');
+
 // Start express app
 const app = express();
 
@@ -21,11 +23,13 @@ if (process.env.NODE_ENV === 'development') {
 
 // Body parser, reading data from body into req.body
 app.use(express.json());
-//// app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ROUTES
-// app.use('/', viewRouter);
-// app.use('/api/v1/tours', tourRouter);
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to my application.' });
+});
+app.use('/api/v1/users', userRouter);
 
 module.exports = app;
