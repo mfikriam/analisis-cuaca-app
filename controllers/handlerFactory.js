@@ -52,13 +52,14 @@ exports.findOne = (Model, fk, attr) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const resultQuery = await Model.findByPk(req.params.id);
+    let resultQuery = await Model.findByPk(req.params.id);
 
     if (!resultQuery) {
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
     }
 
     await Model.update(req.body, { where: { id: req.params.id } });
+    resultQuery = await Model.findByPk(req.params.id);
 
     const resObj = { data: {} };
     resObj.status = 'success';

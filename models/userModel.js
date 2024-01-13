@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
 const userSchema = {
   email: {
@@ -13,13 +14,17 @@ const userSchema = {
     },
   },
   password: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       len: {
         args: [7, Infinity],
         msg: 'Password must be at least 7 characters long.',
       },
+    },
+    set(value) {
+      const hashedPassword = bcrypt.hashSync(value, 10);
+      this.setDataValue('password', hashedPassword);
     },
   },
   fullname: {
