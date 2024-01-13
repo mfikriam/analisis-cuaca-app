@@ -16,7 +16,7 @@ const sequelize = new Sequelize(
   },
 );
 
-const User = sequelize.define('users', userSchema, {
+const User = sequelize.define('user', userSchema, {
   underscored: true,
 });
 const Kecelakaan = sequelize.define('kecelakaan', kecelakaanSchema, {
