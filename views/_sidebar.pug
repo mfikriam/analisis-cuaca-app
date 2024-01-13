@@ -1,0 +1,43 @@
+// ======= Sidebar =======
+aside#sidebar.sidebar
+  ul#sidebar-nav.sidebar-nav
+    li.nav-item
+      a.nav-link.collapsed(href='index.html')
+        i.bi.bi-grid
+        span Dashboard
+    // End Dashboard Nav
+    li.nav-item
+      a.nav-link.collapsed(href='users-profile.html')
+        i.bi.bi-people
+        span Manage Data User
+    // End Manage Data User Nav
+    li.nav-item
+      a.nav-link.collapsed(data-bs-target='#charts-nav' data-bs-toggle='collapse' href='#')
+        i.bi.bi-layout-text-window-reverse
+        span Manage Dataset
+        i.bi.bi-chevron-down.ms-auto
+      ul#charts-nav.nav-content.collapse(data-bs-parent='#sidebar-nav')
+        li
+          a(href='charts-chartjs.html')
+            i.bi.bi-circle
+            span Cuaca
+        li
+          a(href='charts-apexcharts.html')
+            i.bi.bi-circle
+            span Wisatawan
+        li
+          a(href='charts-echarts.html')
+            i.bi.bi-circle
+            span Kecelakaan
+    // End Manage Dataset Nav
+    li.nav-item
+      a.nav-link.collapsed(href='#')
+        i.bi.bi-menu-button-wide
+        span Clustering
+    // End Clustering Nav
+    li.nav-item
+      a.nav-link.collapsed(href='#')
+        i.bi.bi-bar-chart
+        span Analisis
+    // End Analisis Nav
+// End Sidebar

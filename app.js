@@ -8,6 +8,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 const kecelakaanRouter = require('./routes/kecelakaanRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 // Start express app
 const app = express();
@@ -15,6 +16,9 @@ const app = express();
 // Implement CORS
 app.use(cors());
 app.options('*', cors());
+
+// Using pug view engine
+app.set('view engine', 'pug');
 
 //  Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -30,9 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ROUTES
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to my application.' });
-});
+app.use('/', viewRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/kecelakaan', kecelakaanRouter);
 
