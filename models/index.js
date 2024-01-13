@@ -1,5 +1,4 @@
 const { Sequelize } = require('sequelize');
-// const bcrypt = require('bcryptjs');
 const userSchema = require('./userModel');
 const kecelakaanSchema = require('./kecelakaanModel');
 
@@ -14,6 +13,7 @@ const sequelize = new Sequelize(
     define: {
       freezeTableName: true,
     },
+    logging: false,
   },
 );
 
