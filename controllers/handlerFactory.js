@@ -22,9 +22,22 @@ exports.findAll = (Model) =>
     res.status(200).json(resObj);
   });
 
-exports.findOne = (Model) =>
+exports.findOne = (Model, fk, attr) =>
   catchAsync(async (req, res, next) => {
-    const resultQuery = await Model.findByPk(req.params.id);
+    let resultQuery;
+
+    if (fk) {
+      resultQuery = await Model.findByPk(req.params.id, {
+        include: [
+          {
+            model: fk,
+            attributes: attr,
+          },
+        ],
+      });
+    } else {
+      resultQuery = await Model.findByPk(req.params.id);
+    }
 
     if (!resultQuery) {
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
