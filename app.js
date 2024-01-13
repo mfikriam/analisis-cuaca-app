@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
+const kecelakaanRouter = require('./routes/kecelakaanRoutes');
 
 // Start express app
 const app = express();
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to my application.' });
 });
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/kecelakaan', kecelakaanRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

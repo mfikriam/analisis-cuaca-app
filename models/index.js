@@ -21,9 +21,21 @@ const User = sequelize.define('user', userSchema, {
 });
 const Kecelakaan = sequelize.define('kecelakaan', kecelakaanSchema, {
   underscored: true,
+  indexes: [
+    {
+      unique: true,
+      fields: ['tanggal', 'user_id'],
+    },
+  ],
 });
 
 User.hasMany(Kecelakaan);
-Kecelakaan.belongsTo(User);
+Kecelakaan.belongsTo(User, {
+  foreignKey: {
+    name: 'user_id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+});
 
 module.exports = { sequelize, User, Kecelakaan };
