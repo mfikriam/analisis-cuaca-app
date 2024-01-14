@@ -1,3 +1,4 @@
 node_modules/
 *.env
-vendor/
+assets/
+references/

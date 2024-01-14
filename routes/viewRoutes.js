@@ -8,7 +8,7 @@ router.get('/login', viewController.getLoginForm);
 
 router.use(authController.isLoggedIn);
 
-router.get('/', viewController.getDashboardPage);
+router.get('/dashboard', viewController.getDashboardPage);
 router.get('/blank', viewController.getBlankPage);
 // router.get('/', authController.isLoggedIn, viewController.getOverview);
 // router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);

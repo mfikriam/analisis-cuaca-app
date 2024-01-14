@@ -135,7 +135,7 @@ exports.isLoggedIn = async (req, res, next) => {
       return next();
     } catch (err) {
       //! Should be error page
-      return res.redirect('/login');
+      return next(new AppError('There is something wrong with the coookies', 400));
     }
   }
 
