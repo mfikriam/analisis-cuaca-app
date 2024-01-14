@@ -135,9 +135,19 @@ exports.isLoggedIn = async (req, res, next) => {
       return next();
     } catch (err) {
       //! Should be error page
-      return next(new AppError('There is something wrong with the coookies', 400));
+      // return next(new AppError('There is something wrong with the coookies', 400));
+      return next();
     }
   }
 
   return res.redirect('/login');
+};
+
+exports.isNotLoggedIn = async (req, res, next) => {
+  console.log(req.cookies);
+  if (!req.cookies.jwt || req.cookies.jwt === 'loggedout') {
+    return next();
+  }
+
+  return res.redirect('/dashboard');
 };

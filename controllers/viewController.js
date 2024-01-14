@@ -1,6 +1,10 @@
 // const catchAsync = require('./../utils/catchAsync');
 // const AppError = require('./../utils/appError');
 
+exports.getHomePage = (req, res) => {
+  res.redirect('/dashboard');
+};
+
 exports.getDashboardPage = (req, res) => {
   res.status(200).render('dashboard', {
     title: 'Dashboard',

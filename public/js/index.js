@@ -1,9 +1,10 @@
 /* eslint-disable */
 import '@babel/polyfill';
-import { login } from './login';
+import { login, logout } from './login';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
+const logOutBtn = document.querySelector('.btn--logout');
 
 //? EVENT LISTENERS
 if (loginForm) {
@@ -14,8 +15,11 @@ if (loginForm) {
     if (loginForm.checkValidity()) {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      console.log(`email: ${email}, password: ${password}`);
       login(email, password);
     }
   });
+}
+
+if (logOutBtn) {
+  logOutBtn.addEventListener('click', logout);
 }
