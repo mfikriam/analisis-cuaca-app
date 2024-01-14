@@ -1,5 +1,56 @@
 extends base
 
 block main
-  .row
-    h3= `${JSON.stringify(user)}`
+  section.section.dashboard
+    .row
+      // Cuaca Card
+      .col-xxl-4.col-md-4
+        .card.info-card.cuaca-card
+          .card-body
+            h5.card-title Data Cuaca
+            .d-flex.align-items-center
+              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                i.bi.bi-clouds
+              .ps-3
+                h6 ###
+                span.text-muted.small.pt-2.ps-1 ###
+      // End Cuaca Card
+
+      // Wisatawan Card
+      .col-xxl-4.col-md-4
+        .card.info-card.wisatawan-card
+          .card-body
+            h5.card-title Data Wisatawan
+            .d-flex.align-items-center
+              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                i.bi.bi-people
+              .ps-3
+                h6 ###
+                span.text-muted.small.pt-2.ps-1 ###
+      // End Wisatawan Card
+      
+      // Kecelakaan Card
+      .col-xxl-4.col-md-4
+        .card.info-card.kecelakaan-card
+          .card-body
+            h5.card-title Data Kecelakaan
+            .d-flex.align-items-center
+              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                i.bi.bi-bullseye
+              .ps-3
+                h6= kecelakaan.count
+                span.text-muted.small.pt-2.ps-1= `${kecelakaan.min_date} - ${kecelakaan.max_date}`
+      // End Kecelakaan Card
+
+      // Customers Card
+      .col-xxl-4.col-xl-8
+        .card.info-card.customers-card
+          .card-body
+            h5.card-title Data User
+            .d-flex.align-items-center
+              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                i.bi.bi-person-check
+              .ps-3
+                h6 ###
+                span.text-muted.small.pt-2.ps-1 Users
+      // End Customers Card
