@@ -5,6 +5,7 @@ import { login, logout } from './login';
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
+const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 
 //? EVENT LISTENERS
 if (loginForm) {
@@ -22,4 +23,10 @@ if (loginForm) {
 
 if (logOutBtn) {
   logOutBtn.addEventListener('click', logout);
+}
+
+if (toggleSidebarBtn) {
+  toggleSidebarBtn.addEventListener('click', () => {
+    document.querySelector('body').classList.toggle('toggle-sidebar');
+  });
 }
