@@ -6,10 +6,8 @@ const router = express.Router();
 
 router.get('/login', viewController.getLoginForm);
 
-router.use(authController.isLoggedIn);
-
-router.get('/dashboard', viewController.getDashboardPage);
-router.get('/blank', viewController.getBlankPage);
+router.get('/dashboard', authController.isLoggedIn, viewController.getDashboardPage);
+router.get('/blank', authController.isLoggedIn, viewController.getBlankPage);
 // router.get('/', authController.isLoggedIn, viewController.getOverview);
 // router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);
 // router.get('/login', authController.isLoggedIn, viewController.getLoginForm);

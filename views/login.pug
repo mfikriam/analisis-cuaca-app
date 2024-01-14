@@ -10,11 +10,14 @@ body
     .container
       section.section.register.min-vh-100.d-flex.flex-column.align-items-center.justify-content-center.py-4
         .container
+          .row.d-flex.flex-column.align-items-center.justify-content-center
+            #liveAlertPlaceholder.col-8.position-fixed(style='z-index: 1000;')
+
           .row.justify-content-center
             .col-lg-4.col-md-6.d-flex.flex-column.align-items-center.justify-content-center
               .d-flex.justify-content-center.py-4
                 a.logo.d-flex.align-items-center.w-auto
-                  img(src='/assets/img/logo.png' alt='Logo')
+                  img(src='/img/logo.png' alt='Logo')
                   span.d-none.d-lg-block AnalisisCuaca
               // End Logo
               .card.mb-3
@@ -22,7 +25,7 @@ body
                   .pt-4.pb-2
                     h5.card-title.text-center.pb-0.fs-4 Login to Your Account
                     p.text-center.small Enter your email &amp; password to login
-                  form.form--login.row.g-3
+                  form.form--login.row.g-3(novalidate)
                     .col-12
                       label.form-label(for='email') Your Email
                       input#email.form-control(type='email', name='email', required)
@@ -30,7 +33,7 @@ body
                     .col-12
                       label.form-label(for='password') Password
                       input#password.form-control(type='password', name='password', required, minlength='7')
-                      .invalid-feedback Please enter your password!
+                      .invalid-feedback Password minimum 7 characters
                     .col-12
                       button.btn.btn-primary.w-100 Login
                     .col-12
