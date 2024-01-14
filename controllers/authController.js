@@ -109,3 +109,35 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+//? Only for render pages, no errors!
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      //? 1) Verify token
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+      //? 2) Check if user still exists
+      const currentUser = await User.findByPk(decoded.id);
+      if (!currentUser) {
+        return res.redirect('/login');
+      }
+
+      //// 3) Check if user changed password after the token was issued
+
+      // ? Remove password from output
+      delete currentUser.dataValues.password;
+      delete currentUser.dataValues.createdAt;
+      delete currentUser.dataValues.updatedAt;
+
+      //? THERE IS A LOGGED IN USER
+      res.locals.user = currentUser.dataValues;
+      return next();
+    } catch (err) {
+      //! Should be error page
+      return res.redirect('/login');
+    }
+  }
+
+  return res.redirect('/login');
+};

@@ -4,6 +4,7 @@
 exports.getDashboardPage = (req, res) => {
   res.status(200).render('dashboard', {
     title: 'Dashboard',
+    bread_crumbs: ['Dashboard'],
   });
 };
 
