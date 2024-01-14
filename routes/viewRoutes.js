@@ -6,6 +6,7 @@ const router = express.Router();
 
 // router.use(authController.isLoggedIn);
 
+router.get('/', viewController.getDashboardPage);
 router.get('/login', viewController.getLoginForm);
 router.get('/blank', viewController.getBlankPage);
 // router.get('/', authController.isLoggedIn, viewController.getOverview);

@@ -15,9 +15,10 @@ body
       nav
         ol.breadcrumb
           li.breadcrumb-item
-            a(href='index.html') Home
-          li.breadcrumb-item Pages
-          li.breadcrumb-item.active Blank
+            a(href='/') Home
+          each crumb, index in bread_crumbs
+            li.breadcrumb-item(class= `${index === bread_crumbs.length - 1 ? 'active' : ''}`)= crumb
+
     // End Page Title
     section.section
       block main
