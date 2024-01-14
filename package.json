@@ -7,7 +7,7 @@
     "start": "node server.js",
     "start:dev": "nodemon server.js",
     "start:prod": "SET NODE_ENV=production&&nodemon server.js",
-    "watch:js": "parcel watch './public/js/index.js' --out-dir ./public/js/bundle --out-file bundle.js",
+    "watch:js": "parcel watch public/js/index.js --out-dir public/js/bundle --out-file bundle.js",
     "build:js": ""
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/mfikriam/analisis-cuaca-app#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
     "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

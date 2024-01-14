@@ -6,6 +6,7 @@ import { login, logout } from './login';
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
+let userDatatable = document.querySelector('#user-datatable');
 
 //? EVENT LISTENERS
 if (loginForm) {
@@ -29,4 +30,8 @@ if (toggleSidebarBtn) {
   toggleSidebarBtn.addEventListener('click', () => {
     document.querySelector('body').classList.toggle('toggle-sidebar');
   });
+}
+
+if (userDatatable) {
+  new DataTable(userDatatable);
 }

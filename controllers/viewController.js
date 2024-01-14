@@ -62,6 +62,13 @@ exports.getDashboardPage = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getManageUserPage = (req, res) => {
+  res.status(200).render('manage-user', {
+    title: 'Manage Data User',
+    bread_crumbs: ['Manage Data User'],
+  });
+};
+
 exports.getBlankPage = (req, res) => {
   res.status(200).render('blank', {
     title: 'Blank Page',
