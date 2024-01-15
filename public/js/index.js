@@ -2,15 +2,17 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
-import { delUserById } from './manage-user';
-import { showAlert } from './alert';
+import { addNewUser, delUserById } from './manage-user';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
+const addUserForm = document.querySelector('#form-add-user');
+
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
-const userTable = document.querySelector('#user-table');
 const delUserBtns = document.querySelectorAll('.btn--del-user');
+
+const userTable = document.querySelector('#user-table');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -61,5 +63,22 @@ if (delUserBtns.length > 0) {
       const userId = btn.dataset.objId;
       delUserById(bsModalList, userId, userDataTable);
     });
+  });
+}
+
+if (addUserForm) {
+  const addUserModal = document.querySelector('#modal-add-obj');
+  const bsAddUserModal = new bootstrap.Modal(addUserModal);
+
+  addUserForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addUserForm.classList.add('was-validated');
+
+    if (addUserForm.checkValidity()) {
+      const email = addUserForm.querySelector('#email').value;
+      const password = addUserForm.querySelector('#password').value;
+      const fullname = addUserForm.querySelector('#fullname').value;
+      addNewUser({ email, password, fullname }, addUserForm, bsAddUserModal, userDataTable);
+    }
   });
 }

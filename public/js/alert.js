@@ -1,5 +1,11 @@
 /* eslint-disable */
 
+export const delayAlert = (message, type) => {
+  window.location.reload();
+
+  showAlert(message, type);
+};
+
 export const hideAlert = (el) => {
   if (el) el.remove();
 };

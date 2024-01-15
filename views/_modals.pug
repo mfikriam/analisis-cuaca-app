@@ -12,4 +12,26 @@ mixin delModal(objId, objModel, objUnique)
           button.btn.btn-danger.btn--del-user(type='button' data-obj-id=objId) Delete
 
 mixin addUserModal(userObj)
-  
+  #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Add New User
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form#form-add-user.row(novalidate)
+            .col-12.mb-3
+              label.form-label(for='email') E-Mail
+              input#email.form-control(type='email' name='email' required)
+              .invalid-feedback Please enter a valid Email adddress!
+            .col-12.mb-3
+              label.form-label(for='password') Password
+              input#password.form-control(type='password' name='password' minlength='7' required)
+              .invalid-feedback Password minimum 7 characters
+            .col-12.mb-3
+              label.form-label(for='fullname') Full Name
+              input#fullname.form-control(type='text' name='fullname' required)
+              .invalid-feedback Please enter your full name
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-primary#btn-submit-user(type='submit' form='form-add-user') Submit

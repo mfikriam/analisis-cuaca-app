@@ -9,7 +9,7 @@ block main
         .card
           .card-body
             .mt-3.mb-2.d-flex.justify-content-end
-              button.btn.btn-sm.btn-secondary.me-2(type='button')
+              button.btn.btn-sm.btn-secondary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-add-obj`)
                 i.bi.bi-plus-lg.me-1
                 |  Tambah Data
               button.btn.btn-sm.btn-secondary.me-2(type='button')
@@ -36,11 +36,15 @@ block main
                       td= userObj.createdAt
                       td= userObj.updatedAt
                       td
+                        //-! Dont forget to update the update btn in manage-user.js
                         button.btn.btn-sm.btn-success.me-1.mb-1
                           i.bi.bi-pencil-square
                         button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
                           i.bi.bi-trash
             // End Table with stripped rows
-  // Delete Modals
+  // Delete User Modals
   each userObj in users
     +delModal(userObj.id, 'user', userObj.email)
+
+  // Add User Modal
+  +addUserModal(userObj)

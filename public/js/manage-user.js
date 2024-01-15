@@ -1,6 +1,33 @@
 /* eslint-disable */
 import axios from 'axios';
-import { showAlert } from './alert';
+import { delayAlert, showAlert } from './alert';
+
+export const addNewUser = async (userObj, form, modal, userDataTable) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: '/api/v1/users',
+      data: userObj,
+    });
+
+    if (res.data.status === 'success') {
+      const userResult = res.data.data.user;
+      modal.hide();
+
+      delayAlert(`User ${userResult.fullname} has been added successfully`, 'success');
+    }
+  } catch (err) {
+    form.classList.remove('was-validated');
+
+    const arrValidationError = err.response.data.validationError;
+    arrValidationError.forEach((el) => {
+      showAlert(
+        `${err.response.data.message}: <span class='fw-bold'>${el.message}</span>`,
+        'danger',
+      );
+    });
+  }
+};
 
 export const delUserById = async (Modals, userId, userDataTable) => {
   try {
