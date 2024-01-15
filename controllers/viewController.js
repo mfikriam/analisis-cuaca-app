@@ -41,6 +41,15 @@ const _getDashboardData = async (userId, Model) => {
       user_id: userId,
     },
   });
+
+  if (!resultQuery.length) {
+    return {
+      count: 0,
+      min_date: '',
+      max_date: '',
+    };
+  }
+
   const resultObj = resultQuery.map((el) => el.dataValues);
   const [earliestDate, latestDate] = _getEarliestLatestDate(resultObj);
 
