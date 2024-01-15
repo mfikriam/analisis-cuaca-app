@@ -3,6 +3,7 @@ import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 import { delUserById } from './manage-user';
+import { showAlert } from './alert';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
@@ -38,26 +39,27 @@ if (toggleSidebarBtn) {
 }
 
 //***************** Manage User Page ******************* */
+let userDataTable;
+
 if (userTable) {
-  const optios = {
+  const options = {
     perPage: 5,
     columns: [
       { select: [3, 4], type: 'date', format: 'D MMM YYYY, HH.mm.ss' },
       { select: 5, sortable: false },
     ],
   };
-  const dataTable = new DataTable(userTable, optios);
+  userDataTable = new DataTable(userTable, options);
 }
 
 if (delUserBtns.length > 0) {
-  // const modalList = new bootstrap.Modal(document.querySelector(`#staticBackdrop-3`));
   const modalList = document.querySelectorAll('[id^="staticBackdrop"]');
   const bsModalList = Array.from(modalList).map((el) => new bootstrap.Modal(el));
 
   delUserBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const userId = btn.dataset.userId;
-      delUserById(bsModalList, userId);
+      delUserById(bsModalList, userId, userDataTable);
     });
   });
 }
