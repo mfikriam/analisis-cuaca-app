@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { showAlert } from './alert';
 
-export const login = async (email, password) => {
+export const login = async (email, password, form) => {
   try {
     const res = await axios({
       method: 'POST',
@@ -20,6 +20,7 @@ export const login = async (email, password) => {
       }, 1500);
     }
   } catch (err) {
+    form.classList.remove('was-validated');
     showAlert(err.response.data.message, 'danger');
   }
 };
