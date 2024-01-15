@@ -1,5 +1,9 @@
 /* eslint-disable */
 
+export const hideAlert = (el) => {
+  if (el) el.remove();
+};
+
 export const showAlert = (message, type) => {
   const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
 
@@ -12,4 +16,9 @@ export const showAlert = (message, type) => {
   ].join('');
 
   alertPlaceholder.append(wrapper);
+
+  // Close the alert after 5 seconds
+  setTimeout(() => {
+    hideAlert(wrapper);
+  }, 5000);
 };
