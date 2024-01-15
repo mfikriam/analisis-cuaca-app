@@ -1,4 +1,5 @@
-const { Kecelakaan } = require('./../models');
+// const { Op } = require('sequelize');
+const { User, Kecelakaan } = require('./../models');
 const catchAsync = require('./../utils/catchAsync');
 // const AppError = require('./../utils/appError');
 
@@ -62,12 +63,31 @@ exports.getDashboardPage = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getManageUserPage = (req, res) => {
+const _formatDateTable = (inputDate) => {
+  const options = { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Asia/Makassar' };
+  return new Intl.DateTimeFormat('id-ID', options).format(inputDate);
+};
+
+exports.getManageUserPage = catchAsync(async (req, res, next) => {
+  const resultQuery = await User.findAll({
+    where: {
+      role: 'user',
+    },
+  });
+  const users = resultQuery.map((el) => el.dataValues);
+
+  users.forEach((user) => {
+    user.createdAt = _formatDateTable(user.createdAt);
+    user.updatedAt = _formatDateTable(user.updatedAt);
+    delete user.password;
+  });
+
   res.status(200).render('manage-user', {
     title: 'Manage Data User',
     bread_crumbs: ['Manage Data User'],
+    users,
   });
-};
+});
 
 exports.getBlankPage = (req, res) => {
   res.status(200).render('blank', {

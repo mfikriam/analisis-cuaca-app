@@ -34,7 +34,12 @@ if (toggleSidebarBtn) {
 }
 
 if (userTable) {
-  // new DataTable(userDatatable);
-  const option = { perPage: 5 };
-  const dataTable = new DataTable(userTable, option);
+  const optios = {
+    perPage: 5,
+    columns: [
+      { select: [3, 4], type: 'date', format: 'D MMM YYYY, HH.mm.ss' },
+      { select: 5, sortable: false },
+    ],
+  };
+  const dataTable = new DataTable(userTable, optios);
 }

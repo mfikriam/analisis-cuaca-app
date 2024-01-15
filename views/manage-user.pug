@@ -437,16 +437,21 @@ block main
             table.table.table-hover.datatable#user-table
               thead
                 tr
-                  th Name
-                  th Ext.
-                  th City
-                  th(data-type='date' data-format='YYYY/DD/MM') Start Date
-                  th Completion
+                  th Id
+                  th E-Mail
+                  th Fullname
+                  th CreatedAt
+                  th UpdatedAt
+                  th
+                  //- th(data-type='date' data-format='YYYY/DD/MM') Start Date
               tbody
-                tr
-                  td Unity Pugh
-                  td 9958
-                  td Curic&oacute;
-                  td 2005/02/11
-                  td 37%
+                each user in users
+                  tr
+                    td= user.id
+                    td= user.email
+                    td= user.fullname
+                    td= user.createdAt
+                    td= user.updatedAt
+                    td
+                      button.btn.btn-sm.btn-primary Edit
             // End Table with stripped rows
