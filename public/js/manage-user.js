@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { delayAlert, showAlert } from './alert';
 
-export const addNewUser = async (userObj, form, modal, userDataTable) => {
+export const addNewUser = async (userObj, form, modal) => {
   try {
     const res = await axios({
       method: 'POST',

@@ -1,9 +1,11 @@
 /* eslint-disable */
 
 export const delayAlert = (message, type) => {
-  window.location.reload();
+  sessionStorage.setItem('delay-alert-message', message);
+  sessionStorage.setItem('delay-alert-type', type);
 
-  showAlert(message, type);
+  // Reload the current page
+  window.location.reload();
 };
 
 export const hideAlert = (el) => {

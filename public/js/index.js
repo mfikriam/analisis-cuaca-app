@@ -3,6 +3,7 @@ import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 import { addNewUser, delUserById } from './manage-user';
+import { showAlert } from './alert';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
@@ -78,7 +79,15 @@ if (addUserForm) {
       const email = addUserForm.querySelector('#email').value;
       const password = addUserForm.querySelector('#password').value;
       const fullname = addUserForm.querySelector('#fullname').value;
-      addNewUser({ email, password, fullname }, addUserForm, bsAddUserModal, userDataTable);
+      addNewUser({ email, password, fullname }, addUserForm, bsAddUserModal);
     }
   });
+}
+
+const delayAlertMsg = sessionStorage.getItem('delay-alert-message');
+const delayAlertType = sessionStorage.getItem('delay-alert-type');
+if (delayAlertMsg) {
+  showAlert(delayAlertMsg, delayAlertType);
+  sessionStorage.removeItem('delay-alert-message');
+  sessionStorage.removeItem('delay-alert-type');
 }
