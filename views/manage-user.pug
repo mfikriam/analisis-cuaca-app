@@ -6,11 +6,11 @@ block main
       .col-lg-12
         .card
           .card-body
-            p.mt-3
-              button.btn.btn-primary.me-2(type='button')
+            .mt-3.mb-2.d-flex.justify-content-end
+              button.btn.btn-sm.btn-secondary.me-2(type='button')
                 i.bi.bi-plus-lg.me-1
                 |  Tambah Data
-              button.btn.btn-primary.me-2(type='button')
+              button.btn.btn-sm.btn-secondary.me-2(type='button')
                 i.bi.bi-upload.me-1
                 |  Import Data
 
@@ -453,5 +453,8 @@ block main
                     td= user.createdAt
                     td= user.updatedAt
                     td
-                      button.btn.btn-sm.btn-primary Edit
+                      button.btn.btn-sm.btn-success.me-1.mb-1
+                        i.bi.bi-pencil-square
+                      button.btn.btn-sm.btn-danger
+                        i.bi.bi-trash
             // End Table with stripped rows
