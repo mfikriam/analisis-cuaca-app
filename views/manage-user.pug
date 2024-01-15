@@ -11,7 +11,7 @@ mixin delModal(userObj)
           span.fw-bold= userObj.email
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
-          button.btn.btn-danger#btn--del-user(type='button') Delete
+          button.btn.btn-danger.btn--del-user(type='button' data-user-id=userObj.id) Delete
 
 block main
   section.section

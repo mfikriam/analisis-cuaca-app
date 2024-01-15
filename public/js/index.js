@@ -2,15 +2,14 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
-// import { delUserById } from './manage-user';
+import { delUserById } from './manage-user';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 const userTable = document.querySelector('#user-table');
-// const delUserBtn = document.querySelector('#btn--del-user');
-// const trashUserBtns = document.querySelectorAll('.btn--trash-user');
+const delUserBtns = document.querySelectorAll('.btn--del-user');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -50,19 +49,15 @@ if (userTable) {
   const dataTable = new DataTable(userTable, optios);
 }
 
-// if (delUserBtn) {
-// const delUserModal = new bootstrap.Modal(document.querySelector('#staticBackdrop'), {});
-// trashUserBtns.forEach((trashUserBtn) => {
-//   trashUserBtn.addEventListener('click', () => {
-//     // Access the data-user-id attribute using dataset
-//     const userId = trashUserBtn.dataset.userId;
-//     // Now 'userId' holds the value of the data-user-id attribute
-//     console.log(userId);
-//     // deleteUser(userId);
-//   });
-// });
-// console.log(userId);
-// delUserBtn.addEventListener('click', () => {
-//   delUserById(delUserModal, userId);
-// });
-// }
+if (delUserBtns.length > 0) {
+  // const modalList = new bootstrap.Modal(document.querySelector(`#staticBackdrop-3`));
+  const modalList = document.querySelectorAll('[id^="staticBackdrop"]');
+  const bsModalList = Array.from(modalList).map((el) => new bootstrap.Modal(el));
+
+  delUserBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const userId = btn.dataset.userId;
+      delUserById(bsModalList, userId);
+    });
+  });
+}
