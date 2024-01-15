@@ -2,14 +2,18 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
+// import { delUserById } from './manage-user';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 const userTable = document.querySelector('#user-table');
+// const delUserBtn = document.querySelector('#btn--del-user');
+// const trashUserBtns = document.querySelectorAll('.btn--trash-user');
 
 //? EVENT LISTENERS
+//***************** Login Page ******************* */
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -23,6 +27,7 @@ if (loginForm) {
   });
 }
 
+//***************** Navbar ******************* */
 if (logOutBtn) {
   logOutBtn.addEventListener('click', logout);
 }
@@ -33,6 +38,7 @@ if (toggleSidebarBtn) {
   });
 }
 
+//***************** Manage User Page ******************* */
 if (userTable) {
   const optios = {
     perPage: 5,
@@ -43,3 +49,20 @@ if (userTable) {
   };
   const dataTable = new DataTable(userTable, optios);
 }
+
+// if (delUserBtn) {
+// const delUserModal = new bootstrap.Modal(document.querySelector('#staticBackdrop'), {});
+// trashUserBtns.forEach((trashUserBtn) => {
+//   trashUserBtn.addEventListener('click', () => {
+//     // Access the data-user-id attribute using dataset
+//     const userId = trashUserBtn.dataset.userId;
+//     // Now 'userId' holds the value of the data-user-id attribute
+//     console.log(userId);
+//     // deleteUser(userId);
+//   });
+// });
+// console.log(userId);
+// delUserBtn.addEventListener('click', () => {
+//   delUserById(delUserModal, userId);
+// });
+// }

@@ -80,6 +80,7 @@ exports.getManageUserPage = catchAsync(async (req, res, next) => {
     user.createdAt = _formatDateTable(user.createdAt);
     user.updatedAt = _formatDateTable(user.updatedAt);
     delete user.password;
+    delete user.role;
   });
 
   res.status(200).render('manage-user', {
