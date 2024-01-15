@@ -144,7 +144,7 @@ exports.isLoggedIn = async (req, res, next) => {
 };
 
 exports.isNotLoggedIn = async (req, res, next) => {
-  console.log(req.cookies);
+  // console.log(req.cookies);
   if (!req.cookies.jwt || req.cookies.jwt === 'loggedout') {
     return next();
   }
