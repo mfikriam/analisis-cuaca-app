@@ -17,28 +17,29 @@ block main
                 |  Import Data
 
             // Table with stripped rows
-            table.table.table-hover.datatable#user-table
-              thead
-                tr
-                  th Id
-                  th E-Mail
-                  th Fullname
-                  th CreatedAt
-                  th UpdatedAt
-                  th
-              tbody
-                each userObj in users
+            .table-responsive
+              table.table.table-hover.datatable#user-table
+                thead
                   tr
-                    td= userObj.id
-                    td= userObj.email
-                    td= userObj.fullname
-                    td= userObj.createdAt
-                    td= userObj.updatedAt
-                    td
-                      button.btn.btn-sm.btn-success.me-1.mb-1
-                        i.bi.bi-pencil-square
-                      button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
-                        i.bi.bi-trash
+                    th Id
+                    th E-Mail
+                    th Fullname
+                    th CreatedAt
+                    th UpdatedAt
+                    th
+                tbody
+                  each userObj in users
+                    tr
+                      td= userObj.id
+                      td= userObj.email
+                      td= userObj.fullname
+                      td= userObj.createdAt
+                      td= userObj.updatedAt
+                      td
+                        button.btn.btn-sm.btn-success.me-1.mb-1
+                          i.bi.bi-pencil-square
+                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
+                          i.bi.bi-trash
             // End Table with stripped rows
   // Delete Modals
   each userObj in users
