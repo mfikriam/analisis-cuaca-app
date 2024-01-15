@@ -1,12 +1,13 @@
 /* eslint-disable */
 import '@babel/polyfill';
+import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
-let userDatatable = document.querySelector('#user-datatable');
+const userTable = document.querySelector('#user-table');
 
 //? EVENT LISTENERS
 if (loginForm) {
@@ -32,6 +33,8 @@ if (toggleSidebarBtn) {
   });
 }
 
-if (userDatatable) {
-  new DataTable(userDatatable);
+if (userTable) {
+  // new DataTable(userDatatable);
+  const option = { perPage: 5 };
+  const dataTable = new DataTable(userTable, option);
 }

@@ -15,7 +15,7 @@ block main
                 |  Import Data
 
             // Table with stripped rows
-            table#user-datatable.table.table-hover(style='width:100%')
+            //- table#user-datatable.table.table-hover(style='width:100%')
               thead
                 tr
                   th Name
@@ -432,3 +432,21 @@ block main
                   th Age
                   th Start date
                   th Salary
+
+            // Table with stripped rows
+            table.table.table-hover.datatable#user-table
+              thead
+                tr
+                  th Name
+                  th Ext.
+                  th City
+                  th(data-type='date' data-format='YYYY/DD/MM') Start Date
+                  th Completion
+              tbody
+                tr
+                  td Unity Pugh
+                  td 9958
+                  td Curic&oacute;
+                  td 2005/02/11
+                  td 37%
+            // End Table with stripped rows
