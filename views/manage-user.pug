@@ -1,17 +1,6 @@
 extends base
 
-mixin delModal(userObj)
-  .modal.fade(id=`staticBackdrop-${userObj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
-    .modal-dialog.modal-dialog-centered
-      .modal-content
-        .modal-header
-          h1.modal-title.fs-4 Delete Confirmation
-          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-        .modal-body= 'Are you sure you want to delete user: '
-          span.fw-bold= userObj.email
-        .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
-          button.btn.btn-danger.btn--del-user(type='button' data-user-id=userObj.id) Delete
+include _modals
 
 block main
   section.section
@@ -48,9 +37,9 @@ block main
                     td
                       button.btn.btn-sm.btn-success.me-1.mb-1
                         i.bi.bi-pencil-square
-                      button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#staticBackdrop-${userObj.id}`)
+                      button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
                         i.bi.bi-trash
             // End Table with stripped rows
   // Delete Modals
   each userObj in users
-    +delModal(userObj)
+    +delModal(userObj.id, 'user', userObj.email)

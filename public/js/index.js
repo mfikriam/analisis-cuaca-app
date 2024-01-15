@@ -53,12 +53,12 @@ if (userTable) {
 }
 
 if (delUserBtns.length > 0) {
-  const modalList = document.querySelectorAll('[id^="staticBackdrop"]');
+  const modalList = document.querySelectorAll('[id^="modal-delete-obj"]');
   const bsModalList = Array.from(modalList).map((el) => new bootstrap.Modal(el));
 
   delUserBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const userId = btn.dataset.userId;
+      const userId = btn.dataset.objId;
       delUserById(bsModalList, userId, userDataTable);
     });
   });

@@ -15418,13 +15418,13 @@ if (userTable) {
   userDataTable = new _simpleDatatables.DataTable(userTable, options);
 }
 if (delUserBtns.length > 0) {
-  var modalList = document.querySelectorAll('[id^="staticBackdrop"]');
+  var modalList = document.querySelectorAll('[id^="modal-delete-obj"]');
   var bsModalList = Array.from(modalList).map(function (el) {
     return new bootstrap.Modal(el);
   });
   delUserBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var userId = btn.dataset.userId;
+      var userId = btn.dataset.objId;
       (0, _manageUser.delUserById)(bsModalList, userId, userDataTable);
     });
   });
@@ -15454,7 +15454,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64518" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50587" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
