@@ -34,6 +34,8 @@ const handleFKConstraintErrorDB = (err) =>
     404,
   );
 
+const handleSequelizeDBError = () => new AppError('Database error: please contact the admin!', 500);
+
 const handleJWTError = () => new AppError('Invalid token. Plase log in again!', 401);
 
 const handleJWTExpiredError = () =>
@@ -49,6 +51,7 @@ module.exports = (err, req, res, next) => {
   // console.log(err.errors);
   // console.log(err.errors[0].message);
   // console.log(err.stack);
+  // console.log(err.name);
 
   let error = Object.create(err);
 
@@ -63,6 +66,7 @@ module.exports = (err, req, res, next) => {
   }
 
   if (error.name === 'SequelizeForeignKeyConstraintError') error = handleFKConstraintErrorDB(error);
+  if (error.name === 'SequelizeDatabaseError') error = handleSequelizeDBError();
   if (error.name === 'JsonWebTokenError') error = handleJWTError();
   if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
