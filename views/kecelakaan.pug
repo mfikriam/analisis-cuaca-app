@@ -18,7 +18,7 @@ block main
 
             // Table with stripped rows
             .table-responsive
-              table.table.table-hover.datatable#kecelakaan-table
+              table.table.table-hover.datatable(id=`${modelName}-table`)
                 thead
                   tr
                     th Tanggal
@@ -27,25 +27,25 @@ block main
                     th UpdatedAt
                     th
                 tbody
-                  each kecelakaanObj in kecelakaan
+                  each obj in kecelakaan
                     tr
-                      td= kecelakaanObj.tanggal
-                      td= kecelakaanObj.jum_kecelakaan
-                      td= kecelakaanObj.createdAt
-                      td= kecelakaanObj.updatedAt
+                      td= obj.tanggal
+                      td= obj.jum_kecelakaan
+                      td= obj.createdAt
+                      td= obj.updatedAt
                       td
-                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${kecelakaanObj.id}`)
+                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
-                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${kecelakaanObj.id}`)
+                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
                           i.bi.bi-trash
             // End Table with stripped rows
 
-  // Add Kecelakaan Modal
-  +addDatasetModal('kecelakaan')
+  // Add Dataset Modal
+  +addDatasetModal()
 
-  //- each userObj in users
-  //-   // Update User Modals
-  //-   +updateUserModal(userObj)
+  each obj in kecelakaan
+    // Update Dataset Modals
+    +updateDatasetModal(obj)
 
-  //-   // Delete User Modals
-  //-   +delModal(userObj.id, 'user', userObj.email)
+    // Delete User Modals
+    //- +delModal(userObj.id, 'user', userObj.email)

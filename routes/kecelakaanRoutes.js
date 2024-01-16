@@ -1,7 +1,10 @@
 const express = require('express');
 const kecelakaanController = require('../controllers/kecelakaanController');
+const authController = require('./../controllers/authController');
 
 const router = express.Router();
+
+router.use(authController.protect);
 
 router
   .route('/')

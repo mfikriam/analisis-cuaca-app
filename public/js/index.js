@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 import { addNewUser, updateUserById, delUserById } from './manage-user';
-import { addNewDataset } from './manage-dataset';
+import { addNewDataset, updateDatasetById } from './manage-dataset';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -15,9 +15,13 @@ const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 const delUserBtns = document.querySelectorAll('.btn--del-user');
 const updateUserBtns = document.querySelectorAll('.btn-update-user');
+const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 
 const userTable = document.querySelector('#user-table');
 const kecelakaanTable = document.querySelector('#kecelakaan-table');
+
+//? GLOBAL VARIABLES
+let modelName;
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -114,8 +118,6 @@ if (delUserBtns.length > 0) {
 }
 
 //***************** Manage Dataset Kecelakaan Page ******************* */
-let kecelakaanDataTable;
-
 if (kecelakaanTable) {
   const kecelakaanTableOptions = {
     perPage: 10,
@@ -125,7 +127,7 @@ if (kecelakaanTable) {
       { select: 4, sortable: false },
     ],
   };
-  kecelakaanDataTable = new DataTable(kecelakaanTable, kecelakaanTableOptions);
+  const kecelakaanDataTable = new DataTable(kecelakaanTable, kecelakaanTableOptions);
 }
 
 if (addKecelakaanForm) {
@@ -140,7 +142,6 @@ if (addKecelakaanForm) {
       const user_id = addKecelakaanForm.querySelector('#add-user_id').value;
       const tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
       const jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
-      console.log(user_id, tanggal, jum_kecelakaan);
       addNewDataset(
         'kecelakaan',
         { tanggal, jum_kecelakaan, user_id },
@@ -148,6 +149,39 @@ if (addKecelakaanForm) {
         bsAddDatasetModal,
       );
     }
+  });
+}
+
+if (updateKecelakaanBtns.length > 0) {
+  modelName = 'kecelakaan';
+
+  const updateDatasetModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  const bsUpdateDatasetModalList = Array.from(updateDatasetModalList).map(
+    (el) => new bootstrap.Modal(el),
+  );
+  const updateDatasetFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
+
+  updateDatasetFormList.forEach((form) => {
+    const formId = form.id;
+    const objId = formId.match(/\d+/)[0];
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.classList.add('was-validated');
+
+      if (form.checkValidity()) {
+        const tanggal = form.querySelector(`#update-tanggal-${objId}`).value;
+        const jum_kecelakaan = form.querySelector(`#update-jum_kecelakaan-${objId}`).value;
+
+        updateDatasetById(
+          modelName,
+          objId,
+          { tanggal, jum_kecelakaan },
+          form,
+          bsUpdateDatasetModalList,
+        );
+      }
+    });
   });
 }
 

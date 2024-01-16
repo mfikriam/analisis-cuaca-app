@@ -15327,7 +15327,7 @@ var delUserById = exports.delUserById = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addNewDataset = void 0;
+exports.updateDatasetById = exports.addNewDataset = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -15373,6 +15373,48 @@ var addNewDataset = exports.addNewDataset = /*#__PURE__*/function () {
   }));
   return function addNewDataset(_x, _x2, _x3, _x4) {
     return _ref.apply(this, arguments);
+  };
+}();
+var updateDatasetById = exports.updateDatasetById = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(modelName, objId, data, form, Modals) {
+    var res, resObj, arrValidationError;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return (0, _axios.default)({
+            method: 'PATCH',
+            url: "/api/v1/".concat(modelName, "/").concat(objId),
+            data: data
+          });
+        case 3:
+          res = _context2.sent;
+          if (res.data.status === 'success') {
+            resObj = res.data.data[modelName];
+            Modals.forEach(function (el) {
+              return el.hide();
+            });
+            (0, _alert.delayAlert)("Data ".concat(modelName, " updated successfully"), 'success');
+          }
+          _context2.next = 12;
+          break;
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
+          form.classList.remove('was-validated');
+          arrValidationError = _context2.t0.response.data.validationError;
+          arrValidationError.forEach(function (el) {
+            (0, _alert.showAlert)("".concat(_context2.t0.response.data.message, ": <span class='fw-bold'>").concat(el.message, "</span>"), 'danger');
+          });
+        case 12:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 7]]);
+  }));
+  return function updateDatasetById(_x5, _x6, _x7, _x8, _x9) {
+    return _ref2.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
@@ -15523,8 +15565,12 @@ var logOutBtn = document.querySelector('.btn--logout');
 var toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 var delUserBtns = document.querySelectorAll('.btn--del-user');
 var updateUserBtns = document.querySelectorAll('.btn-update-user');
+var updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 var userTable = document.querySelector('#user-table');
 var kecelakaanTable = document.querySelector('#kecelakaan-table');
+
+//? GLOBAL VARIABLES
+var modelName;
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -15621,7 +15667,6 @@ if (delUserBtns.length > 0) {
 }
 
 //***************** Manage Dataset Kecelakaan Page ******************* */
-var kecelakaanDataTable;
 if (kecelakaanTable) {
   var kecelakaanTableOptions = {
     perPage: 10,
@@ -15638,7 +15683,7 @@ if (kecelakaanTable) {
       sortable: false
     }]
   };
-  kecelakaanDataTable = new _simpleDatatables.DataTable(kecelakaanTable, kecelakaanTableOptions);
+  var kecelakaanDataTable = new _simpleDatatables.DataTable(kecelakaanTable, kecelakaanTableOptions);
 }
 if (addKecelakaanForm) {
   var addDatasetModal = document.querySelector('#modal-add-obj');
@@ -15650,13 +15695,36 @@ if (addKecelakaanForm) {
       var user_id = addKecelakaanForm.querySelector('#add-user_id').value;
       var tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
       var jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
-      console.log(user_id, tanggal, jum_kecelakaan);
       (0, _manageDataset.addNewDataset)('kecelakaan', {
         tanggal: tanggal,
         jum_kecelakaan: jum_kecelakaan,
         user_id: user_id
       }, addKecelakaanForm, bsAddDatasetModal);
     }
+  });
+}
+if (updateKecelakaanBtns.length > 0) {
+  modelName = 'kecelakaan';
+  var updateDatasetModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  var bsUpdateDatasetModalList = Array.from(updateDatasetModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  var updateDatasetFormList = document.querySelectorAll("[id^=\"form-update-".concat(modelName, "\"]"));
+  updateDatasetFormList.forEach(function (form) {
+    var formId = form.id;
+    var objId = formId.match(/\d+/)[0];
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      if (form.checkValidity()) {
+        var tanggal = form.querySelector("#update-tanggal-".concat(objId)).value;
+        var jum_kecelakaan = form.querySelector("#update-jum_kecelakaan-".concat(objId)).value;
+        (0, _manageDataset.updateDatasetById)(modelName, objId, {
+          tanggal: tanggal,
+          jum_kecelakaan: jum_kecelakaan
+        }, form, bsUpdateDatasetModalList);
+      }
+    });
   });
 }
 

@@ -1,9 +1,10 @@
-mixin addDatasetModal(modelName)
+mixin addDatasetModal()
   #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
         .modal-header
-          h1.modal-title.fs-4= `Add New Data ${modelName}`
+          - const capitalModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+          h1.modal-title.fs-4= `Add New Data ${capitalModelName}`
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body
           form.row(id=`form-add-${modelName}` novalidate)
@@ -20,3 +21,30 @@ mixin addDatasetModal(modelName)
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-primary(id=`btn-submit-${modelName}` type='submit' form=`form-add-${modelName}`) Submit
+
+mixin updateDatasetModal(obj)
+  .modal.fade(id=`modal-update-obj-${obj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          - const capitalModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+          h1.modal-title.fs-4= `Update ${capitalModelName} ${obj.tanggal}`
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form.row(id=`form-update-${modelName}-${obj.id}` novalidate)
+            .col-12.mb-3
+              - const date = new Date(obj.tanggal);
+              - const year = date.getFullYear();
+              - const month = (date.getMonth() + 1).toString().padStart(2, '0');
+              - const formattedTanggal = `${year}-${month}`;
+            
+              label.form-label(for='tanggal') Tanggal (Only Month & Year)
+              input.form-control(id=`update-tanggal-${obj.id}` value=formattedTanggal type='month' name='tanggal' required)
+              .invalid-feedback Please enter a valid date
+            .col-12.mb-3
+              label.form-label(for='jum_kecelakaan') Jumlah Kecelakaan
+              input.form-control(id=`update-jum_kecelakaan-${obj.id}` value=obj.jum_kecelakaan type='number' name='jum_kecelakaan' min='0' required)
+              .invalid-feedback Jumlah kecelakaan minimum 0
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update

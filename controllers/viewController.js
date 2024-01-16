@@ -138,6 +138,7 @@ exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
     title: 'Manage Data Kecelakaan',
     bread_crumbs: ['Manage Dataset', 'Kecelakaan'],
     kecelakaan,
+    modelName: 'kecelakaan',
   });
 });
 
