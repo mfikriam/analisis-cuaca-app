@@ -9,6 +9,7 @@ router.get('/login', authController.isNotLoggedIn, viewController.getLoginForm);
 
 router.get('/dashboard', authController.isLoggedIn, viewController.getDashboardPage);
 router.get('/manage-user', authController.isLoggedIn, viewController.getManageUserPage);
+router.get('/kecelakaan', authController.isLoggedIn, viewController.getKecelakaanPage);
 router.get('/blank', authController.isLoggedIn, viewController.getBlankPage);
 // router.get('/', authController.isLoggedIn, viewController.getOverview);
 // router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);

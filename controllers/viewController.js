@@ -99,6 +99,27 @@ exports.getManageUserPage = catchAsync(async (req, res, next) => {
   });
 });
 
+const _getDatasetData = async (userId, Model) => {
+  const resultQuery = await Model.findAll({
+    where: {
+      user_id: userId,
+    },
+  });
+  const resultObj = resultQuery.map((el) => el.dataValues);
+  return resultObj;
+};
+
+exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
+  const userId = res.locals.user.id;
+  const kecelakaan = await _getDatasetData(userId, Kecelakaan);
+
+  res.status(200).render('kecelakaan', {
+    title: 'Manage Data Kecelakaan',
+    bread_crumbs: ['Manage Dataset', 'Kecelakaan'],
+    kecelakaan,
+  });
+});
+
 exports.getBlankPage = (req, res) => {
   res.status(200).render('blank', {
     title: 'Blank Page',
