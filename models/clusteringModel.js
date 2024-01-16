@@ -17,11 +17,11 @@ const clusteringSchema = {
   kriteria_clustering: {
     type: DataTypes.TEXT,
     allowNull: false,
-    get() {
-      return this.getDataValue('favColors').split(';');
-    },
-    set(val) {
-      this.setDataValue('favColors', val.join(';'));
+    validate: {
+      notEmpty: {
+        args: true,
+        msg: 'Kriteria clustering cannot be empty',
+      },
     },
   },
 };
