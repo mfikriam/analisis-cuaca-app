@@ -1,6 +1,6 @@
 extends base
 
-//- include _modals
+include _kecelakaan-modals
 
 block main
   section.section
@@ -18,32 +18,30 @@ block main
 
             // Table with stripped rows
             .table-responsive
-              table.table.table-hover.datatable#user-table
+              table.table.table-hover.datatable#kecelakaan-table
                 thead
                   tr
-                    th Id
-                    th E-Mail
-                    th Fullname
+                    th Tanggal
+                    th Jum Kecelakaan
                     th CreatedAt
                     th UpdatedAt
                     th
                 tbody
-                  //- each userObj in users
-                  //-   tr
-                  //-     td= userObj.id
-                  //-     td= userObj.email
-                  //-     td= userObj.fullname
-                  //-     td= userObj.createdAt
-                  //-     td= userObj.updatedAt
-                  //-     td
-                  //-       button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${userObj.id}`)
-                  //-         i.bi.bi-pencil-square
-                  //-       button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
-                  //-         i.bi.bi-trash
+                  each kecelakaanObj in kecelakaan
+                    tr
+                      td= kecelakaanObj.tanggal
+                      td= kecelakaanObj.jum_kecelakaan
+                      td= kecelakaanObj.createdAt
+                      td= kecelakaanObj.updatedAt
+                      td
+                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${kecelakaanObj.id}`)
+                          i.bi.bi-pencil-square
+                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${kecelakaanObj.id}`)
+                          i.bi.bi-trash
             // End Table with stripped rows
 
-  //- // Add User Modal
-  //- +addUserModal()
+  // Add Kecelakaan Modal
+  +addDatasetModal('kecelakaan')
 
   //- each userObj in users
   //-   // Update User Modals

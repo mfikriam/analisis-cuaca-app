@@ -1,0 +1,22 @@
+mixin addDatasetModal(modelName)
+  #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4= `Add New Data ${modelName}`
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form.row(id=`form-add-${modelName}` novalidate)
+            .col-12
+              input#add-user_id(type='hidden' name='user_id' value=user.id)
+            .col-12.mb-3
+              label.form-label(for='tanggal') Tanggal (Only Month & Year)
+              input#add-tanggal.form-control(type='month' name='tanggal' required)
+              .invalid-feedback Please enter a valid date
+            .col-12.mb-3
+              label.form-label(for='jum_kecelakaan') Jumlah Kecelakaan
+              input#add-jum_kecelakaan.form-control(type='number' name='jum_kecelakaan' min='0' required)
+              .invalid-feedback Jumlah kecelakaan minimum 0
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-primary(id=`btn-submit-${modelName}` type='submit' form=`form-add-${modelName}`) Submit

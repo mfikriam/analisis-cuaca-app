@@ -3,11 +3,13 @@ import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 import { addNewUser, updateUserById, delUserById } from './manage-user';
+import { addNewDataset } from './manage-dataset';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
 const addUserForm = document.querySelector('#form-add-user');
+const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
@@ -15,6 +17,7 @@ const delUserBtns = document.querySelectorAll('.btn--del-user');
 const updateUserBtns = document.querySelectorAll('.btn-update-user');
 
 const userTable = document.querySelector('#user-table');
+const kecelakaanTable = document.querySelector('#kecelakaan-table');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -107,6 +110,44 @@ if (delUserBtns.length > 0) {
       const userId = btn.dataset.objId;
       delUserById(bsDelUserModalList, userId, userDataTable);
     });
+  });
+}
+
+//***************** Manage Dataset Kecelakaan Page ******************* */
+let kecelakaanDataTable;
+
+if (kecelakaanTable) {
+  const kecelakaanTableOptions = {
+    perPage: 10,
+    columns: [
+      { select: 0, type: 'date', format: 'MMM YYYY' },
+      { select: [2, 3], type: 'date', format: 'D MMM YYYY, HH.mm.ss' },
+      { select: 4, sortable: false },
+    ],
+  };
+  kecelakaanDataTable = new DataTable(kecelakaanTable, kecelakaanTableOptions);
+}
+
+if (addKecelakaanForm) {
+  const addDatasetModal = document.querySelector('#modal-add-obj');
+  const bsAddDatasetModal = new bootstrap.Modal(addDatasetModal);
+
+  addKecelakaanForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addKecelakaanForm.classList.add('was-validated');
+
+    if (addKecelakaanForm.checkValidity()) {
+      const user_id = addKecelakaanForm.querySelector('#add-user_id').value;
+      const tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
+      const jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
+      console.log(user_id, tanggal, jum_kecelakaan);
+      addNewDataset(
+        'kecelakaan',
+        { tanggal, jum_kecelakaan, user_id },
+        addKecelakaanForm,
+        bsAddDatasetModal,
+      );
+    }
   });
 }
 

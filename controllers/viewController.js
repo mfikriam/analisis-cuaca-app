@@ -21,12 +21,12 @@ const _getEarliestLatestDate = (obj) => {
   return [earliestDate.tanggal, latestDate.tanggal];
 };
 
-const _formatDate = (inputDate) => {
+const _formatDateDashboard = (inputDate) => {
   // Parse the input date string
   const dateObject = new Date(inputDate);
 
   // Get month and year
-  const month = dateObject.toLocaleString('en-US', { month: 'long' });
+  const month = dateObject.toLocaleString('id-ID', { month: 'long' });
   const year = dateObject.getFullYear();
 
   // Format the date
@@ -55,8 +55,8 @@ const _getDashboardData = async (userId, Model) => {
 
   return {
     count: resultObj.length,
-    min_date: _formatDate(earliestDate),
-    max_date: _formatDate(latestDate),
+    min_date: _formatDateDashboard(earliestDate),
+    max_date: _formatDateDashboard(latestDate),
   };
 };
 
@@ -104,14 +104,35 @@ const _getDatasetData = async (userId, Model) => {
     where: {
       user_id: userId,
     },
+    order: [['tanggal', 'ASC']],
   });
   const resultObj = resultQuery.map((el) => el.dataValues);
   return resultObj;
 };
 
+const _formatDateDataset = (inputDate) => {
+  // Parse the input date string
+  const dateObject = new Date(inputDate);
+
+  // Get month and year
+  const month = dateObject.toLocaleString('id-ID', { month: 'short' });
+  const year = dateObject.getFullYear();
+
+  // Format the date
+  const formattedDate = `${month} ${year}`;
+
+  return formattedDate;
+};
+
 exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
   const userId = res.locals.user.id;
   const kecelakaan = await _getDatasetData(userId, Kecelakaan);
+
+  kecelakaan.forEach((item) => {
+    item.tanggal = _formatDateDataset(item.tanggal);
+    item.createdAt = _formatDateTable(item.createdAt);
+    item.updatedAt = _formatDateTable(item.updatedAt);
+  });
 
   res.status(200).render('kecelakaan', {
     title: 'Manage Data Kecelakaan',
