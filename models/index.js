@@ -1,6 +1,7 @@
 const { Sequelize } = require('sequelize');
 const userSchema = require('./userModel');
 const kecelakaanSchema = require('./kecelakaanModel');
+const wisatawanSchema = require('./wisatawanModel');
 
 // Connect to Database
 const sequelize = new Sequelize(
@@ -31,7 +32,19 @@ const Kecelakaan = sequelize.define('kecelakaan', kecelakaanSchema, {
   ],
 });
 
+const Wisatawan = sequelize.define('wisatawan', wisatawanSchema, {
+  underscored: true,
+  indexes: [
+    {
+      unique: true,
+      fields: ['tanggal', 'user_id'],
+    },
+  ],
+});
+
+// Associations
 User.hasMany(Kecelakaan);
+User.hasMany(Wisatawan);
 Kecelakaan.belongsTo(User, {
   foreignKey: {
     name: 'user_id',
@@ -39,5 +52,12 @@ Kecelakaan.belongsTo(User, {
   },
   onDelete: 'CASCADE',
 });
+Wisatawan.belongsTo(User, {
+  foreignKey: {
+    name: 'user_id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+});
 
-module.exports = { sequelize, User, Kecelakaan };
+module.exports = { sequelize, User, Kecelakaan, Wisatawan };

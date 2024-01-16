@@ -8,7 +8,7 @@ router.use(authController.protect);
 
 router
   .route('/')
-  .get(kecelakaanController.getAllKecelakaans)
+  .get(kecelakaanController.getAllKecelakaan)
   .post(kecelakaanController.createKecelakaan);
 router
   .route('/:id')

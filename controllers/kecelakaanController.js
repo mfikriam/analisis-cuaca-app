@@ -1,7 +1,7 @@
 const { Kecelakaan, User } = require('../models');
 const factory = require('./handlerFactory');
 
-exports.getAllKecelakaans = factory.findAll(Kecelakaan);
+exports.getAllKecelakaan = factory.findAll(Kecelakaan);
 exports.createKecelakaan = factory.createOne(Kecelakaan);
 // exports.getKecelakaan = factory.findOne(Kecelakaan);
 exports.getKecelakaan = factory.findOne(Kecelakaan, User, ['email', 'fullname', 'role']);
