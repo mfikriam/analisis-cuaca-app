@@ -1,17 +1,4 @@
-mixin delModal(objId, objModel, objUnique)
-  .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
-    .modal-dialog.modal-dialog-centered
-      .modal-content
-        .modal-header
-          h1.modal-title.fs-4 Delete Confirmation
-          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-        .modal-body= `Are you sure you want to delete ${objModel}: `
-          span.fw-bold= objUnique
-        .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
-          button.btn.btn-danger.btn--del-user(type='button' data-obj-id=objId) Delete
-
-mixin addUserModal(userObj)
+mixin addUserModal()
   #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -35,3 +22,37 @@ mixin addUserModal(userObj)
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-primary#btn-submit-user(type='submit' form='form-add-user') Submit
+
+mixin updateUserModal(userObj)
+  .modal.fade(id=`modal-update-obj-${userObj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4= `Update User ${userObj.fullname}`
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form.row(id=`form-update-user-${userObj.id}` novalidate)
+            .col-12.mb-3
+              label.form-label(for='email') E-Mail
+              input.form-control(id=`update-email-${userObj.id}` type='email' name='email' value=userObj.email required)
+              .invalid-feedback Please enter a valid Email adddress!
+            .col-12.mb-3
+              label.form-label(for='fullname') Full Name
+              input.form-control(id=`update-fullname-${userObj.id}` type='text' name='fullname' value=userObj.fullname required)
+              .invalid-feedback Please enter your full name
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-info.btn-update-user(type='submit' form=`form-update-user-${userObj.id}`) Update
+
+mixin delModal(objId, objModel, objUnique)
+  .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Delete Confirmation
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body= `Are you sure you want to delete ${objModel}: `
+          span.fw-bold= objUnique
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button.btn.btn-danger.btn--del-user(type='button' data-obj-id=objId) Delete

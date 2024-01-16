@@ -2,7 +2,7 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
-import { addNewUser, delUserById } from './manage-user';
+import { addNewUser, updateUserById, delUserById } from './manage-user';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -12,6 +12,7 @@ const addUserForm = document.querySelector('#form-add-user');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 const delUserBtns = document.querySelectorAll('.btn--del-user');
+const updateUserBtns = document.querySelectorAll('.btn-update-user');
 
 const userTable = document.querySelector('#user-table');
 
@@ -55,18 +56,6 @@ if (userTable) {
   userDataTable = new DataTable(userTable, options);
 }
 
-if (delUserBtns.length > 0) {
-  const modalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  const bsModalList = Array.from(modalList).map((el) => new bootstrap.Modal(el));
-
-  delUserBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const userId = btn.dataset.objId;
-      delUserById(bsModalList, userId, userDataTable);
-    });
-  });
-}
-
 if (addUserForm) {
   const addUserModal = document.querySelector('#modal-add-obj');
   const bsAddUserModal = new bootstrap.Modal(addUserModal);
@@ -84,6 +73,44 @@ if (addUserForm) {
   });
 }
 
+if (updateUserBtns.length > 0) {
+  const updateUserModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  const bsUpdateUserModalList = Array.from(updateUserModalList).map(
+    (el) => new bootstrap.Modal(el),
+  );
+
+  const updateUserFormList = document.querySelectorAll('[id^="form-update-user"]');
+
+  updateUserFormList.forEach((form) => {
+    const formId = form.id;
+    const userId = formId.match(/\d+/)[0];
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.classList.add('was-validated');
+
+      if (form.checkValidity()) {
+        const email = form.querySelector(`#update-email-${userId}`).value;
+        const fullname = form.querySelector(`#update-fullname-${userId}`).value;
+        updateUserById({ email, fullname }, form, bsUpdateUserModalList, userId);
+      }
+    });
+  });
+}
+
+if (delUserBtns.length > 0) {
+  const delUserModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  const bsDelUserModalList = Array.from(delUserModalList).map((el) => new bootstrap.Modal(el));
+
+  delUserBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const userId = btn.dataset.objId;
+      delUserById(bsDelUserModalList, userId, userDataTable);
+    });
+  });
+}
+
+//************************** MUST BE IN THE LAST LINE********************************** */
 const delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 const delayAlertType = sessionStorage.getItem('delay-alert-type');
 if (delayAlertMsg) {

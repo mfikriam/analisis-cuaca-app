@@ -15191,7 +15191,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.delUserById = exports.addNewUser = void 0;
+exports.updateUserById = exports.delUserById = exports.addNewUser = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -15239,23 +15239,65 @@ var addNewUser = exports.addNewUser = /*#__PURE__*/function () {
     return _ref.apply(this, arguments);
   };
 }();
-var delUserById = exports.delUserById = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(Modals, userId, userDataTable) {
-    var res, targetTr, trs;
+var updateUserById = exports.updateUserById = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(userObj, form, Modals, userId) {
+    var res, userResult, arrValidationError;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
+          _context2.next = 3;
+          return (0, _axios.default)({
+            method: 'PATCH',
+            url: "/api/v1/users/".concat(userId),
+            data: userObj
+          });
+        case 3:
+          res = _context2.sent;
+          if (res.data.status === 'success') {
+            userResult = res.data.data.user;
+            Modals.forEach(function (el) {
+              return el.hide();
+            });
+            (0, _alert.delayAlert)("User updated successfully", 'success');
+          }
+          _context2.next = 12;
+          break;
+        case 7:
+          _context2.prev = 7;
+          _context2.t0 = _context2["catch"](0);
+          form.classList.remove('was-validated');
+          arrValidationError = _context2.t0.response.data.validationError;
+          arrValidationError.forEach(function (el) {
+            (0, _alert.showAlert)("".concat(_context2.t0.response.data.message, ": <span class='fw-bold'>").concat(el.message, "</span>"), 'danger');
+          });
+        case 12:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 7]]);
+  }));
+  return function updateUserById(_x4, _x5, _x6, _x7) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+var delUserById = exports.delUserById = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(Modals, userId, userDataTable) {
+    var res, targetTr, trs;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
           Modals.forEach(function (el) {
             return el.hide();
           });
-          _context2.next = 4;
+          _context3.next = 4;
           return (0, _axios.default)({
             method: 'DELETE',
             url: "/api/v1/users/".concat(userId)
           });
         case 4:
-          res = _context2.sent;
+          res = _context3.sent;
           trs = document.querySelectorAll('#user-table tbody tr');
           trs.forEach(function (tr) {
             var td = tr.querySelector('td:first-child');
@@ -15263,20 +15305,20 @@ var delUserById = exports.delUserById = /*#__PURE__*/function () {
           });
           userDataTable.rows.remove(targetTr.rowIndex - 1);
           (0, _alert.showAlert)('User successfully deleted!', 'success');
-          _context2.next = 14;
+          _context3.next = 14;
           break;
         case 11:
-          _context2.prev = 11;
-          _context2.t0 = _context2["catch"](0);
-          (0, _alert.showAlert)(_context2.t0.response.data.message, 'danger');
+          _context3.prev = 11;
+          _context3.t0 = _context3["catch"](0);
+          (0, _alert.showAlert)(_context3.t0.response.data.message, 'danger');
         case 14:
         case "end":
-          return _context2.stop();
+          return _context3.stop();
       }
-    }, _callee2, null, [[0, 11]]);
+    }, _callee3, null, [[0, 11]]);
   }));
-  return function delUserById(_x4, _x5, _x6) {
-    return _ref2.apply(this, arguments);
+  return function delUserById(_x8, _x9, _x10) {
+    return _ref3.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
@@ -15424,6 +15466,7 @@ var addUserForm = document.querySelector('#form-add-user');
 var logOutBtn = document.querySelector('.btn--logout');
 var toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 var delUserBtns = document.querySelectorAll('.btn--del-user');
+var updateUserBtns = document.querySelectorAll('.btn-update-user');
 var userTable = document.querySelector('#user-table');
 
 //? EVENT LISTENERS
@@ -15466,18 +15509,6 @@ if (userTable) {
   };
   userDataTable = new _simpleDatatables.DataTable(userTable, options);
 }
-if (delUserBtns.length > 0) {
-  var modalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  var bsModalList = Array.from(modalList).map(function (el) {
-    return new bootstrap.Modal(el);
-  });
-  delUserBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      var userId = btn.dataset.objId;
-      (0, _manageUser.delUserById)(bsModalList, userId, userDataTable);
-    });
-  });
-}
 if (addUserForm) {
   var addUserModal = document.querySelector('#modal-add-obj');
   var bsAddUserModal = new bootstrap.Modal(addUserModal);
@@ -15496,6 +15527,43 @@ if (addUserForm) {
     }
   });
 }
+if (updateUserBtns.length > 0) {
+  var updateUserModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  var bsUpdateUserModalList = Array.from(updateUserModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  var updateUserFormList = document.querySelectorAll('[id^="form-update-user"]');
+  updateUserFormList.forEach(function (form) {
+    var formId = form.id;
+    var userId = formId.match(/\d+/)[0];
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      if (form.checkValidity()) {
+        var email = form.querySelector("#update-email-".concat(userId)).value;
+        var fullname = form.querySelector("#update-fullname-".concat(userId)).value;
+        (0, _manageUser.updateUserById)({
+          email: email,
+          fullname: fullname
+        }, form, bsUpdateUserModalList, userId);
+      }
+    });
+  });
+}
+if (delUserBtns.length > 0) {
+  var delUserModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  var bsDelUserModalList = Array.from(delUserModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  delUserBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var userId = btn.dataset.objId;
+      (0, _manageUser.delUserById)(bsDelUserModalList, userId, userDataTable);
+    });
+  });
+}
+
+//************************** MUST BE IN THE LAST LINE********************************** */
 var delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 var delayAlertType = sessionStorage.getItem('delay-alert-type');
 if (delayAlertMsg) {
@@ -15528,7 +15596,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50587" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54394" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

@@ -29,6 +29,33 @@ export const addNewUser = async (userObj, form, modal) => {
   }
 };
 
+export const updateUserById = async (userObj, form, Modals, userId) => {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `/api/v1/users/${userId}`,
+      data: userObj,
+    });
+
+    if (res.data.status === 'success') {
+      const userResult = res.data.data.user;
+      Modals.forEach((el) => el.hide());
+
+      delayAlert(`User updated successfully`, 'success');
+    }
+  } catch (err) {
+    form.classList.remove('was-validated');
+
+    const arrValidationError = err.response.data.validationError;
+    arrValidationError.forEach((el) => {
+      showAlert(
+        `${err.response.data.message}: <span class='fw-bold'>${el.message}</span>`,
+        'danger',
+      );
+    });
+  }
+};
+
 export const delUserById = async (Modals, userId, userDataTable) => {
   try {
     Modals.forEach((el) => el.hide());
