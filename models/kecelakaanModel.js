@@ -6,7 +6,7 @@ const kecelakaanSchema = {
     allowNull: false,
     validate: {
       isDate: {
-        msg: 'tanggal must be a valid date.',
+        msg: 'Tanggal must be a valid date.',
       },
     },
   },
@@ -15,7 +15,11 @@ const kecelakaanSchema = {
     allowNull: false,
     validate: {
       isInt: {
-        msg: 'jum_kecelakaan must be an integer.',
+        msg: 'Jum kecelakaan must be an integer.',
+      },
+      min: {
+        args: [0],
+        msg: 'Jum kecelakaan minimum 0',
       },
     },
   },

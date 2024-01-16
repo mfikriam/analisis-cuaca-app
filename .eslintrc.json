@@ -27,6 +27,7 @@
     "prefer-arrow-callback": "off",
     "arrow-body-style": "off",
     "implicit-arrow-linebreak": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "object-curly-newline": "off"
   }
 }

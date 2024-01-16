@@ -1,7 +1,7 @@
 const AppError = require('../utils/appError');
 
 const handleValidationErrorDB = (err, res) => {
-  const message = 'Invalid input data';
+  const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
     return { field: el.path, message: el.message, value: el.value };
   });
@@ -15,7 +15,10 @@ const handleValidationErrorDB = (err, res) => {
 };
 
 const handleFKConstraintErrorDB = (err) =>
-  new AppError(`Invalid input: ${err.table} id is not found. Please insert existed user id!`, 404);
+  new AppError(
+    `Invalid input: ${err.table} id is not found. Please insert existed ${err.table} id!`,
+    404,
+  );
 
 const handleJWTError = () => new AppError('Invalid token. Plase log in again!', 401);
 
