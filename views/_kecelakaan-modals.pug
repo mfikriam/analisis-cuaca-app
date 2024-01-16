@@ -48,3 +48,16 @@ mixin updateDatasetModal(obj)
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update
+
+mixin delDatasetModal(objId, objUnique, index)
+  .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Delete Confirmation
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body= `Are you sure you want to delete ${modelName}: `
+          span.fw-bold= objUnique
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button.btn.btn-danger(class=`btn-del-${modelName}` type='button' data-obj-id=objId) Delete

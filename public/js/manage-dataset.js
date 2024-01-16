@@ -55,3 +55,17 @@ export const updateDatasetById = async (modelName, objId, data, form, Modals) =>
     });
   }
 };
+
+export const delDatasetById = async (modelName, objId, Modals) => {
+  try {
+    Modals.forEach((el) => el.hide());
+    await axios({
+      method: 'DELETE',
+      url: `/api/v1/${modelName}/${objId}`,
+    });
+
+    delayAlert(`Data ${modelName} deleted successfully`, 'success');
+  } catch (err) {
+    showAlert(err.response.data.message, 'danger');
+  }
+};

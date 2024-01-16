@@ -3,25 +3,26 @@ import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './login';
 import { addNewUser, updateUserById, delUserById } from './manage-user';
-import { addNewDataset, updateDatasetById } from './manage-dataset';
+import { addNewDataset, updateDatasetById, delDatasetById } from './manage-dataset';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
 const loginForm = document.querySelector('.form--login');
-const addUserForm = document.querySelector('#form-add-user');
-const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
-
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
-const delUserBtns = document.querySelectorAll('.btn--del-user');
-const updateUserBtns = document.querySelectorAll('.btn-update-user');
-const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 
-const userTable = document.querySelector('#user-table');
-const kecelakaanTable = document.querySelector('#kecelakaan-table');
-
-//? GLOBAL VARIABLES
 let modelName;
+
+let userDataTable;
+const userTable = document.querySelector('#user-table');
+const addUserForm = document.querySelector('#form-add-user');
+const updateUserBtns = document.querySelectorAll('.btn-update-user');
+const delUserBtns = document.querySelectorAll('.btn--del-user');
+
+const kecelakaanTable = document.querySelector('#kecelakaan-table');
+const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
+const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
+const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -50,8 +51,6 @@ if (toggleSidebarBtn) {
 }
 
 //***************** Manage User Page ******************* */
-let userDataTable;
-
 if (userTable) {
   const options = {
     perPage: 5,
@@ -127,10 +126,11 @@ if (kecelakaanTable) {
       { select: 4, sortable: false },
     ],
   };
-  const kecelakaanDataTable = new DataTable(kecelakaanTable, kecelakaanTableOptions);
+  new DataTable(kecelakaanTable, kecelakaanTableOptions);
 }
 
 if (addKecelakaanForm) {
+  modelName = 'kecelakaan';
   const addDatasetModal = document.querySelector('#modal-add-obj');
   const bsAddDatasetModal = new bootstrap.Modal(addDatasetModal);
 
@@ -143,7 +143,7 @@ if (addKecelakaanForm) {
       const tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
       const jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
       addNewDataset(
-        'kecelakaan',
+        modelName,
         { tanggal, jum_kecelakaan, user_id },
         addKecelakaanForm,
         bsAddDatasetModal,
@@ -154,7 +154,6 @@ if (addKecelakaanForm) {
 
 if (updateKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
-
   const updateDatasetModalList = document.querySelectorAll('[id^="modal-update-obj"]');
   const bsUpdateDatasetModalList = Array.from(updateDatasetModalList).map(
     (el) => new bootstrap.Modal(el),
@@ -172,7 +171,6 @@ if (updateKecelakaanBtns.length > 0) {
       if (form.checkValidity()) {
         const tanggal = form.querySelector(`#update-tanggal-${objId}`).value;
         const jum_kecelakaan = form.querySelector(`#update-jum_kecelakaan-${objId}`).value;
-
         updateDatasetById(
           modelName,
           objId,
@@ -185,7 +183,22 @@ if (updateKecelakaanBtns.length > 0) {
   });
 }
 
-//************************** MUST BE IN THE LAST LINE********************************** */
+if (delKecelakaanBtns.length > 0) {
+  modelName = 'kecelakaan';
+  const delDatasetModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  const bsDelDatasetModalList = Array.from(delDatasetModalList).map(
+    (el) => new bootstrap.Modal(el),
+  );
+
+  delKecelakaanBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const objId = btn.dataset.objId;
+      delDatasetById(modelName, objId, bsDelDatasetModalList);
+    });
+  });
+}
+
+//************************** MUST BE IN THE LAST LINE ********************************** */
 const delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 const delayAlertType = sessionStorage.getItem('delay-alert-type');
 if (delayAlertMsg) {

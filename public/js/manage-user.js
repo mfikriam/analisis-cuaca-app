@@ -74,7 +74,7 @@ export const delUserById = async (Modals, userId, userDataTable) => {
     });
     userDataTable.rows.remove(targetTr.rowIndex - 1);
 
-    showAlert('User successfully deleted!', 'success');
+    showAlert('User deleted successfully', 'success');
   } catch (err) {
     showAlert(err.response.data.message, 'danger');
   }
