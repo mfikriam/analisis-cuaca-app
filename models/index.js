@@ -3,6 +3,8 @@ const userSchema = require('./userModel');
 const kecelakaanSchema = require('./kecelakaanModel');
 const wisatawanSchema = require('./wisatawanModel');
 const cuacaSchema = require('./cuacaModel');
+const clusteringSchema = require('./clusteringModel');
+const clusteringResultSchema = require('./clusteringResultModel');
 
 // Connect to Database
 const sequelize = new Sequelize(
@@ -53,10 +55,20 @@ const Cuaca = sequelize.define('cuaca', cuacaSchema, {
   ],
 });
 
+const Clustering = sequelize.define('clustering', clusteringSchema, {
+  underscored: true,
+});
+
+const ClusteringResult = sequelize.define('clustering_result', clusteringResultSchema, {
+  underscored: true,
+});
+
 // Associations
 User.hasMany(Kecelakaan);
 User.hasMany(Cuaca);
 User.hasMany(Wisatawan);
+User.hasMany(Clustering);
+
 Kecelakaan.belongsTo(User, {
   foreignKey: {
     name: 'user_id',
@@ -78,5 +90,15 @@ Cuaca.belongsTo(User, {
   },
   onDelete: 'CASCADE',
 });
+Clustering.belongsTo(User, {
+  foreignKey: {
+    name: 'user_id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+});
+
+Clustering.belongsToMany(Cuaca, { through: ClusteringResult });
+Cuaca.belongsToMany(Clustering, { through: ClusteringResult });
 
 module.exports = { sequelize, User, Kecelakaan, Wisatawan, Cuaca };
