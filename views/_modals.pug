@@ -9,15 +9,15 @@ mixin addUserModal()
           form#form-add-user.row(novalidate)
             .col-12.mb-3
               label.form-label(for='email') E-Mail
-              input#email.form-control(type='email' name='email' required)
+              input#add-email.form-control(type='email' name='email' required)
               .invalid-feedback Please enter a valid Email adddress!
             .col-12.mb-3
               label.form-label(for='password') Password
-              input#password.form-control(type='password' name='password' minlength='7' required)
+              input#add-password.form-control(type='password' name='password' minlength='7' required)
               .invalid-feedback Password minimum 7 characters
             .col-12.mb-3
               label.form-label(for='fullname') Full Name
-              input#fullname.form-control(type='text' name='fullname' required)
+              input#add-fullname.form-control(type='text' name='fullname' required)
               .invalid-feedback Please enter your full name
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

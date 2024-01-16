@@ -65,9 +65,9 @@ if (addUserForm) {
     addUserForm.classList.add('was-validated');
 
     if (addUserForm.checkValidity()) {
-      const email = addUserForm.querySelector('#email').value;
-      const password = addUserForm.querySelector('#password').value;
-      const fullname = addUserForm.querySelector('#fullname').value;
+      const email = addUserForm.querySelector('#add-email').value;
+      const password = addUserForm.querySelector('#add-password').value;
+      const fullname = addUserForm.querySelector('#add-fullname').value;
       addNewUser({ email, password, fullname }, addUserForm, bsAddUserModal);
     }
   });

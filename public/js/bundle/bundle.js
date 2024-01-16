@@ -15516,9 +15516,9 @@ if (addUserForm) {
     e.preventDefault();
     addUserForm.classList.add('was-validated');
     if (addUserForm.checkValidity()) {
-      var email = addUserForm.querySelector('#email').value;
-      var password = addUserForm.querySelector('#password').value;
-      var fullname = addUserForm.querySelector('#fullname').value;
+      var email = addUserForm.querySelector('#add-email').value;
+      var password = addUserForm.querySelector('#add-password').value;
+      var fullname = addUserForm.querySelector('#add-fullname').value;
       (0, _manageUser.addNewUser)({
         email: email,
         password: password,
