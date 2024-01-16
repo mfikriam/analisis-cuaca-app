@@ -1,6 +1,20 @@
 const AppError = require('../utils/appError');
 
 const handleValidationErrorDB = (err, res) => {
+  const message = 'Invalid data';
+  const validationError = err.errors.map((el) => {
+    return { field: el.path, message: el.message, value: el.value };
+  });
+
+  return res.status(400).json({
+    status: 'fail',
+    statusCode: 400,
+    message,
+    validationError,
+  });
+};
+
+const handleUniqueConstraintErrorDB = (err, res) => {
   const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
     return { field: el.path, message: el.message, value: el.value };
@@ -16,7 +30,7 @@ const handleValidationErrorDB = (err, res) => {
 
 const handleFKConstraintErrorDB = (err) =>
   new AppError(
-    `Invalid input: ${err.table} id is not found. Please insert existed ${err.table} id!`,
+    `Invalid data: ${err.table} id is not found. Please insert existed ${err.table} id!`,
     404,
   );
 
@@ -38,11 +52,13 @@ module.exports = (err, req, res, next) => {
 
   let error = Object.create(err);
 
-  if (
-    error.name === 'SequelizeUniqueConstraintError' ||
-    error.name === 'SequelizeValidationError'
-  ) {
+  if (error.name === 'SequelizeValidationError') {
     handleValidationErrorDB(error, res);
+    return;
+  }
+
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    handleUniqueConstraintErrorDB(error, res);
     return;
   }
 

@@ -6,7 +6,7 @@ const wisatawanSchema = {
     allowNull: false,
     validate: {
       isDate: {
-        msg: 'tanggal must be a valid date.',
+        msg: 'Tanggal must be a valid date.',
       },
     },
   },

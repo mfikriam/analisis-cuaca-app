@@ -9,6 +9,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 const kecelakaanRouter = require('./routes/kecelakaanRoutes');
 const wisatawanRouter = require('./routes/wisatawanRoutes');
+const cuacaRouter = require('./routes/cuacaRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 // Start express app
@@ -39,6 +40,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/kecelakaan', kecelakaanRouter);
 app.use('/api/v1/wisatawan', wisatawanRouter);
+app.use('/api/v1/cuaca', cuacaRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
