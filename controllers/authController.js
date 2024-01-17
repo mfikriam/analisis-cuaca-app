@@ -149,5 +149,18 @@ exports.isNotLoggedIn = async (req, res, next) => {
     return next();
   }
 
+  try {
+    //? 1) Verify token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+
+    //? 2) Check if user still exists
+    const currentUser = await User.findByPk(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+  } catch (err) {
+    return next();
+  }
+
   return res.redirect('/dashboard');
 };
