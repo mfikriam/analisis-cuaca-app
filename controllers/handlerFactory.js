@@ -22,22 +22,9 @@ exports.findAll = (Model) =>
     res.status(200).json(resObj);
   });
 
-exports.findOne = (Model, fk, attr) =>
+exports.findOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    let resultQuery;
-
-    if (fk) {
-      resultQuery = await Model.findByPk(req.params.id, {
-        include: [
-          {
-            model: fk,
-            attributes: attr,
-          },
-        ],
-      });
-    } else {
-      resultQuery = await Model.findByPk(req.params.id);
-    }
+    const resultQuery = await Model.findByPk(req.params.id);
 
     if (!resultQuery) {
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
@@ -52,18 +39,17 @@ exports.findOne = (Model, fk, attr) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    let resultQuery = await Model.findByPk(req.params.id);
+    const resultQuery = await Model.findByPk(req.params.id);
 
     if (!resultQuery) {
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
     }
 
     await Model.update(req.body, { where: { id: req.params.id } });
-    resultQuery = await Model.findByPk(req.params.id);
 
     const resObj = { data: {} };
     resObj.status = 'success';
-    resObj.data[Model.name] = resultQuery;
+    resObj.data[Model.name] = await Model.findByPk(req.params.id);
 
     res.status(200).json(resObj);
   });
@@ -82,4 +68,21 @@ exports.deleteOne = (Model) =>
     resObj.status = 'success';
 
     res.status(204).json(resObj);
+  });
+
+exports.getUser = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const resultQuery = await Model.findByPk(req.params.id);
+
+    if (!resultQuery) {
+      return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
+    }
+
+    const user = await resultQuery.getUser();
+
+    const resObj = { data: {} };
+    resObj.status = 'success';
+    resObj.data.user = user;
+
+    res.status(200).json(resObj);
   });

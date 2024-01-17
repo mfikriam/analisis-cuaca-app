@@ -11,11 +11,5 @@ router.get('/dashboard', authController.isLoggedIn, viewController.getDashboardP
 router.get('/manage-user', authController.isLoggedIn, viewController.getManageUserPage);
 router.get('/kecelakaan', authController.isLoggedIn, viewController.getKecelakaanPage);
 router.get('/blank', authController.isLoggedIn, viewController.getBlankPage);
-// router.get('/', authController.isLoggedIn, viewController.getOverview);
-// router.get('/tour/:slug', authController.isLoggedIn, viewController.getTour);
-// router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
-// router.get('/me', authController.protect, viewController.getAccount);
-
-// router.post('/submit-user-data', authController.protect, viewController.updateUserData);
 
 module.exports = router;

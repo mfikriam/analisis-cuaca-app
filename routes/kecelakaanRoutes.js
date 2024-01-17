@@ -16,4 +16,6 @@ router
   .patch(kecelakaanController.updateKecelakaan)
   .delete(kecelakaanController.deleteKecelakaan);
 
+router.route('/:id/user').get(kecelakaanController.getKecelakaanUser);
+
 module.exports = router;
