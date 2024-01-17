@@ -3,23 +3,24 @@ const AppError = require('./../utils/appError');
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const resObj = { data: {} };
-    resObj.status = 'success';
-    resObj.data[Model.name] = await Model.create(req.body);
+    const resultQuery = await Model.create(req.body);
 
-    res.status(201).json(resObj);
+    res.status(201).json({
+      status: 'success',
+      data: { [Model.name]: resultQuery.toJSON() },
+    });
   });
 
 exports.findAll = (Model) =>
   catchAsync(async (req, res, next) => {
     const resultQuery = await Model.findAll();
+    const resultQueryArr = resultQuery.map((instance) => instance.dataValues);
 
-    const resObj = { data: {} };
-    resObj.status = 'success';
-    resObj.results = resultQuery.length;
-    resObj.data[`${Model.name}s`] = resultQuery;
-
-    res.status(200).json(resObj);
+    res.status(200).json({
+      status: 'success',
+      results: resultQueryArr.length,
+      data: { [`${Model.name}s`]: resultQueryArr },
+    });
   });
 
 exports.findOne = (Model) =>
@@ -30,11 +31,10 @@ exports.findOne = (Model) =>
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
     }
 
-    const resObj = { data: {} };
-    resObj.status = 'success';
-    resObj.data[Model.name] = resultQuery;
-
-    res.status(200).json(resObj);
+    res.status(200).json({
+      status: 'success',
+      data: { [Model.name]: resultQuery.toJSON() },
+    });
   });
 
 exports.updateOne = (Model) =>
@@ -47,11 +47,12 @@ exports.updateOne = (Model) =>
 
     await Model.update(req.body, { where: { id: req.params.id } });
 
-    const resObj = { data: {} };
-    resObj.status = 'success';
-    resObj.data[Model.name] = await Model.findByPk(req.params.id);
+    const updatedData = await Model.findByPk(req.params.id);
 
-    res.status(200).json(resObj);
+    res.status(200).json({
+      status: 'success',
+      data: { [Model.name]: updatedData.toJSON() },
+    });
   });
 
 exports.deleteOne = (Model) =>
@@ -64,10 +65,10 @@ exports.deleteOne = (Model) =>
 
     await Model.destroy({ where: { id: req.params.id } });
 
-    const resObj = { data: null };
-    resObj.status = 'success';
-
-    res.status(204).json(resObj);
+    res.status(200).json({
+      status: 'success',
+      data: null,
+    });
   });
 
 exports.getUser = (Model) =>
@@ -78,11 +79,10 @@ exports.getUser = (Model) =>
       return next(new AppError(`Cannot find ${Model.name} with ID=${req.params.id}`, 404));
     }
 
-    const user = await resultQuery.getUser();
+    const user = (await resultQuery.getUser()).toJSON();
 
-    const resObj = { data: {} };
-    resObj.status = 'success';
-    resObj.data.user = user;
-
-    res.status(200).json(resObj);
+    res.status(200).json({
+      status: 'success',
+      data: { [Model.name]: { ...resultQuery.toJSON(), user } },
+    });
   });
