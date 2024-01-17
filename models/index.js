@@ -61,6 +61,12 @@ const Clustering = sequelize.define('clustering', clusteringSchema, {
 
 const ClusteringResult = sequelize.define('clustering_result', clusteringResultSchema, {
   underscored: true,
+  indexes: [
+    {
+      unique: true,
+      fields: ['clustering_id', 'cuaca_id'],
+    },
+  ],
 });
 
 // Associations
@@ -68,6 +74,8 @@ User.hasMany(Kecelakaan);
 User.hasMany(Cuaca);
 User.hasMany(Wisatawan);
 User.hasMany(Clustering);
+Clustering.hasMany(ClusteringResult);
+Cuaca.hasMany(ClusteringResult);
 
 Kecelakaan.belongsTo(User, {
   foreignKey: {
@@ -97,8 +105,22 @@ Clustering.belongsTo(User, {
   },
   onDelete: 'CASCADE',
 });
+ClusteringResult.belongsTo(Clustering, {
+  foreignKey: {
+    name: 'clustering_id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+});
+ClusteringResult.belongsTo(Cuaca, {
+  foreignKey: {
+    name: 'cuaca_id',
+    allowNull: false,
+  },
+  onDelete: 'CASCADE',
+});
 
-Clustering.belongsToMany(Cuaca, { through: ClusteringResult });
-Cuaca.belongsToMany(Clustering, { through: ClusteringResult });
+// Clustering.belongsToMany(Cuaca, { through: ClusteringResult });
+// Cuaca.belongsToMany(Clustering, { through: ClusteringResult });
 
 module.exports = { sequelize, User, Kecelakaan, Wisatawan, Cuaca, Clustering, ClusteringResult };

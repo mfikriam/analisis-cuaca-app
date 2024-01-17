@@ -12,6 +12,7 @@ const wisatawanRouter = require('./routes/wisatawanRoutes');
 const cuacaRouter = require('./routes/cuacaRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const clusteringRouter = require('./routes/clusteringRoutes');
+const clusteringResultRouter = require('./routes/clusteringResultRoutes');
 
 // Start express app
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api/v1/kecelakaan', kecelakaanRouter);
 app.use('/api/v1/wisatawan', wisatawanRouter);
 app.use('/api/v1/cuaca', cuacaRouter);
 app.use('/api/v1/clustering', clusteringRouter);
+app.use('/api/v1/clustering-result', clusteringResultRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
