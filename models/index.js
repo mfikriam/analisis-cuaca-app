@@ -120,7 +120,4 @@ ClusteringResult.belongsTo(Cuaca, {
   onDelete: 'CASCADE',
 });
 
-// Clustering.belongsToMany(Cuaca, { through: ClusteringResult });
-// Cuaca.belongsToMany(Clustering, { through: ClusteringResult });
-
 module.exports = { sequelize, User, Kecelakaan, Wisatawan, Cuaca, Clustering, ClusteringResult };
