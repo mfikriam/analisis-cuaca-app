@@ -86,3 +86,15 @@ exports.getUser = (Model) =>
       data: { [Model.name]: { ...resultQuery.toJSON(), user } },
     });
   });
+
+exports.createMany = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const resultQuery = await Model.bulkCreate(req.body);
+    const resultQueryArr = resultQuery.map((instance) => instance.dataValues);
+
+    res.status(201).json({
+      status: 'success',
+      results: resultQueryArr.length,
+      data: { [`${Model.name}s`]: resultQueryArr },
+    });
+  });

@@ -8,3 +8,4 @@ exports.updateKecelakaan = factory.updateOne(Kecelakaan);
 exports.deleteKecelakaan = factory.deleteOne(Kecelakaan);
 
 exports.getKecelakaanUser = factory.getUser(Kecelakaan);
+exports.createManyKecelakaan = factory.createMany(Kecelakaan);

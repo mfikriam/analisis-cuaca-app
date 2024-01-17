@@ -10,12 +10,13 @@ router
   .route('/')
   .get(kecelakaanController.getAllKecelakaan)
   .post(kecelakaanController.createKecelakaan);
+router.route('/many').post(kecelakaanController.createManyKecelakaan);
+
 router
   .route('/:id')
   .get(kecelakaanController.getKecelakaan)
   .patch(kecelakaanController.updateKecelakaan)
   .delete(kecelakaanController.deleteKecelakaan);
-
 router.route('/:id/user').get(kecelakaanController.getKecelakaanUser);
 
 module.exports = router;
