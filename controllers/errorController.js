@@ -3,7 +3,11 @@ const AppError = require('../utils/appError');
 const handleValidationErrorDB = (err, res) => {
   const message = 'Invalid data';
   const validationError = err.errors.map((el) => {
-    return { field: el.path, message: el.message, value: el.value };
+    return {
+      field: el.path,
+      message: `${el.message.split('.')[1]} cannot be null`,
+      value: el.value,
+    };
   });
 
   return res.status(400).json({
@@ -17,7 +21,12 @@ const handleValidationErrorDB = (err, res) => {
 const handleUniqueConstraintErrorDB = (err, res) => {
   const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
-    return { field: el.path, message: el.message, value: el.value };
+    console.log(el);
+    return {
+      field: el.path.split('_')[1],
+      message: `${el.message.split('_')[1]} must be unique`,
+      value: el.value,
+    };
   });
 
   return res.status(400).json({
