@@ -37,5 +37,6 @@ export const logout = async () => {
     }
   } catch (err) {
     console.log(err.response.data.message);
+    showAlert(err.response.data.message, 'danger');
   }
 };

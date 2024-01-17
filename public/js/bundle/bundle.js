@@ -15169,13 +15169,14 @@ var logout = exports.logout = /*#__PURE__*/function () {
           if (res.data.status === 'success') {
             window.location.href = '/login';
           }
-          _context2.next = 10;
+          _context2.next = 11;
           break;
         case 7:
           _context2.prev = 7;
           _context2.t0 = _context2["catch"](0);
           console.log(_context2.t0.response.data.message);
-        case 10:
+          (0, _alert.showAlert)(_context2.t0.response.data.message, 'danger');
+        case 11:
         case "end":
           return _context2.stop();
       }
