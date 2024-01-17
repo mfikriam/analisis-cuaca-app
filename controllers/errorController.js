@@ -21,7 +21,6 @@ const handleValidationErrorDB = (err, res) => {
 const handleUniqueConstraintErrorDB = (err, res) => {
   const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
-    console.log(el);
     return {
       field: el.path.split('_')[1],
       message: `${el.message.split('_')[1]} must be unique`,
