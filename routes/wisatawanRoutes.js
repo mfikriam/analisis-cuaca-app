@@ -10,10 +10,13 @@ router
   .route('/')
   .get(wisatawanController.getAllWisatawan)
   .post(wisatawanController.createWisatawan);
+router.route('/many').post(wisatawanController.createManyWisatawan);
+
 router
   .route('/:id')
   .get(wisatawanController.getWisatawan)
   .patch(wisatawanController.updateWisatawan)
   .delete(wisatawanController.deleteWisatawan);
+router.route('/:id/user').get(wisatawanController.getWisatawanUser);
 
 module.exports = router;
