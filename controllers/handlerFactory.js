@@ -89,7 +89,7 @@ exports.getUser = (Model) =>
 
 exports.createMany = (Model) =>
   catchAsync(async (req, res, next) => {
-    const resultQuery = await Model.bulkCreate(req.body);
+    const resultQuery = await Model.bulkCreate(req.body, { validate: true });
     const resultQueryArr = resultQuery.map((instance) => instance.dataValues);
 
     res.status(201).json({

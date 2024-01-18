@@ -17,10 +17,6 @@ const cuacaSchema = {
       isFloat: {
         msg: 'Avg temperatur must be a float number.',
       },
-      min: {
-        args: [0],
-        msg: 'Avg temperatur minimum 0',
-      },
     },
   },
   kelembaban_avg: {
