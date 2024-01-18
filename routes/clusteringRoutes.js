@@ -10,10 +10,13 @@ router
   .route('/')
   .get(clusteringController.getAllClustering)
   .post(clusteringController.createClustering);
+router.route('/many').post(clusteringController.createManyClustering);
+
 router
   .route('/:id')
   .get(clusteringController.getClustering)
   .patch(clusteringController.updateClustering)
   .delete(clusteringController.deleteClustering);
+router.route('/:id/user').get(clusteringController.getClusteringUser);
 
 module.exports = router;
