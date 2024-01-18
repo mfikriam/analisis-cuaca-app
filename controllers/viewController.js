@@ -1,12 +1,8 @@
-// const { Op } = require('sequelize');
-const { User, Kecelakaan } = require('./../models');
+// User, Kecelakaan, Wisatawan, Cuaca, Clustering, ClusteringResult
+const { User, Cuaca, Wisatawan, Kecelakaan } = require('./../models');
 const catchAsync = require('./../utils/catchAsync');
-// const AppError = require('./../utils/appError');
 
-exports.getHomePage = (req, res) => {
-  res.redirect('/dashboard');
-};
-
+//**************************** STATIC FUNCTIONS ******************************** */
 const _getEarliestLatestDate = (obj) => {
   // Get the earliest date
   const earliestDate = obj.reduce((earliest, current) => {
@@ -21,18 +17,23 @@ const _getEarliestLatestDate = (obj) => {
   return [earliestDate.tanggal, latestDate.tanggal];
 };
 
-const _formatDateDashboard = (inputDate) => {
+const _formatDate = (inputDate) => {
   // Parse the input date string
   const dateObject = new Date(inputDate);
 
   // Get month and year
-  const month = dateObject.toLocaleString('id-ID', { month: 'long' });
+  const month = dateObject.toLocaleString('id-ID', { month: 'short' });
   const year = dateObject.getFullYear();
 
   // Format the date
   const formattedDate = `${month} ${year}`;
 
   return formattedDate;
+};
+
+const _formatDateTable = (inputDate) => {
+  const options = { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Asia/Makassar' };
+  return new Intl.DateTimeFormat('id-ID', options).format(inputDate);
 };
 
 const _getDashboardData = async (userId, Model) => {
@@ -50,32 +51,69 @@ const _getDashboardData = async (userId, Model) => {
     };
   }
 
-  const resultObj = resultQuery.map((el) => el.dataValues);
-  const [earliestDate, latestDate] = _getEarliestLatestDate(resultObj);
+  const resultQueryArr = resultQuery.map((instance) => instance.dataValues);
+  const [earliestDate, latestDate] = _getEarliestLatestDate(resultQueryArr);
 
   return {
-    count: resultObj.length,
-    min_date: _formatDateDashboard(earliestDate),
-    max_date: _formatDateDashboard(latestDate),
+    count: resultQueryArr.length,
+    min_date: _formatDate(earliestDate),
+    max_date: _formatDate(latestDate),
   };
 };
 
-exports.getDashboardPage = catchAsync(async (req, res, next) => {
-  const userId = res.locals.user.id;
+const _getDatasetData = async (userId, Model) => {
+  const resultQuery = await Model.findAll({
+    where: {
+      user_id: userId,
+    },
+    order: [['tanggal', 'ASC']],
+  });
+  const resultObj = resultQuery.map((el) => el.dataValues);
+  return resultObj;
+};
 
+//**************************** EXPORTED FUNCTIONS ******************************** */
+exports.getHomePage = (req, res) => {
+  res.redirect('/dashboard');
+};
+
+exports.getBlankPage = (req, res) => {
+  res.status(200).render('blank', {
+    title: 'Blank Page',
+    bread_crumbs: ['Blank'],
+  });
+};
+
+exports.getLoginForm = (req, res) => {
+  res.status(200).render('login', {
+    title: 'Login',
+  });
+};
+
+exports.getDashboardPage = catchAsync(async (req, res, next) => {
+  const userId = res.locals.local_user.id;
+
+  const cuaca = await _getDashboardData(userId, Cuaca);
+  const wisatawan = await _getDashboardData(userId, Wisatawan);
   const kecelakaan = await _getDashboardData(userId, Kecelakaan);
+  const user = {};
+  user.count = (
+    await User.findAndCountAll({
+      where: {
+        role: 'user',
+      },
+    })
+  ).count;
 
   res.status(200).render('dashboard', {
     title: 'Dashboard',
     bread_crumbs: ['Dashboard'],
+    cuaca,
+    wisatawan,
     kecelakaan,
+    user,
   });
 });
-
-const _formatDateTable = (inputDate) => {
-  const options = { dateStyle: 'medium', timeStyle: 'medium', timeZone: 'Asia/Makassar' };
-  return new Intl.DateTimeFormat('id-ID', options).format(inputDate);
-};
 
 exports.getManageUserPage = catchAsync(async (req, res, next) => {
   const resultQuery = await User.findAll({
@@ -99,37 +137,12 @@ exports.getManageUserPage = catchAsync(async (req, res, next) => {
   });
 });
 
-const _getDatasetData = async (userId, Model) => {
-  const resultQuery = await Model.findAll({
-    where: {
-      user_id: userId,
-    },
-    order: [['tanggal', 'ASC']],
-  });
-  const resultObj = resultQuery.map((el) => el.dataValues);
-  return resultObj;
-};
-
-const _formatDateDataset = (inputDate) => {
-  // Parse the input date string
-  const dateObject = new Date(inputDate);
-
-  // Get month and year
-  const month = dateObject.toLocaleString('id-ID', { month: 'short' });
-  const year = dateObject.getFullYear();
-
-  // Format the date
-  const formattedDate = `${month} ${year}`;
-
-  return formattedDate;
-};
-
 exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
-  const userId = res.locals.user.id;
+  const userId = res.locals.local_user.id;
   const kecelakaan = await _getDatasetData(userId, Kecelakaan);
 
   kecelakaan.forEach((item) => {
-    item.tanggal = _formatDateDataset(item.tanggal);
+    item.tanggal = _formatDate(item.tanggal);
     item.createdAt = _formatDateTable(item.createdAt);
     item.updatedAt = _formatDateTable(item.updatedAt);
   });
@@ -141,16 +154,3 @@ exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
     modelName: 'kecelakaan',
   });
 });
-
-exports.getBlankPage = (req, res) => {
-  res.status(200).render('blank', {
-    title: 'Blank Page',
-    bread_crumbs: ['Blank'],
-  });
-};
-
-exports.getLoginForm = (req, res) => {
-  res.status(200).render('login', {
-    title: 'Login',
-  });
-};

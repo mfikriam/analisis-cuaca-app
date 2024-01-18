@@ -25,9 +25,9 @@ const createSendToken = (user, statusCode, req, res) => {
   res.cookie('jwt', token, cookieOptions);
 
   // ? Remove password from output
-  delete user.dataValues.password;
-  delete user.dataValues.createdAt;
-  delete user.dataValues.updatedAt;
+  delete user.password;
+  delete user.createdAt;
+  delete user.updatedAt;
 
   res.status(statusCode).json({
     status: 'success',
@@ -54,7 +54,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // ? 3) If everything ok, send token to client
-  createSendToken(user, 200, req, res);
+  createSendToken(user.toJSON(), 200, req, res);
 });
 
 exports.logout = (req, res, next) => {
@@ -87,16 +87,18 @@ exports.protect = catchAsync(async (req, res, next) => {
     return next(new AppError('The user belonging to this token does no longer exist.', 401));
   }
 
+  const currentUserObj = currentUser.toJSON();
+
   //// 4) Check if user changed password after the token was issued
 
   // ? Remove password from output
-  delete currentUser.dataValues.password;
-  delete currentUser.dataValues.createdAt;
-  delete currentUser.dataValues.updatedAt;
+  delete currentUserObj.password;
+  delete currentUserObj.createdAt;
+  delete currentUserObj.updatedAt;
 
   // ? Grant Access to protected route
-  req.user = currentUser.dataValues;
-  res.locals.user = currentUser.dataValues;
+  req.user = currentUserObj;
+  res.locals.local_user = currentUserObj;
   next();
 });
 
@@ -123,19 +125,19 @@ exports.isLoggedIn = async (req, res, next) => {
         return res.redirect('/login');
       }
 
+      const currentUserObj = currentUser.toJSON();
+
       //// 3) Check if user changed password after the token was issued
 
       // ? Remove password from output
-      delete currentUser.dataValues.password;
-      delete currentUser.dataValues.createdAt;
-      delete currentUser.dataValues.updatedAt;
+      delete currentUserObj.password;
+      delete currentUserObj.createdAt;
+      delete currentUserObj.updatedAt;
 
       //? THERE IS A LOGGED IN USER
-      res.locals.user = currentUser.dataValues;
+      res.locals.local_user = currentUserObj;
       return next();
     } catch (err) {
-      //! Should be error page
-      // return next(new AppError('There is something wrong with the coookies', 400));
       return next();
     }
   }

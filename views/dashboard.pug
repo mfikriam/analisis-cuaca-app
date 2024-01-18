@@ -12,8 +12,8 @@ block main
               .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
                 i.bi.bi-clouds
               .ps-3
-                h6 ###
-                span.text-muted.small.pt-2.ps-1 ###
+                h6= cuaca.count
+                span.text-muted.small.pt-2.ps-1= `${cuaca.min_date} - ${cuaca.max_date}`
       // End Cuaca Card
 
       // Wisatawan Card
@@ -25,8 +25,8 @@ block main
               .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
                 i.bi.bi-people
               .ps-3
-                h6 ###
-                span.text-muted.small.pt-2.ps-1 ###
+                h6= wisatawan.count
+                span.text-muted.small.pt-2.ps-1= `${wisatawan.min_date} - ${wisatawan.max_date}`
       // End Wisatawan Card
       
       // Kecelakaan Card
@@ -42,15 +42,16 @@ block main
                 span.text-muted.small.pt-2.ps-1= `${kecelakaan.min_date} - ${kecelakaan.max_date}`
       // End Kecelakaan Card
 
-      // Customers Card
-      .col-xxl-4.col-xl-8
-        .card.info-card.customers-card
-          .card-body
-            h5.card-title Data User
-            .d-flex.align-items-center
-              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
-                i.bi.bi-person-check
-              .ps-3
-                h6 ###
-                span.text-muted.small.pt-2.ps-1 Users
-      // End Customers Card
+      if (local_user.role === 'admin')
+        // User Card
+        .col-xxl-4.col-xl-8
+          .card.info-card.customers-card
+            .card-body
+              h5.card-title Data User
+              .d-flex.align-items-center
+                .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                  i.bi.bi-person-check
+                .ps-3
+                  h6= user.count
+                  span.text-muted.small.pt-2.ps-1 Users
+        // End User Card
