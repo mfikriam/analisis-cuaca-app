@@ -1,8 +1,8 @@
 /* eslint-disable */
 import axios from 'axios';
-import { delayAlert, showAlert } from './alert';
+import { delayAlert, showAlert, validationErrorAlert } from './alert';
 
-export const addNewDataset = async (modelName, data, form, modal) => {
+export const addNewData = async (modelName, data, form, modal) => {
   try {
     const res = await axios({
       method: 'POST',
@@ -18,18 +18,11 @@ export const addNewDataset = async (modelName, data, form, modal) => {
     }
   } catch (err) {
     form.classList.remove('was-validated');
-
-    const arrValidationError = err.response.data.validationError;
-    arrValidationError.forEach((el) => {
-      showAlert(
-        `${err.response.data.message}: <span class='fw-bold'>${el.message}</span>`,
-        'danger',
-      );
-    });
+    validationErrorAlert(err);
   }
 };
 
-export const updateDatasetById = async (modelName, objId, data, form, Modals) => {
+export const updateDataById = async (modelName, objId, data, form, Modals) => {
   try {
     const res = await axios({
       method: 'PATCH',
@@ -45,20 +38,14 @@ export const updateDatasetById = async (modelName, objId, data, form, Modals) =>
     }
   } catch (err) {
     form.classList.remove('was-validated');
-
-    const arrValidationError = err.response.data.validationError;
-    arrValidationError.forEach((el) => {
-      showAlert(
-        `${err.response.data.message}: <span class='fw-bold'>${el.message}</span>`,
-        'danger',
-      );
-    });
+    validationErrorAlert(err);
   }
 };
 
-export const delDatasetById = async (modelName, objId, Modals) => {
+export const delDataById = async (modelName, objId, Modals) => {
   try {
     Modals.forEach((el) => el.hide());
+
     await axios({
       method: 'DELETE',
       url: `/api/v1/${modelName}/${objId}`,

@@ -30,3 +30,13 @@ export const showAlert = (message, type) => {
     hideAlert(wrapper);
   }, 5000);
 };
+
+export const validationErrorAlert = (error) => {
+  const arrValidationError = error.response.data.validationError;
+  arrValidationError.forEach((el) => {
+    showAlert(
+      `${error.response.data.message}: <span class='fw-bold'>${el.message}</span>`,
+      'danger',
+    );
+  });
+};

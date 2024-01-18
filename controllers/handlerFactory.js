@@ -65,10 +65,7 @@ exports.deleteOne = (Model) =>
 
     await Model.destroy({ where: { id: req.params.id } });
 
-    res.status(200).json({
-      status: 'success',
-      data: null,
-    });
+    res.status(204).send();
   });
 
 exports.getUser = (Model) =>

@@ -23,16 +23,12 @@ block main
                   tr
                     th Tanggal
                     th Jum Kecelakaan
-                    th CreatedAt
-                    th UpdatedAt
                     th
                 tbody
                   each obj in kecelakaan
                     tr
                       td= obj.tanggal
                       td= obj.jum_kecelakaan
-                      td= obj.createdAt
-                      td= obj.updatedAt
                       td
                         button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
@@ -40,12 +36,12 @@ block main
                           i.bi.bi-trash
             // End Table with stripped rows
 
-  // Add Dataset Modal
-  +addDatasetModal()
+  // Add Data Modal
+  +addDataModal()
 
-  each obj in kecelakaan
-    // Update Dataset Modals
-    +updateDatasetModal(obj)
+  each obj, index in kecelakaan
+    // Update Data Modals
+    +updateDataModal(obj)
 
     // Delete User Modals
-    +delDatasetModal(obj.id, obj.tanggal)
+    +delDataModal(obj.id, obj.tanggal, index)

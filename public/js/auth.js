@@ -36,7 +36,6 @@ export const logout = async () => {
       window.location.href = '/login';
     }
   } catch (err) {
-    console.log(err.response.data.message);
     showAlert(err.response.data.message, 'danger');
   }
 };

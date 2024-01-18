@@ -1,4 +1,4 @@
-mixin addDatasetModal()
+mixin addDataModal()
   #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -9,7 +9,7 @@ mixin addDatasetModal()
         .modal-body
           form.row(id=`form-add-${modelName}` novalidate)
             .col-12
-              input#add-user_id(type='hidden' name='user_id' value=user.id)
+              input#add-user_id(type='hidden' name='user_id' value=local_user.id)
             .col-12.mb-3
               label.form-label(for='tanggal') Tanggal (Only Month & Year)
               input#add-tanggal.form-control(type='month' name='tanggal' required)
@@ -22,7 +22,7 @@ mixin addDatasetModal()
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-primary(id=`btn-submit-${modelName}` type='submit' form=`form-add-${modelName}`) Submit
 
-mixin updateDatasetModal(obj)
+mixin updateDataModal(obj)
   .modal.fade(id=`modal-update-obj-${obj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -31,7 +31,7 @@ mixin updateDatasetModal(obj)
           h1.modal-title.fs-4= `Update ${capitalModelName} ${obj.tanggal}`
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body
-          form.row(id=`form-update-${modelName}-${obj.id}` novalidate)
+          form.row(id=`form-update-${modelName}-${obj.id}` novalidate data-obj-id=obj.id)
             .col-12.mb-3
               - const date = new Date(obj.tanggal);
               - const year = date.getFullYear();
@@ -49,7 +49,7 @@ mixin updateDatasetModal(obj)
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update
 
-mixin delDatasetModal(objId, objUnique, index)
+mixin delDataModal(objId, objUnique, index)
   .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content

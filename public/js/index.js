@@ -1,9 +1,9 @@
 /* eslint-disable */
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
-import { login, logout } from './login';
+import { login, logout } from './auth';
 import { addNewUser, updateUserById, delUserById } from './manage-user';
-import { addNewDataset, updateDatasetById, delDatasetById } from './manage-dataset';
+import { addNewData, updateDataById, delDataById } from './manage-data';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -122,8 +122,7 @@ if (kecelakaanTable) {
     perPage: 10,
     columns: [
       { select: 0, type: 'date', format: 'MMM YYYY' },
-      { select: [2, 3], type: 'date', format: 'D MMM YYYY, HH.mm.ss' },
-      { select: 4, sortable: false },
+      { select: 2, sortable: false },
     ],
   };
   new DataTable(kecelakaanTable, kecelakaanTableOptions);
@@ -131,8 +130,8 @@ if (kecelakaanTable) {
 
 if (addKecelakaanForm) {
   modelName = 'kecelakaan';
-  const addDatasetModal = document.querySelector('#modal-add-obj');
-  const bsAddDatasetModal = new bootstrap.Modal(addDatasetModal);
+  const addDataModal = document.querySelector('#modal-add-obj');
+  const bsAddDataModal = new bootstrap.Modal(addDataModal);
 
   addKecelakaanForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -142,11 +141,11 @@ if (addKecelakaanForm) {
       const user_id = addKecelakaanForm.querySelector('#add-user_id').value;
       const tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
       const jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
-      addNewDataset(
+      addNewData(
         modelName,
         { tanggal, jum_kecelakaan, user_id },
         addKecelakaanForm,
-        bsAddDatasetModal,
+        bsAddDataModal,
       );
     }
   });
@@ -154,30 +153,22 @@ if (addKecelakaanForm) {
 
 if (updateKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
-  const updateDatasetModalList = document.querySelectorAll('[id^="modal-update-obj"]');
-  const bsUpdateDatasetModalList = Array.from(updateDatasetModalList).map(
+  const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
     (el) => new bootstrap.Modal(el),
   );
-  const updateDatasetFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
 
-  updateDatasetFormList.forEach((form) => {
-    const formId = form.id;
-    const objId = formId.match(/\d+/)[0];
-
+  updateDataFormList.forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.classList.add('was-validated');
+      const objId = form.dataset.objId;
 
       if (form.checkValidity()) {
         const tanggal = form.querySelector(`#update-tanggal-${objId}`).value;
         const jum_kecelakaan = form.querySelector(`#update-jum_kecelakaan-${objId}`).value;
-        updateDatasetById(
-          modelName,
-          objId,
-          { tanggal, jum_kecelakaan },
-          form,
-          bsUpdateDatasetModalList,
-        );
+        updateDataById(modelName, objId, { tanggal, jum_kecelakaan }, form, bsUpdateDataModalList);
       }
     });
   });
@@ -185,15 +176,13 @@ if (updateKecelakaanBtns.length > 0) {
 
 if (delKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
-  const delDatasetModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  const bsDelDatasetModalList = Array.from(delDatasetModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
+  const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  const bsDelDataModalList = Array.from(delDataModalList).map((el) => new bootstrap.Modal(el));
 
   delKecelakaanBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       const objId = btn.dataset.objId;
-      delDatasetById(modelName, objId, bsDelDatasetModalList);
+      delDataById(modelName, objId, bsDelDataModalList);
     });
   });
 }
