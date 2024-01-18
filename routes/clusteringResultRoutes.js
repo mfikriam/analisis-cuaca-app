@@ -10,10 +10,16 @@ router
   .route('/')
   .get(clusteringResultController.getAllClusteringResult)
   .post(clusteringResultController.createClusteringResult);
+router.route('/many').post(clusteringResultController.createManyClusteringResult);
+
 router
   .route('/:id')
   .get(clusteringResultController.getClusteringResult)
   .patch(clusteringResultController.updateClusteringResult)
   .delete(clusteringResultController.deleteClusteringResult);
+
+router
+  .route('/clustering/:clusteringId/cuaca')
+  .get(clusteringResultController.getAllClusteringResultCuaca);
 
 module.exports = router;
