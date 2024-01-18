@@ -12,7 +12,7 @@ exports.deleteClusteringResult = factory.deleteOne(ClusteringResult);
 
 exports.createManyClusteringResult = factory.createMany(ClusteringResult);
 
-exports.getAllClusteringResultCuaca = catchAsync(async (req, res, next) => {
+exports.getAllClusteringResultByClusteringId = catchAsync(async (req, res, next) => {
   const { clusteringId } = req.params;
   const clustering = await Clustering.findByPk(clusteringId);
 
@@ -40,5 +40,21 @@ exports.getAllClusteringResultCuaca = catchAsync(async (req, res, next) => {
       [`${Clustering.name}`]: clustering.toJSON(),
       [`${ClusteringResult.name}s`]: resultQueryArr,
     },
+  });
+});
+
+exports.deleteClusteringResultByClusteringId = catchAsync(async (req, res, next) => {
+  const { clusteringId } = req.params;
+  const clustering = await Clustering.findByPk(clusteringId);
+
+  if (!clustering) {
+    return next(new AppError(`Cannot find ${Clustering.name} with ID=${clusteringId}`, 404));
+  }
+
+  await ClusteringResult.destroy({ where: { clustering_id: clusteringId } });
+
+  res.status(200).json({
+    status: 'success',
+    data: null,
   });
 });

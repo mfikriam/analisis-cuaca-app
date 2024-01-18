@@ -19,7 +19,8 @@ router
   .delete(clusteringResultController.deleteClusteringResult);
 
 router
-  .route('/clustering/:clusteringId/cuaca')
-  .get(clusteringResultController.getAllClusteringResultCuaca);
+  .route('/clustering/:clusteringId')
+  .get(clusteringResultController.getAllClusteringResultByClusteringId)
+  .delete(clusteringResultController.deleteClusteringResultByClusteringId);
 
 module.exports = router;
