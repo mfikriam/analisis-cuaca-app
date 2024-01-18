@@ -1,6 +1,6 @@
 const AppError = require('../utils/appError');
 
-const handleValidationErrorDB = (err, res) => {
+const handleValidationErrorDB = (err) => {
   const message = 'Invalid data';
   const validationError = err.errors.map((el) => {
     return {
@@ -9,16 +9,10 @@ const handleValidationErrorDB = (err, res) => {
       value: el.value,
     };
   });
-
-  return res.status(400).json({
-    status: 'fail',
-    statusCode: 400,
-    message,
-    validationError,
-  });
+  return new AppError(message, 400, validationError);
 };
 
-const handleUniqueConstraintErrorDB = (err, res) => {
+const handleUniqueConstraintErrorDB = (err) => {
   const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
     return {
@@ -27,13 +21,26 @@ const handleUniqueConstraintErrorDB = (err, res) => {
       value: el.value,
     };
   });
+  return new AppError(message, 400, validationError);
+};
 
-  return res.status(400).json({
-    status: 'fail',
-    statusCode: 400,
-    message,
-    validationError,
+const handleAggregateErrorDB = (err) => {
+  const message = 'Invalid data';
+  const validationError = [];
+
+  err.errors.forEach((subErr) => {
+    if (subErr.name === 'SequelizeBulkRecordError') {
+      subErr.errors.errors.forEach((el) => {
+        validationError.push({
+          field: el.path,
+          message: el.message,
+          value: el.value,
+        });
+      });
+    }
   });
+
+  return new AppError(message, 400, validationError);
 };
 
 const handleFKConstraintErrorDB = (err) =>
@@ -63,25 +70,20 @@ module.exports = (err, req, res, next) => {
 
   let error = Object.create(err);
 
-  if (error.name === 'SequelizeValidationError') {
-    handleValidationErrorDB(error, res);
-    return;
-  }
-
-  if (error.name === 'SequelizeUniqueConstraintError') {
-    handleUniqueConstraintErrorDB(error, res);
-    return;
-  }
+  if (error.name === 'JsonWebTokenError') error = handleJWTError();
+  if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
   if (error.name === 'SequelizeForeignKeyConstraintError') error = handleFKConstraintErrorDB(error);
   if (error.name === 'SequelizeDatabaseError') error = handleSequelizeDBError();
-  if (error.name === 'JsonWebTokenError') error = handleJWTError();
-  if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+  if (error.name === 'SequelizeValidationError') error = handleValidationErrorDB(error);
+  if (error.name === 'SequelizeUniqueConstraintError') error = handleUniqueConstraintErrorDB(error);
+  if (error.name === 'AggregateError') error = handleAggregateErrorDB(error);
 
   return res.status(error.statusCode).json({
     status: error.status,
     statusCode: error.statusCode,
     message: error.message,
+    validationError: error.validationError,
     // stack: error.stack,
   });
 };
