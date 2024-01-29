@@ -56,3 +56,18 @@ export const delDataById = async (modelName, objId, Modals) => {
     showAlert(err.response.data.message, 'danger');
   }
 };
+
+export const delAllDataByUserId = async (modelName, userId, modal) => {
+  try {
+    modal.hide();
+
+    await axios({
+      method: 'DELETE',
+      url: `/api/v1/${modelName}/purge/${userId}`,
+    });
+
+    delayAlert(`All ${modelName}'s data deleted successfully`, 'success');
+  } catch (err) {
+    showAlert(err.response.data.message, 'danger');
+  }
+};

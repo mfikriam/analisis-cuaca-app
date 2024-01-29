@@ -2,7 +2,7 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './auth';
-import { addNewData, updateDataById, delDataById } from './manage-data';
+import { addNewData, updateDataById, delDataById, delAllDataByUserId } from './manage-data';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -21,6 +21,7 @@ const kecelakaanTable = document.querySelector('#kecelakaan-table');
 const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
+const delAllKecelakaanBtn = document.querySelector('.btn-del-all');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -190,6 +191,18 @@ if (delKecelakaanBtns.length > 0) {
       const objId = btn.dataset.objId;
       delDataById(modelName, objId, bsDelDataModalList);
     });
+  });
+}
+
+//? Delete All Data
+if (delAllKecelakaanBtn) {
+  modelName = 'kecelakaan';
+  const delAllDataModal = document.querySelector('#modal-del-all');
+  const bsDelAllDataModal = new bootstrap.Modal(delAllDataModal);
+
+  delAllKecelakaanBtn.addEventListener('click', () => {
+    const userId = delAllKecelakaanBtn.dataset.userId;
+    delAllDataByUserId(modelName, userId, bsDelAllDataModal);
   });
 }
 

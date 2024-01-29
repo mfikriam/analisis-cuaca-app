@@ -15197,7 +15197,7 @@ var logout = exports.logout = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateDataById = exports.delDataById = exports.addNewData = void 0;
+exports.updateDataById = exports.delDataById = exports.delAllDataByUserId = exports.addNewData = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -15311,6 +15311,36 @@ var delDataById = exports.delDataById = /*#__PURE__*/function () {
   }));
   return function delDataById(_x10, _x11, _x12) {
     return _ref3.apply(this, arguments);
+  };
+}();
+var delAllDataByUserId = exports.delAllDataByUserId = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(modelName, userId, modal) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          modal.hide();
+          _context4.next = 4;
+          return (0, _axios.default)({
+            method: 'DELETE',
+            url: "/api/v1/".concat(modelName, "/purge/").concat(userId)
+          });
+        case 4:
+          (0, _alert.delayAlert)("All ".concat(modelName, "'s data deleted successfully"), 'success');
+          _context4.next = 10;
+          break;
+        case 7:
+          _context4.prev = 7;
+          _context4.t0 = _context4["catch"](0);
+          (0, _alert.showAlert)(_context4.t0.response.data.message, 'danger');
+        case 10:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4, null, [[0, 7]]);
+  }));
+  return function delAllDataByUserId(_x13, _x14, _x15) {
+    return _ref4.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
@@ -15465,6 +15495,7 @@ var kecelakaanTable = document.querySelector('#kecelakaan-table');
 var addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 var updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 var delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
+var delAllKecelakaanBtn = document.querySelector('.btn-del-all');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -15643,6 +15674,17 @@ if (delKecelakaanBtns.length > 0) {
       var objId = btn.dataset.objId;
       (0, _manageData.delDataById)(modelName, objId, _bsDelDataModalList);
     });
+  });
+}
+
+//? Delete All Data
+if (delAllKecelakaanBtn) {
+  modelName = 'kecelakaan';
+  var delAllDataModal = document.querySelector('#modal-del-all');
+  var bsDelAllDataModal = new bootstrap.Modal(delAllDataModal);
+  delAllKecelakaanBtn.addEventListener('click', function () {
+    var userId = delAllKecelakaanBtn.dataset.userId;
+    (0, _manageData.delAllDataByUserId)(modelName, userId, bsDelAllDataModal);
   });
 }
 
