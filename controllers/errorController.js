@@ -15,6 +15,14 @@ const handleValidationErrorDB = (err) => {
 const handleUniqueConstraintErrorDB = (err) => {
   const message = 'Duplicate data';
   const validationError = err.errors.map((el) => {
+    if (el.message.split('_').length === 1) {
+      return {
+        field: el.path,
+        message: el.message,
+        value: el.value,
+      };
+    }
+
     if (el.message.split('_').length > 4) {
       return {
         field: el.path.split('_').slice(2).join(' '),
@@ -22,6 +30,7 @@ const handleUniqueConstraintErrorDB = (err) => {
         value: el.value,
       };
     }
+
     return {
       field: el.path.split('_')[1],
       message: `${el.message.split('_')[1]} must be unique`,
