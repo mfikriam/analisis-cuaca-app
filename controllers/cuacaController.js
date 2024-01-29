@@ -9,3 +9,4 @@ exports.deleteCuaca = factory.deleteOne(Cuaca);
 
 exports.getCuacaUser = factory.getUser(Cuaca);
 exports.createManyCuaca = factory.createMany(Cuaca);
+exports.deleteAllCuaca = factory.deleteAll(Cuaca);

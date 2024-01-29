@@ -19,4 +19,6 @@ router
   .delete(wisatawanController.deleteWisatawan);
 router.route('/:id/user').get(wisatawanController.getWisatawanUser);
 
+router.route('/purge/:userId').delete(wisatawanController.deleteAllWisatawan);
+
 module.exports = router;

@@ -16,4 +16,6 @@ router
   .delete(cuacaController.deleteCuaca);
 router.route('/:id/user').get(cuacaController.getCuacaUser);
 
+router.route('/purge/:userId').delete(cuacaController.deleteAllCuaca);
+
 module.exports = router;

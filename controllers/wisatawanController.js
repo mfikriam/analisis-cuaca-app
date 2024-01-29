@@ -9,3 +9,4 @@ exports.deleteWisatawan = factory.deleteOne(Wisatawan);
 
 exports.getWisatawanUser = factory.getUser(Wisatawan);
 exports.createManyWisatawan = factory.createMany(Wisatawan);
+exports.deleteAllWisatawan = factory.deleteAll(Wisatawan);
