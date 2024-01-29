@@ -1,4 +1,4 @@
-mixin addDataModal()
+mixin addNewDataModal()
   #modal-add-obj.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -22,7 +22,7 @@ mixin addDataModal()
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-primary(id=`btn-submit-${modelName}` type='submit' form=`form-add-${modelName}`) Submit
 
-mixin updateDataModal(obj)
+mixin updateDataModals(obj)
   .modal.fade(id=`modal-update-obj-${obj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-scrollable
       .modal-content
@@ -49,7 +49,7 @@ mixin updateDataModal(obj)
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update
 
-mixin delDataModal(objId, objUnique)
+mixin delDataModals(objId, objUnique)
   .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content
@@ -61,3 +61,15 @@ mixin delDataModal(objId, objUnique)
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
           button.btn.btn-danger(class=`btn-del-${modelName}` type='button' data-obj-id=objId) Delete
+
+mixin delAllDataModal()
+  #modal-del-all.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4 Delete All Data Confirmation
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body= `Are you sure you want to delete all your ${modelName}'s data?`
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-danger(class=`btn-del-all` type='button') Delete All

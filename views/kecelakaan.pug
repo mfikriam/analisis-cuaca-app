@@ -15,7 +15,7 @@ block main
               button.btn.btn-sm.btn-secondary.me-2(type='button')
                 i.bi.bi-upload.me-1
                 |  Import Data
-              button.btn.btn-sm.btn-danger.me-2(type='button')
+              button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-del-all`)
                 i.bi.bi-archive.me-1
                 |  Delete All Data
 
@@ -39,12 +39,15 @@ block main
                           i.bi.bi-trash
             // End Table with stripped rows
 
-  // Add Data Modal
-  +addDataModal()
+  // Add New Data Modal
+  +addNewDataModal()
+
+  // Delete All Data Modal
+  +delAllDataModal()
 
   each obj in kecelakaan
     // Update Data Modals
-    +updateDataModal(obj)
+    +updateDataModals(obj)
 
     // Delete Data Modals
-    +delDataModal(obj.id, obj.tanggal)
+    +delDataModals(obj.id, obj.tanggal)
