@@ -134,6 +134,7 @@ exports.getManageUserPage = catchAsync(async (req, res, next) => {
     title: 'Manage Data User',
     bread_crumbs: ['Manage Data User'],
     users,
+    modelName: 'user',
   });
 });
 

@@ -31,7 +31,7 @@ mixin updateUserModal(userObj)
           h1.modal-title.fs-4= `Update User ${userObj.fullname}`
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body
-          form.row(id=`form-update-user-${userObj.id}` novalidate)
+          form.row(id=`form-update-user-${userObj.id}` novalidate data-obj-id=userObj.id)
             .col-12.mb-3
               label.form-label(for='email') E-Mail
               input.form-control(id=`update-email-${userObj.id}` type='email' name='email' value=userObj.email required)
@@ -44,15 +44,15 @@ mixin updateUserModal(userObj)
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info.btn-update-user(type='submit' form=`form-update-user-${userObj.id}`) Update
 
-mixin delModal(objId, objModel, objUnique)
+mixin delUserModal(objId, objUnique)
   .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content
         .modal-header
           h1.modal-title.fs-4 Delete Confirmation
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-        .modal-body= `Are you sure you want to delete ${objModel}: `
+        .modal-body= `Are you sure you want to delete ${modelName}: `
           span.fw-bold= objUnique
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
-          button.btn.btn-danger.btn--del-user(type='button' data-obj-id=objId) Delete
+          button.btn.btn-danger.btn-del-user(type='button' data-obj-id=objId) Delete

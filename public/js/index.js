@@ -2,7 +2,6 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import { login, logout } from './auth';
-import { addNewUser, updateUserById, delUserById } from './manage-user';
 import { addNewData, updateDataById, delDataById } from './manage-data';
 import { showAlert } from './alert';
 
@@ -13,11 +12,10 @@ const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 
 let modelName;
 
-let userDataTable;
 const userTable = document.querySelector('#user-table');
 const addUserForm = document.querySelector('#form-add-user');
 const updateUserBtns = document.querySelectorAll('.btn-update-user');
-const delUserBtns = document.querySelectorAll('.btn--del-user');
+const delUserBtns = document.querySelectorAll('.btn-del-user');
 
 const kecelakaanTable = document.querySelector('#kecelakaan-table');
 const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
@@ -59,12 +57,13 @@ if (userTable) {
       { select: 5, sortable: false },
     ],
   };
-  userDataTable = new DataTable(userTable, options);
+  new DataTable(userTable, options);
 }
 
 if (addUserForm) {
-  const addUserModal = document.querySelector('#modal-add-obj');
-  const bsAddUserModal = new bootstrap.Modal(addUserModal);
+  modelName = 'user';
+  const addDataModal = document.querySelector('#modal-add-obj');
+  const bsAddDataModal = new bootstrap.Modal(addDataModal);
 
   addUserForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -74,44 +73,43 @@ if (addUserForm) {
       const email = addUserForm.querySelector('#add-email').value;
       const password = addUserForm.querySelector('#add-password').value;
       const fullname = addUserForm.querySelector('#add-fullname').value;
-      addNewUser({ email, password, fullname }, addUserForm, bsAddUserModal);
+      addNewData(modelName, { email, password, fullname }, addUserForm, bsAddDataModal);
     }
   });
 }
 
 if (updateUserBtns.length > 0) {
-  const updateUserModalList = document.querySelectorAll('[id^="modal-update-obj"]');
-  const bsUpdateUserModalList = Array.from(updateUserModalList).map(
+  modelName = 'user';
+  const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
     (el) => new bootstrap.Modal(el),
   );
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
 
-  const updateUserFormList = document.querySelectorAll('[id^="form-update-user"]');
-
-  updateUserFormList.forEach((form) => {
-    const formId = form.id;
-    const userId = formId.match(/\d+/)[0];
-
+  updateDataFormList.forEach((form) => {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       form.classList.add('was-validated');
+      const objId = form.dataset.objId;
 
       if (form.checkValidity()) {
-        const email = form.querySelector(`#update-email-${userId}`).value;
-        const fullname = form.querySelector(`#update-fullname-${userId}`).value;
-        updateUserById({ email, fullname }, form, bsUpdateUserModalList, userId);
+        const email = form.querySelector(`#update-email-${objId}`).value;
+        const fullname = form.querySelector(`#update-fullname-${objId}`).value;
+        updateDataById(modelName, objId, { email, fullname }, form, bsUpdateDataModalList);
       }
     });
   });
 }
 
 if (delUserBtns.length > 0) {
-  const delUserModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  const bsDelUserModalList = Array.from(delUserModalList).map((el) => new bootstrap.Modal(el));
+  modelName = 'user';
+  const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  const bsDelDataModalList = Array.from(delDataModalList).map((el) => new bootstrap.Modal(el));
 
   delUserBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const userId = btn.dataset.objId;
-      delUserById(bsDelUserModalList, userId, userDataTable);
+      const objId = btn.dataset.objId;
+      delDataById(modelName, objId, bsDelDataModalList);
     });
   });
 }

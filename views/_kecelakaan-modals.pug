@@ -49,7 +49,7 @@ mixin updateDataModal(obj)
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update
 
-mixin delDataModal(objId, objUnique, index)
+mixin delDataModal(objId, objUnique)
   .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
       .modal-content

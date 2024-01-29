@@ -39,7 +39,7 @@ app.use(cookieParser());
 
 // ROUTES
 app.use('/', viewRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/user', userRouter);
 app.use('/api/v1/kecelakaan', kecelakaanRouter);
 app.use('/api/v1/wisatawan', wisatawanRouter);
 app.use('/api/v1/cuaca', cuacaRouter);

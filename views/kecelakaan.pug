@@ -42,9 +42,9 @@ block main
   // Add Data Modal
   +addDataModal()
 
-  each obj, index in kecelakaan
+  each obj in kecelakaan
     // Update Data Modals
     +updateDataModal(obj)
 
-    // Delete User Modals
-    +delDataModal(obj.id, obj.tanggal, index)
+    // Delete Data Modals
+    +delDataModal(obj.id, obj.tanggal)

@@ -15,7 +15,7 @@ block main
 
             // Table with stripped rows
             .table-responsive
-              table.table.table-hover.datatable#user-table
+              table.table.table-hover.datatable(id=`${modelName}-table`)
                 thead
                   tr
                     th Id
@@ -25,26 +25,26 @@ block main
                     th UpdatedAt
                     th
                 tbody
-                  each userObj in users
+                  each obj in users
                     tr
-                      td= userObj.id
-                      td= userObj.email
-                      td= userObj.fullname
-                      td= userObj.createdAt
-                      td= userObj.updatedAt
+                      td= obj.id
+                      td= obj.email
+                      td= obj.fullname
+                      td= obj.createdAt
+                      td= obj.updatedAt
                       td
-                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${userObj.id}`)
+                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
-                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${userObj.id}`)
+                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
                           i.bi.bi-trash
             // End Table with stripped rows
 
   // Add User Modal
   +addUserModal()
 
-  each userObj in users
+  each obj in users
     // Update User Modals
-    +updateUserModal(userObj)
+    +updateUserModal(obj)
 
     // Delete User Modals
-    +delModal(userObj.id, 'user', userObj.email)
+    +delUserModal(obj.id, obj.email)
