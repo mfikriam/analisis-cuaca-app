@@ -15491,6 +15491,7 @@ if (toggleSidebarBtn) {
 }
 
 //***************** Manage User Page ******************* */
+//? Datatables
 if (userTable) {
   var options = {
     perPage: 5,
@@ -15505,6 +15506,8 @@ if (userTable) {
   };
   new _simpleDatatables.DataTable(userTable, options);
 }
+
+//? Add Data
 if (addUserForm) {
   modelName = 'user';
   var addDataModal = document.querySelector('#modal-add-obj');
@@ -15524,6 +15527,8 @@ if (addUserForm) {
     }
   });
 }
+
+//? Update Data
 if (updateUserBtns.length > 0) {
   modelName = 'user';
   var updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
@@ -15547,6 +15552,8 @@ if (updateUserBtns.length > 0) {
     });
   });
 }
+
+//? Delete Data
 if (delUserBtns.length > 0) {
   modelName = 'user';
   var delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
@@ -15562,6 +15569,7 @@ if (delUserBtns.length > 0) {
 }
 
 //***************** Manage Dataset Kecelakaan Page ******************* */
+//? Datatables
 if (kecelakaanTable) {
   var kecelakaanTableOptions = {
     perPage: 10,
@@ -15576,6 +15584,8 @@ if (kecelakaanTable) {
   };
   new _simpleDatatables.DataTable(kecelakaanTable, kecelakaanTableOptions);
 }
+
+//? Add Data
 if (addKecelakaanForm) {
   modelName = 'kecelakaan';
   var _addDataModal = document.querySelector('#modal-add-obj');
@@ -15595,6 +15605,8 @@ if (addKecelakaanForm) {
     }
   });
 }
+
+//? Update Data
 if (updateKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
   var _updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
@@ -15618,6 +15630,8 @@ if (updateKecelakaanBtns.length > 0) {
     });
   });
 }
+
+//? Delete Data
 if (delKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
   var _delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
@@ -15665,7 +15679,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52275" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62446" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

@@ -49,6 +49,7 @@ if (toggleSidebarBtn) {
 }
 
 //***************** Manage User Page ******************* */
+//? Datatables
 if (userTable) {
   const options = {
     perPage: 5,
@@ -60,6 +61,7 @@ if (userTable) {
   new DataTable(userTable, options);
 }
 
+//? Add Data
 if (addUserForm) {
   modelName = 'user';
   const addDataModal = document.querySelector('#modal-add-obj');
@@ -78,6 +80,7 @@ if (addUserForm) {
   });
 }
 
+//? Update Data
 if (updateUserBtns.length > 0) {
   modelName = 'user';
   const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
@@ -101,6 +104,7 @@ if (updateUserBtns.length > 0) {
   });
 }
 
+//? Delete Data
 if (delUserBtns.length > 0) {
   modelName = 'user';
   const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
@@ -115,6 +119,7 @@ if (delUserBtns.length > 0) {
 }
 
 //***************** Manage Dataset Kecelakaan Page ******************* */
+//? Datatables
 if (kecelakaanTable) {
   const kecelakaanTableOptions = {
     perPage: 10,
@@ -126,6 +131,7 @@ if (kecelakaanTable) {
   new DataTable(kecelakaanTable, kecelakaanTableOptions);
 }
 
+//? Add Data
 if (addKecelakaanForm) {
   modelName = 'kecelakaan';
   const addDataModal = document.querySelector('#modal-add-obj');
@@ -149,6 +155,7 @@ if (addKecelakaanForm) {
   });
 }
 
+//? Update Data
 if (updateKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
   const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
@@ -172,6 +179,7 @@ if (updateKecelakaanBtns.length > 0) {
   });
 }
 
+//? Delete Data
 if (delKecelakaanBtns.length > 0) {
   modelName = 'kecelakaan';
   const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
