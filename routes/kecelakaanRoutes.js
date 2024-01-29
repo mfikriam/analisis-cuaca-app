@@ -19,4 +19,6 @@ router
   .delete(kecelakaanController.deleteKecelakaan);
 router.route('/:id/user').get(kecelakaanController.getKecelakaanUser);
 
+router.route('/purge/:userId').delete(kecelakaanController.deleteAllKecelakaan);
+
 module.exports = router;

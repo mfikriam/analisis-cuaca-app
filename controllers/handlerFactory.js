@@ -68,6 +68,13 @@ exports.deleteOne = (Model) =>
     res.status(204).send();
   });
 
+exports.deleteAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    await Model.destroy({ where: { user_id: req.params.userId } });
+
+    res.status(204).send();
+  });
+
 exports.getUser = (Model) =>
   catchAsync(async (req, res, next) => {
     const resultQuery = await Model.findByPk(req.params.id);
