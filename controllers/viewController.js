@@ -61,7 +61,7 @@ const _getDashboardData = async (userId, Model) => {
   };
 };
 
-const _getDatasetData = async (userId, Model) => {
+const _getDataset = async (userId, Model) => {
   const resultQuery = await Model.findAll({
     where: {
       user_id: userId,
@@ -139,7 +139,7 @@ exports.getManageUserPage = catchAsync(async (req, res, next) => {
 
 exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
   const userId = res.locals.local_user.id;
-  const kecelakaan = await _getDatasetData(userId, Kecelakaan);
+  const kecelakaan = await _getDataset(userId, Kecelakaan);
 
   kecelakaan.forEach((item) => {
     item.tanggal = _formatDate(item.tanggal);
