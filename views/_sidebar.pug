@@ -6,11 +6,14 @@ aside#sidebar.sidebar
         i.bi.bi-grid
         span Dashboard
     // End Dashboard Nav
-    li.nav-item
-      a.nav-link.collapsed(href='/manage-user')
-        i.bi.bi-people
-        span Manage Data User
-    // End Manage Data User Nav
+
+    if (local_user.role === 'admin')
+      li.nav-item
+        a.nav-link.collapsed(href='/manage-user')
+          i.bi.bi-people
+          span Manage Data User
+      // End Manage Data User Nav
+
     li.nav-item
       a.nav-link.collapsed(data-bs-target='#charts-nav' data-bs-toggle='collapse' href='#')
         i.bi.bi-layout-text-window-reverse

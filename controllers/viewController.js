@@ -116,6 +116,8 @@ exports.getDashboardPage = catchAsync(async (req, res, next) => {
 });
 
 exports.getManageUserPage = catchAsync(async (req, res, next) => {
+  if (res.locals.local_user.role !== 'admin') return res.redirect('/dashboard');
+
   const resultQuery = await User.findAll({
     where: {
       role: 'user',
