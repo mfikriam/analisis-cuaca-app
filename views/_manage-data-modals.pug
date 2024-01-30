@@ -55,7 +55,7 @@ mixin delAllDataModal()
 
 mixin importDataModal()
   #modal-import-data.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
-    .modal-dialog.modal-dialog-scrollable
+    .modal-dialog.modal-dialog-scrollable.modal-lg
       .modal-content
         .modal-header
           - const capitalModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);

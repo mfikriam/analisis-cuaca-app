@@ -46,11 +46,11 @@ const cuacaSchema = {
     },
   },
   jum_curah_hujan: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.FLOAT,
     allowNull: false,
     validate: {
-      isInt: {
-        msg: 'Jum curah hujan must be an integer.',
+      isFloat: {
+        msg: 'Jum curah hujan must be a float number.',
       },
       min: {
         args: [0],

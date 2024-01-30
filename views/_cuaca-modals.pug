@@ -1,0 +1,123 @@
+extends _manage-data-modals
+
+block input-add-data
+  .col-12
+    input#add-user_id(type='hidden' name='user_id' value=local_user.id)
+  .col-12.mb-3
+    label.form-label(for='tanggal') Tanggal (Only Month & Year)
+    input#add-tanggal.form-control(type='month' name='tanggal' required)
+    .invalid-feedback Please enter a valid date
+
+  .col-12.mb-3
+    label.form-label(for='temperatur_avg') Temperatur Avg
+    input#add-temperatur_avg.form-control(type='number' name='temperatur_avg' step='0.01' required)
+    .invalid-feedback Temperatur avg must be a number
+
+  .col-12.mb-3
+    label.form-label(for='kelembaban_avg') Kelembaban Avg
+    input#add-kelembaban_avg.form-control(type='number' name='kelembaban_avg' min='0' step='0.01' required)
+    .invalid-feedback Kelembaban avg minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='kecepatan_angin_avg') Kecepatan Angin Avg
+    input#add-kecepatan_angin_avg.form-control(type='number' name='kecepatan_angin_avg' min='0' step='0.01' required)
+    .invalid-feedback Kecepatan angin avg minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_curah_hujan') Jum Curah Hujan
+    input#add-jum_curah_hujan.form-control(type='number' name='jum_curah_hujan' min='0' step='0.01' required)
+    .invalid-feedback Jum curah hujan minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_hari_hujan') Jum Hari Hujan
+    input#add-jum_hari_hujan.form-control(type='number' name='jum_hari_hujan' min='0' required)
+    .invalid-feedback Jum hari hujan minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='penyinaran_matahari_avg') Penyinaran Matahari Avg
+    input#add-penyinaran_matahari_avg.form-control(type='number' name='penyinaran_matahari_avg' min='0' step='0.01' required)
+    .invalid-feedback Penyinaran matahari avg minimum 0
+
+block input-update-data
+  .col-12.mb-3
+    - const date = new Date(obj.tanggal);
+    - const year = date.getFullYear();
+    - const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    - const formattedTanggal = `${year}-${month}`;
+    label.form-label(for='tanggal') Tanggal (Only Month & Year)
+    input.form-control(id=`update-tanggal-${obj.id}` value=formattedTanggal type='month' name='tanggal' required)
+    .invalid-feedback Please enter a valid date
+
+  .col-12.mb-3
+    label.form-label(for='temperatur_avg') Temperatur Avg
+    input.form-control(id=`update-temperatur_avg-${obj.id}` value=obj.temperatur_avg type='number' name='temperatur_avg' step='0.01' required)
+    .invalid-feedback Temperatur avg must be a number
+
+  .col-12.mb-3
+    label.form-label(for='kelembaban_avg') Kelembaban Avg
+    input.form-control(id=`update-kelembaban_avg-${obj.id}` value=obj.kelembaban_avg type='number' name='kelembaban_avg' min='0' step='0.01' required)
+    .invalid-feedback Kelembaban avg minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='kecepatan_angin_avg') Kecepatan Angin Avg
+    input.form-control(id=`update-kecepatan_angin_avg-${obj.id}` value=obj.kecepatan_angin_avg type='number' name='kecepatan_angin_avg' min='0' step='0.01' required)
+    .invalid-feedback Kecepatan angin avg minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_curah_hujan') Jumlah Curah Hujan
+    input.form-control(id=`update-jum_curah_hujan-${obj.id}` value=obj.jum_curah_hujan type='number' name='jum_curah_hujan' min='0' step='0.01' required)
+    .invalid-feedback Jum curah hujan minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_hari_hujan') Jumlah Hari Hujan
+    input.form-control(id=`update-jum_hari_hujan-${obj.id}` value=obj.jum_hari_hujan type='number' name='jum_hari_hujan' min='0' required)
+    .invalid-feedback Jum hari hujan minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='penyinaran_matahari_avg') Penyinaran Matahari Avg
+    input.form-control(id=`update-penyinaran_matahari_avg-${obj.id}` value=obj.penyinaran_matahari_avg type='number' name='penyinaran_matahari_avg' min='0' step='0.01' required)
+    .invalid-feedback Penyinaran matahari avg minimum 0
+
+block input-import-data
+  .col-12.mb-3
+    h6 Example
+    table.table.table-sm
+      thead
+        tr
+          th(scope='col') Tanggal
+          th(scope='col') Temperatur Avg
+          th(scope='col') Kelembaban Avg
+          th(scope='col') Kecepatan Angin Avg
+          th(scope='col') Curah Hujan
+          th(scope='col') Hari Hujan
+          th(scope='col') Penyinaran Matahari Avg
+      tbody
+        tr
+          td 2019-01
+          td 27.57
+          td 83.19
+          td 2.55
+          td 620.74
+          td 28
+          td 3.99
+        tr
+          td 2019-02
+          td 27.85
+          td 81.25
+          td 2.04
+          td 312.58
+          td 25
+          td 6.17
+        tr
+          td .....
+          td .....
+          td .....
+          td .....
+          td .....
+          td .....
+          td .....
+
+  .col-12.mb-3
+    label.form-label(for='csvFileInput') CSV File
+    input#csvFileInput.form-control(type='file' accept='.csv' required)
+    .invalid-feedback Choose the correct file

@@ -15550,6 +15550,12 @@ var updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
 var delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
 var delAllWisatawanBtn = document.querySelector('.btn-del-all');
 var importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
+var cuacaTable = document.querySelector('#cuaca-table');
+var addCuacaForm = document.querySelector('#form-add-cuaca');
+var updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
+var delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
+var delAllCuacaBtn = document.querySelector('.btn-del-all');
+var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -15796,6 +15802,51 @@ if (delAllWisatawanBtn) {
 if (importDataWisatawanForm) {
   inputData = ['tanggal', 'jum_wisnus', 'jum_wisman'];
   _importDataCSV('wisatawan', importDataWisatawanForm, inputData);
+}
+
+//***************** Manage Dataset Cuaca Page ******************* */
+//? Datatables
+if (cuacaTable) {
+  var cuacaTableOptions = {
+    perPage: 10,
+    columns: [{
+      select: 0,
+      type: 'date',
+      format: 'MMM YYYY'
+    }, {
+      select: 7,
+      sortable: false
+    }]
+  };
+  new _simpleDatatables.DataTable(cuacaTable, cuacaTableOptions);
+}
+
+//? Add Data
+if (addCuacaForm) {
+  inputData = ['user_id', 'tanggal', 'temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
+  _addData('cuaca', addCuacaForm, inputData);
+}
+
+//? Update Data
+if (updateCuacaBtns.length > 0) {
+  inputData = ['tanggal', 'temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
+  _updateData('cuaca', inputData);
+}
+
+//? Delete Data
+if (delCuacaBtns.length > 0) {
+  _deleteData('cuaca', delCuacaBtns);
+}
+
+//? Delete All Data
+if (delAllCuacaBtn) {
+  _deleteAllData('cuaca', delAllCuacaBtn);
+}
+
+//? Import Data
+if (importDataCuacaForm) {
+  inputData = ['tanggal', 'temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
+  _importDataCSV('cuaca', importDataCuacaForm, inputData);
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */
