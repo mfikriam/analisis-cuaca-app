@@ -12,6 +12,8 @@ router.get('/manage-user', authController.isLoggedIn, viewController.getManageUs
 router.get('/kecelakaan', authController.isLoggedIn, viewController.getKecelakaanPage);
 router.get('/wisatawan', authController.isLoggedIn, viewController.getWisatawanPage);
 router.get('/cuaca', authController.isLoggedIn, viewController.getCuacaPage);
+router.get('/clustering', authController.isLoggedIn, viewController.getClusteringPage);
+router.get('/analisis', authController.isLoggedIn, viewController.getAnalisisPage);
 
 router.get('/blank', authController.isLoggedIn, viewController.getBlankPage);
 

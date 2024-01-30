@@ -193,3 +193,17 @@ exports.getCuacaPage = catchAsync(async (req, res, next) => {
     modelName: 'cuaca',
   });
 });
+
+exports.getClusteringPage = (req, res) => {
+  res.status(200).render('blank', {
+    title: 'Blank Page',
+    bread_crumbs: ['Clustering'],
+  });
+};
+
+exports.getAnalisisPage = (req, res) => {
+  res.status(200).render('blank', {
+    title: 'Blank Page',
+    bread_crumbs: ['Analisis'],
+  });
+};
