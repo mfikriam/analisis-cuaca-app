@@ -12,7 +12,7 @@ block main
               button.btn.btn-sm.btn-secondary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-add-obj`)
                 i.bi.bi-plus-lg.me-1
                 |  Add New Data
-              button.btn.btn-sm.btn-secondary.me-2(type='button')
+              button.btn.btn-sm.btn-secondary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-import-data`)
                 i.bi.bi-upload.me-1
                 |  Import Data
               button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-del-all`)
@@ -41,6 +41,9 @@ block main
 
   // Add New Data Modal
   +addNewDataModal()
+
+  // Add New Data Modal
+  +importDataModal()
 
   // Delete All Data Modal
   +delAllDataModal()

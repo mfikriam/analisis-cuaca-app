@@ -19,7 +19,7 @@ mixin addNewDataModal()
               input#add-jum_kecelakaan.form-control(type='number' name='jum_kecelakaan' min='0' required)
               .invalid-feedback Jumlah kecelakaan minimum 0
         .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
           button.btn.btn-primary(id=`btn-submit-${modelName}` type='submit' form=`form-add-${modelName}`) Submit
 
 mixin updateDataModals(obj)
@@ -46,7 +46,7 @@ mixin updateDataModals(obj)
               input.form-control(id=`update-jum_kecelakaan-${obj.id}` value=obj.jum_kecelakaan type='number' name='jum_kecelakaan' min='0' required)
               .invalid-feedback Jumlah kecelakaan minimum 0
         .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
           button.btn.btn-info(class=`btn-update-${modelName}` type='submit' form=`form-update-${modelName}-${obj.id}`) Update
 
 mixin delDataModals(objId, objUnique)
@@ -71,5 +71,40 @@ mixin delAllDataModal()
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body= `Are you sure you want to delete all your ${modelName}'s data?`
         .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
           button.btn.btn-danger(class=`btn-del-all` type='button' data-user-id=local_user.id) Delete All
+
+mixin importDataModal()
+  #modal-import-data.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          - const capitalModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+          h1.modal-title.fs-4= `Import Data ${capitalModelName}`
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form.row(id=`form-import-data-${modelName}` novalidate data-user-id=local_user.id)
+            .col-12.mb-3
+              h6 Example
+              table.table.table-sm
+                thead
+                  tr
+                    th(scope='col') Tanggal
+                    th(scope='col') Kecelakaan
+                tbody
+                  tr
+                    td 2019-01
+                    td 95
+                  tr
+                    td 2019-02
+                    td 102
+                  tr
+                    td .....
+                    td .....
+            .col-12.mb-3
+              label.form-label(for='csvFileInput') CSV File
+              input#csvFileInput.form-control(type='file' accept='.csv' required)
+              .invalid-feedback Choose the correct file
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+          button.btn.btn-info(id=`btn-import-data-${modelName}` type='submit' form=`form-import-data-${modelName}`) Import

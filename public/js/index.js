@@ -1,8 +1,15 @@
 /* eslint-disable */
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
+import Papa from 'papaparse';
 import { login, logout } from './auth';
-import { addNewData, updateDataById, delDataById, delAllDataByUserId } from './manage-data';
+import {
+  addNewData,
+  updateDataById,
+  delDataById,
+  delAllDataByUserId,
+  importData,
+} from './manage-data';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -22,6 +29,7 @@ const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 const delAllKecelakaanBtn = document.querySelector('.btn-del-all');
+const importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -203,6 +211,54 @@ if (delAllKecelakaanBtn) {
   delAllKecelakaanBtn.addEventListener('click', () => {
     const userId = delAllKecelakaanBtn.dataset.userId;
     delAllDataByUserId(modelName, userId, bsDelAllDataModal);
+  });
+}
+
+//? Import Data
+if (importDataKecelakaanForm) {
+  modelName = 'kecelakaan';
+  const importDataModal = document.querySelector('#modal-import-data');
+  const bsImportDataModal = new bootstrap.Modal(importDataModal);
+
+  const userId = importDataKecelakaanForm.dataset.userId;
+  let csvData;
+
+  const csvFileInput = importDataKecelakaanForm.querySelector('#csvFileInput');
+  csvFileInput.addEventListener('change', (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.name.endsWith('.csv')) {
+        Papa.parse(selectedFile, {
+          complete: function (results) {
+            // Access the parsed CSV data
+            csvData = results.data;
+          },
+          header: true, // Treat the first row as headers
+        });
+      } else {
+        showAlert('Please choose .csv file', 'danger');
+        csvFileInput.value = '';
+      }
+    }
+  });
+
+  importDataKecelakaanForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    importDataKecelakaanForm.classList.add('was-validated');
+
+    if (importDataKecelakaanForm.checkValidity()) {
+      const objList = [];
+      csvData.forEach((obj) => {
+        const keys = Object.keys(obj);
+        objList.push({
+          tanggal: obj[keys[0]],
+          jum_kecelakaan: obj[keys[1]],
+          user_id: userId,
+        });
+      });
+
+      importData(modelName, objList, importDataKecelakaanForm, bsImportDataModal);
+    }
   });
 }
 

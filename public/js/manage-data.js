@@ -71,3 +71,21 @@ export const delAllDataByUserId = async (modelName, userId, modal) => {
     showAlert(err.response.data.message, 'danger');
   }
 };
+
+export const importData = async (modelName, data, form, modal) => {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `/api/v1/${modelName}/many`,
+      data,
+    });
+
+    if (res.data.status === 'success') {
+      modal.hide();
+      delayAlert(`Data ${modelName} has been imported successfully`, 'success');
+    }
+  } catch (err) {
+    form.classList.remove('was-validated');
+    validationErrorAlert(err);
+  }
+};
