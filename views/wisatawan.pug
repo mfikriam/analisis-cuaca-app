@@ -24,17 +24,17 @@ block main
               table.table.table-hover.datatable(id=`${modelName}-table`)
                 thead
                   tr
-                    th Tanggal
-                    th Jum Wisnus
-                    th Jum Wisman
-                    th
+                    th.text-center Tanggal
+                    th.text-center Jum Wisnus
+                    th.text-center Jum Wisman
+                    th.text-center
                 tbody
                   each obj in wisatawan
                     tr
-                      td= obj.tanggal
-                      td= obj.jum_wisnus
-                      td= obj.jum_wisman
-                      td
+                      td.text-end= obj.tanggal
+                      td.text-end= obj.jum_wisnus.toLocaleString()
+                      td.text-end= obj.jum_wisman.toLocaleString()
+                      td.text-center
                         button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
                         button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
