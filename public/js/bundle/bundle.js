@@ -15542,19 +15542,19 @@ var kecelakaanTable = document.querySelector('#kecelakaan-table');
 var addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 var updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 var delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
-var delAllKecelakaanBtn = document.querySelector('.btn-del-all');
+var delAllKecelakaanBtn = document.querySelector('.btn-del-all-kecelakaan');
 var importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
 var wisatawanTable = document.querySelector('#wisatawan-table');
 var addWisatawanForm = document.querySelector('#form-add-wisatawan');
 var updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
 var delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
-var delAllWisatawanBtn = document.querySelector('.btn-del-all');
+var delAllWisatawanBtn = document.querySelector('.btn-del-all-wisatawan');
 var importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
 var cuacaTable = document.querySelector('#cuaca-table');
 var addCuacaForm = document.querySelector('#form-add-cuaca');
 var updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
 var delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
-var delAllCuacaBtn = document.querySelector('.btn-del-all');
+var delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 
 //***************** Static Functions ******************* */

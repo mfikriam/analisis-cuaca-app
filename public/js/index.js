@@ -28,21 +28,21 @@ const kecelakaanTable = document.querySelector('#kecelakaan-table');
 const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
-const delAllKecelakaanBtn = document.querySelector('.btn-del-all');
+const delAllKecelakaanBtn = document.querySelector('.btn-del-all-kecelakaan');
 const importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
 
 const wisatawanTable = document.querySelector('#wisatawan-table');
 const addWisatawanForm = document.querySelector('#form-add-wisatawan');
 const updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
 const delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
-const delAllWisatawanBtn = document.querySelector('.btn-del-all');
+const delAllWisatawanBtn = document.querySelector('.btn-del-all-wisatawan');
 const importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
 
 const cuacaTable = document.querySelector('#cuaca-table');
 const addCuacaForm = document.querySelector('#form-add-cuaca');
 const updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
 const delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
-const delAllCuacaBtn = document.querySelector('.btn-del-all');
+const delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 
 //***************** Static Functions ******************* */
