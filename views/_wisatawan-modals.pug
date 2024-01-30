@@ -1,0 +1,67 @@
+extends _manage-data-modals
+
+block input-add-data
+  .col-12
+    input#add-user_id(type='hidden' name='user_id' value=local_user.id)
+  .col-12.mb-3
+    label.form-label(for='tanggal') Tanggal (Only Month & Year)
+    input#add-tanggal.form-control(type='month' name='tanggal' required)
+    .invalid-feedback Please enter a valid date
+
+  .col-12.mb-3
+    label.form-label(for='jum_wisnus') Jumlah Wisatawan Nusantara
+    input#add-jum_wisnus.form-control(type='number' name='jum_wisnus' min='0' required)
+    .invalid-feedback Jumlah wisnus minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_wisman') Jumlah Wisatawan Mancanegara
+    input#add-jum_wisman.form-control(type='number' name='jum_wisman' min='0' required)
+    .invalid-feedback Jumlah wisman minimum 0
+
+block input-update-data
+  .col-12.mb-3
+    - const date = new Date(obj.tanggal);
+    - const year = date.getFullYear();
+    - const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    - const formattedTanggal = `${year}-${month}`;
+    label.form-label(for='tanggal') Tanggal (Only Month & Year)
+    input.form-control(id=`update-tanggal-${obj.id}` value=formattedTanggal type='month' name='tanggal' required)
+    .invalid-feedback Please enter a valid date
+
+  .col-12.mb-3
+    label.form-label(for='jum_wisnus') Jumlah Wisatawan Nusantara
+    input.form-control(id=`update-jum_wisnus-${obj.id}` value=obj.jum_wisnus type='number' name='jum_wisnus' min='0' required)
+    .invalid-feedback Jumlah wisnus minimum 0
+
+  .col-12.mb-3
+    label.form-label(for='jum_wisman') Jumlah Wisatawan Mancanegara
+    input.form-control(id=`update-jum_wisman-${obj.id}` value=obj.jum_wisman type='number' name='jum_wisman' min='0' required)
+    .invalid-feedback Jumlah wisman minimum 0
+
+block input-import-data
+  .col-12.mb-3
+    h6 Example
+    table.table.table-sm
+      thead
+        tr
+          th(scope='col') Tanggal
+          th(scope='col') Wisnus
+          th(scope='col') Wisman
+      tbody
+        tr
+          td 2020-01
+          td 326125
+          td 11822
+        tr
+          td 2020-02
+          td 219108
+          td 12154
+        tr
+          td .....
+          td .....
+          td .....
+
+  .col-12.mb-3
+    label.form-label(for='csvFileInput') CSV File
+    input#csvFileInput.form-control(type='file' accept='.csv' required)
+    .invalid-feedback Choose the correct file

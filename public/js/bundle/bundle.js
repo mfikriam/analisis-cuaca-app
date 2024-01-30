@@ -15544,6 +15544,12 @@ var updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 var delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 var delAllKecelakaanBtn = document.querySelector('.btn-del-all');
 var importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
+var wisatawanTable = document.querySelector('#wisatawan-table');
+var addWisatawanForm = document.querySelector('#form-add-wisatawan');
+var updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
+var delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
+var delAllWisatawanBtn = document.querySelector('.btn-del-all');
+var importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -15745,6 +15751,51 @@ if (delAllKecelakaanBtn) {
 if (importDataKecelakaanForm) {
   inputData = ['tanggal', 'jum_kecelakaan'];
   _importDataCSV('kecelakaan', importDataKecelakaanForm, inputData);
+}
+
+//***************** Manage Dataset Wisatawan Page ******************* */
+//? Datatables
+if (wisatawanTable) {
+  var wisatawanTableOptions = {
+    perPage: 10,
+    columns: [{
+      select: 0,
+      type: 'date',
+      format: 'MMM YYYY'
+    }, {
+      select: 3,
+      sortable: false
+    }]
+  };
+  new _simpleDatatables.DataTable(wisatawanTable, wisatawanTableOptions);
+}
+
+//? Add Data
+if (addWisatawanForm) {
+  inputData = ['user_id', 'tanggal', 'jum_wisnus', 'jum_wisman'];
+  _addData('wisatawan', addWisatawanForm, inputData);
+}
+
+//? Update Data
+if (updateWisatawanBtns.length > 0) {
+  inputData = ['tanggal', 'jum_wisnus', 'jum_wisman'];
+  _updateData('wisatawan', inputData);
+}
+
+//? Delete Data
+if (delWisatawanBtns.length > 0) {
+  _deleteData('wisatawan', delWisatawanBtns);
+}
+
+//? Delete All Data
+if (delAllWisatawanBtn) {
+  _deleteAllData('wisatawan', delAllWisatawanBtn);
+}
+
+//? Import Data
+if (importDataWisatawanForm) {
+  inputData = ['tanggal', 'jum_wisnus', 'jum_wisman'];
+  _importDataCSV('wisatawan', importDataWisatawanForm, inputData);
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */

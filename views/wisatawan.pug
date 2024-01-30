@@ -1,0 +1,58 @@
+extends base
+
+include _wisatawan-modals
+
+block main
+  section.section
+    .row
+      .col-lg-12
+        .card
+          .card-body
+            .mt-3.mb-2.d-flex.justify-content-end
+              button.btn.btn-sm.btn-secondary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-add-obj`)
+                i.bi.bi-plus-lg.me-1
+                |  Add New Data
+              button.btn.btn-sm.btn-secondary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-import-data`)
+                i.bi.bi-upload.me-1
+                |  Import Data
+              button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-del-all`)
+                i.bi.bi-archive.me-1
+                |  Delete All Data
+
+            // Table with stripped rows
+            .table-responsive
+              table.table.table-hover.datatable(id=`${modelName}-table`)
+                thead
+                  tr
+                    th Tanggal
+                    th Jum Wisnus
+                    th Jum Wisman
+                    th
+                tbody
+                  each obj in wisatawan
+                    tr
+                      td= obj.tanggal
+                      td= obj.jum_wisnus
+                      td= obj.jum_wisman
+                      td
+                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
+                          i.bi.bi-pencil-square
+                        button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
+                          i.bi.bi-trash
+            // End Table with stripped rows
+
+  // Add New Data Modal
+  +addNewDataModal()
+
+  // Add New Data Modal
+  +importDataModal()
+
+  // Delete All Data Modal
+  +delAllDataModal()
+
+  each obj in wisatawan
+    // Update Data Modals
+    +updateDataModals(obj)
+
+    // Delete Data Modals
+    +delDataModals(obj.id, obj.tanggal)

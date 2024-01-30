@@ -31,6 +31,13 @@ const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 const delAllKecelakaanBtn = document.querySelector('.btn-del-all');
 const importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
 
+const wisatawanTable = document.querySelector('#wisatawan-table');
+const addWisatawanForm = document.querySelector('#form-add-wisatawan');
+const updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
+const delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
+const delAllWisatawanBtn = document.querySelector('.btn-del-all');
+const importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
+
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
   const addDataModal = document.querySelector('#modal-add-obj');
@@ -240,6 +247,47 @@ if (delAllKecelakaanBtn) {
 if (importDataKecelakaanForm) {
   inputData = ['tanggal', 'jum_kecelakaan'];
   _importDataCSV('kecelakaan', importDataKecelakaanForm, inputData);
+}
+
+//***************** Manage Dataset Wisatawan Page ******************* */
+//? Datatables
+if (wisatawanTable) {
+  const wisatawanTableOptions = {
+    perPage: 10,
+    columns: [
+      { select: 0, type: 'date', format: 'MMM YYYY' },
+      { select: 3, sortable: false },
+    ],
+  };
+  new DataTable(wisatawanTable, wisatawanTableOptions);
+}
+
+//? Add Data
+if (addWisatawanForm) {
+  inputData = ['user_id', 'tanggal', 'jum_wisnus', 'jum_wisman'];
+  _addData('wisatawan', addWisatawanForm, inputData);
+}
+
+//? Update Data
+if (updateWisatawanBtns.length > 0) {
+  inputData = ['tanggal', 'jum_wisnus', 'jum_wisman'];
+  _updateData('wisatawan', inputData);
+}
+
+//? Delete Data
+if (delWisatawanBtns.length > 0) {
+  _deleteData('wisatawan', delWisatawanBtns);
+}
+
+//? Delete All Data
+if (delAllWisatawanBtn) {
+  _deleteAllData('wisatawan', delAllWisatawanBtn);
+}
+
+//? Import Data
+if (importDataWisatawanForm) {
+  inputData = ['tanggal', 'jum_wisnus', 'jum_wisman'];
+  _importDataCSV('wisatawan', importDataWisatawanForm, inputData);
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */
