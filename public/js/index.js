@@ -17,7 +17,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.btn--logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 
-let modelName;
+let inputData;
 
 const userTable = document.querySelector('#user-table');
 const addUserForm = document.querySelector('#form-add-user');
@@ -30,6 +30,120 @@ const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan')
 const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 const delAllKecelakaanBtn = document.querySelector('.btn-del-all');
 const importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
+
+//***************** Static Functions ******************* */
+const _addData = (modelName, form, inputData) => {
+  const addDataModal = document.querySelector('#modal-add-obj');
+  const bsAddDataModal = new bootstrap.Modal(addDataModal);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.classList.add('was-validated');
+
+    if (form.checkValidity()) {
+      const dataObj = {};
+      inputData.forEach((data) => {
+        dataObj[data] = form.querySelector(`#add-${data}`).value;
+      });
+      addNewData(modelName, dataObj, form, bsAddDataModal);
+    }
+  });
+};
+
+const _updateData = (modelName, inputData) => {
+  const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
+  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
+    (el) => new bootstrap.Modal(el),
+  );
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
+
+  updateDataFormList.forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      const objId = form.dataset.objId;
+
+      if (form.checkValidity()) {
+        const dataObj = {};
+        inputData.forEach((data) => {
+          dataObj[data] = form.querySelector(`#update-${data}-${objId}`).value;
+        });
+        updateDataById(modelName, objId, dataObj, form, bsUpdateDataModalList);
+      }
+    });
+  });
+};
+
+const _deleteData = (modelName, btnList) => {
+  const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
+  const bsDelDataModalList = Array.from(delDataModalList).map((el) => new bootstrap.Modal(el));
+
+  btnList.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const objId = btn.dataset.objId;
+      delDataById(modelName, objId, bsDelDataModalList);
+    });
+  });
+};
+
+const _deleteAllData = (modelName, btn) => {
+  const delAllDataModal = document.querySelector('#modal-del-all');
+  const bsDelAllDataModal = new bootstrap.Modal(delAllDataModal);
+
+  btn.addEventListener('click', () => {
+    const userId = btn.dataset.userId;
+    delAllDataByUserId(modelName, userId, bsDelAllDataModal);
+  });
+};
+
+const _importDataCSV = (modelName, form, inputData) => {
+  const importDataModal = document.querySelector('#modal-import-data');
+  const bsImportDataModal = new bootstrap.Modal(importDataModal);
+
+  const userId = form.dataset.userId;
+  let csvData;
+
+  const csvFileInput = form.querySelector('#csvFileInput');
+  csvFileInput.addEventListener('change', (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.name.endsWith('.csv')) {
+        Papa.parse(selectedFile, {
+          complete: function (results) {
+            // Access the parsed CSV data
+            csvData = results.data;
+          },
+          header: true, // Treat the first row as headers
+        });
+      } else {
+        showAlert('Please choose .csv file', 'danger');
+        csvFileInput.value = '';
+      }
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.classList.add('was-validated');
+
+    if (form.checkValidity()) {
+      const objList = [];
+      csvData.forEach((obj) => {
+        const keys = Object.keys(obj);
+
+        const dataObj = {};
+        inputData.forEach((data, index) => {
+          dataObj[data] = obj[keys[index]];
+        });
+        dataObj.user_id = userId;
+
+        objList.push(dataObj);
+      });
+
+      importData(modelName, objList, form, bsImportDataModal);
+    }
+  });
+};
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -72,59 +186,19 @@ if (userTable) {
 
 //? Add Data
 if (addUserForm) {
-  modelName = 'user';
-  const addDataModal = document.querySelector('#modal-add-obj');
-  const bsAddDataModal = new bootstrap.Modal(addDataModal);
-
-  addUserForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    addUserForm.classList.add('was-validated');
-
-    if (addUserForm.checkValidity()) {
-      const email = addUserForm.querySelector('#add-email').value;
-      const password = addUserForm.querySelector('#add-password').value;
-      const fullname = addUserForm.querySelector('#add-fullname').value;
-      addNewData(modelName, { email, password, fullname }, addUserForm, bsAddDataModal);
-    }
-  });
+  inputData = ['email', 'password', 'fullname'];
+  _addData('user', addUserForm, inputData);
 }
 
 //? Update Data
 if (updateUserBtns.length > 0) {
-  modelName = 'user';
-  const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
-  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
-  const updateDataFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
-
-  updateDataFormList.forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      form.classList.add('was-validated');
-      const objId = form.dataset.objId;
-
-      if (form.checkValidity()) {
-        const email = form.querySelector(`#update-email-${objId}`).value;
-        const fullname = form.querySelector(`#update-fullname-${objId}`).value;
-        updateDataById(modelName, objId, { email, fullname }, form, bsUpdateDataModalList);
-      }
-    });
-  });
+  inputData = ['email', 'fullname'];
+  _updateData('user', inputData);
 }
 
 //? Delete Data
 if (delUserBtns.length > 0) {
-  modelName = 'user';
-  const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  const bsDelDataModalList = Array.from(delDataModalList).map((el) => new bootstrap.Modal(el));
-
-  delUserBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const objId = btn.dataset.objId;
-      delDataById(modelName, objId, bsDelDataModalList);
-    });
-  });
+  _deleteData('user', delUserBtns);
 }
 
 //***************** Manage Dataset Kecelakaan Page ******************* */
@@ -142,124 +216,30 @@ if (kecelakaanTable) {
 
 //? Add Data
 if (addKecelakaanForm) {
-  modelName = 'kecelakaan';
-  const addDataModal = document.querySelector('#modal-add-obj');
-  const bsAddDataModal = new bootstrap.Modal(addDataModal);
-
-  addKecelakaanForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    addKecelakaanForm.classList.add('was-validated');
-
-    if (addKecelakaanForm.checkValidity()) {
-      const user_id = addKecelakaanForm.querySelector('#add-user_id').value;
-      const tanggal = addKecelakaanForm.querySelector('#add-tanggal').value;
-      const jum_kecelakaan = addKecelakaanForm.querySelector('#add-jum_kecelakaan').value;
-      addNewData(
-        modelName,
-        { tanggal, jum_kecelakaan, user_id },
-        addKecelakaanForm,
-        bsAddDataModal,
-      );
-    }
-  });
+  inputData = ['user_id', 'tanggal', 'jum_kecelakaan'];
+  _addData('kecelakaan', addKecelakaanForm, inputData);
 }
 
 //? Update Data
 if (updateKecelakaanBtns.length > 0) {
-  modelName = 'kecelakaan';
-  const updateDataModalList = document.querySelectorAll('[id^="modal-update-obj"]');
-  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
-    (el) => new bootstrap.Modal(el),
-  );
-  const updateDataFormList = document.querySelectorAll(`[id^="form-update-${modelName}"]`);
-
-  updateDataFormList.forEach((form) => {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      form.classList.add('was-validated');
-      const objId = form.dataset.objId;
-
-      if (form.checkValidity()) {
-        const tanggal = form.querySelector(`#update-tanggal-${objId}`).value;
-        const jum_kecelakaan = form.querySelector(`#update-jum_kecelakaan-${objId}`).value;
-        updateDataById(modelName, objId, { tanggal, jum_kecelakaan }, form, bsUpdateDataModalList);
-      }
-    });
-  });
+  inputData = ['tanggal', 'jum_kecelakaan'];
+  _updateData('kecelakaan', inputData);
 }
 
 //? Delete Data
 if (delKecelakaanBtns.length > 0) {
-  modelName = 'kecelakaan';
-  const delDataModalList = document.querySelectorAll('[id^="modal-delete-obj"]');
-  const bsDelDataModalList = Array.from(delDataModalList).map((el) => new bootstrap.Modal(el));
-
-  delKecelakaanBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const objId = btn.dataset.objId;
-      delDataById(modelName, objId, bsDelDataModalList);
-    });
-  });
+  _deleteData('kecelakaan', delKecelakaanBtns);
 }
 
 //? Delete All Data
 if (delAllKecelakaanBtn) {
-  modelName = 'kecelakaan';
-  const delAllDataModal = document.querySelector('#modal-del-all');
-  const bsDelAllDataModal = new bootstrap.Modal(delAllDataModal);
-
-  delAllKecelakaanBtn.addEventListener('click', () => {
-    const userId = delAllKecelakaanBtn.dataset.userId;
-    delAllDataByUserId(modelName, userId, bsDelAllDataModal);
-  });
+  _deleteAllData('kecelakaan', delAllKecelakaanBtn);
 }
 
 //? Import Data
 if (importDataKecelakaanForm) {
-  modelName = 'kecelakaan';
-  const importDataModal = document.querySelector('#modal-import-data');
-  const bsImportDataModal = new bootstrap.Modal(importDataModal);
-
-  const userId = importDataKecelakaanForm.dataset.userId;
-  let csvData;
-
-  const csvFileInput = importDataKecelakaanForm.querySelector('#csvFileInput');
-  csvFileInput.addEventListener('change', (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile.name.endsWith('.csv')) {
-        Papa.parse(selectedFile, {
-          complete: function (results) {
-            // Access the parsed CSV data
-            csvData = results.data;
-          },
-          header: true, // Treat the first row as headers
-        });
-      } else {
-        showAlert('Please choose .csv file', 'danger');
-        csvFileInput.value = '';
-      }
-    }
-  });
-
-  importDataKecelakaanForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    importDataKecelakaanForm.classList.add('was-validated');
-
-    if (importDataKecelakaanForm.checkValidity()) {
-      const objList = [];
-      csvData.forEach((obj) => {
-        const keys = Object.keys(obj);
-        objList.push({
-          tanggal: obj[keys[0]],
-          jum_kecelakaan: obj[keys[1]],
-          user_id: userId,
-        });
-      });
-
-      importData(modelName, objList, importDataKecelakaanForm, bsImportDataModal);
-    }
-  });
+  inputData = ['tanggal', 'jum_kecelakaan'];
+  _importDataCSV('kecelakaan', importDataKecelakaanForm, inputData);
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */
