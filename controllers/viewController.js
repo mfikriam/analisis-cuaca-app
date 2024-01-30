@@ -157,3 +157,39 @@ exports.getKecelakaanPage = catchAsync(async (req, res, next) => {
     modelName: 'kecelakaan',
   });
 });
+
+exports.getWisatawanPage = catchAsync(async (req, res, next) => {
+  const userId = res.locals.local_user.id;
+  const wisatawan = await _getDataset(userId, Wisatawan);
+
+  wisatawan.forEach((item) => {
+    item.tanggal = _formatDate(item.tanggal);
+    item.createdAt = _formatDateTable(item.createdAt);
+    item.updatedAt = _formatDateTable(item.updatedAt);
+  });
+
+  res.status(200).render('wisatawan', {
+    title: 'Manage Data Wisatawan',
+    bread_crumbs: ['Manage Dataset', 'Wisatawan'],
+    wisatawan,
+    modelName: 'wisatawan',
+  });
+});
+
+exports.getCuacaPage = catchAsync(async (req, res, next) => {
+  const userId = res.locals.local_user.id;
+  const cuaca = await _getDataset(userId, Cuaca);
+
+  cuaca.forEach((item) => {
+    item.tanggal = _formatDate(item.tanggal);
+    item.createdAt = _formatDateTable(item.createdAt);
+    item.updatedAt = _formatDateTable(item.updatedAt);
+  });
+
+  res.status(200).render('cuaca', {
+    title: 'Manage Data Cuaca',
+    bread_crumbs: ['Manage Dataset', 'Cuaca'],
+    cuaca,
+    modelName: 'cuaca',
+  });
+});

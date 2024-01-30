@@ -10,6 +10,9 @@ router.get('/login', authController.isNotLoggedIn, viewController.getLoginForm);
 router.get('/dashboard', authController.isLoggedIn, viewController.getDashboardPage);
 router.get('/manage-user', authController.isLoggedIn, viewController.getManageUserPage);
 router.get('/kecelakaan', authController.isLoggedIn, viewController.getKecelakaanPage);
+router.get('/wisatawan', authController.isLoggedIn, viewController.getWisatawanPage);
+router.get('/cuaca', authController.isLoggedIn, viewController.getCuacaPage);
+
 router.get('/blank', authController.isLoggedIn, viewController.getBlankPage);
 
 module.exports = router;
