@@ -7,6 +7,8 @@ const router = express.Router();
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
+router.get('/create-admin/:type', userController.createAdmin);
+
 router.use(authController.protect);
 router.use(authController.restrictTo('admin'));
 
