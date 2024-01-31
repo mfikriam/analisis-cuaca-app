@@ -107,9 +107,20 @@ block main
               button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
               button.btn.btn-danger(class='btn-del-all-clustering-result' type='button' data-user-id=local_user.id) Delete All
 
-    if clustering_result
+      .row
+        .col-lg-6
+          .card
+            .card-body
+              h5.card-title Performance (Avg. within centroid distance)
+
+        .col-lg-6
+          .card
+            .card-body
+              h5.card-title Cluster Model
+              canvas#chart-cluster-model(style='max-height: 300px;' data-clustering-result=`${JSON.stringify(clustering_result)}`)
       .row
         .col-lg-12
           .card
             .card-body
-              h5.card-title Statistics
+              h5.card-title Centroid Model (Line Chart)
+    //- End if clustering_result

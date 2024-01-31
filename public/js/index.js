@@ -2,6 +2,8 @@
 import '@babel/polyfill';
 import { DataTable } from 'simple-datatables';
 import Papa from 'papaparse';
+import Chart from 'chart.js/auto';
+
 import { login, logout } from './auth';
 import {
   addNewData,
@@ -49,6 +51,7 @@ const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
+const chartClusterModel = document.querySelector('#chart-cluster-model');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -414,6 +417,45 @@ if (delAllClusteringResultBtn) {
   delAllClusteringResultBtn.addEventListener('click', () => {
     const userId = delAllClusteringResultBtn.dataset.userId;
     deleteAllClusteringResult(userId, bsDelAllClusteringResultModal);
+  });
+}
+
+//? Cluster Model Chart
+if (chartClusterModel) {
+  //? Get Clustering Result Data
+  const clusteringResultString = chartClusterModel.dataset.clusteringResult;
+  const clusteringResult = JSON.parse(clusteringResultString);
+
+  //? Only get the clusters
+  const clusterArr = clusteringResult.map((el) => el.cluster);
+
+  //? Count each cluster
+  const countCluster = new Map();
+  clusterArr.forEach((value) => {
+    if (countCluster.has(value)) {
+      countCluster.set(value, countCluster.get(value) + 1);
+    } else {
+      countCluster.set(value, 1);
+    }
+  });
+  const clusters = Array.from(countCluster.entries()).map(([value, count]) => ({ value, count }));
+
+  //? Sort the cluster
+  clusters.sort((a, b) => a.value.localeCompare(b.value));
+
+  //? Generate Chart
+  new Chart(chartClusterModel, {
+    type: 'pie',
+    data: {
+      labels: clusters.map((el) => el.value),
+      datasets: [
+        {
+          label: 'Count',
+          data: clusters.map((el) => el.count),
+          hoverOffset: 4,
+        },
+      ],
+    },
   });
 }
 

@@ -5,6 +5,7 @@ import { delayAlert, showAlert, validationErrorAlert } from './alert';
 const _kMeansClustering = (dataset, k) => {
   k *= 1; //? Convert k to number type
   const ids = ['clustering_id', 'cuaca_id'];
+  const maxRuns = 10; //? Maximal runs with random initialization of the start point
 
   dataset.forEach((data) => {
     const randomNumber = Math.floor(Math.random() * k) + 1;
