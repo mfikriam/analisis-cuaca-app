@@ -195,15 +195,15 @@ exports.getCuacaPage = catchAsync(async (req, res, next) => {
 });
 
 exports.getClusteringPage = (req, res) => {
-  res.status(200).render('blank', {
-    title: 'Blank Page',
+  res.status(200).render('clustering', {
+    title: 'Clustering',
     bread_crumbs: ['Clustering'],
   });
 };
 
 exports.getAnalisisPage = (req, res) => {
-  res.status(200).render('blank', {
-    title: 'Blank Page',
+  res.status(200).render('analisis', {
+    title: 'Analisis',
     bread_crumbs: ['Analisis'],
   });
 };
