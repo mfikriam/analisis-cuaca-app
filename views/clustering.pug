@@ -3,10 +3,101 @@ extends base
 block main
   section.section
     .row
-      .col-lg-6
+      .col-lg-12
         .card
           .card-body
-            h5.card-title Example Card
-            p
-              | This is an examle page with no contrnt. You can use it as a starter for your
-              | custom pages.
+            h5.card-title K-Means Clustering
+            form.row(id='form-add-clustering' novalidate)
+              .col-12
+                input#add-user_id(type='hidden' name='user_id' value=local_user.id)
+
+              .col-md-3.mb-3
+                label.form-label(for='jum_cluster') Jumlah Cluster
+                input#add-jum_cluster.form-control(type='number' name='jum_kecelakaan' min='2' value=`${(clustering) ? clustering.jum_cluster : ''}` required)
+                .invalid-feedback Jumlah cluster minimum 2
+
+              - let criteriaArray = [];
+              if clustering
+                - criteriaArray = JSON.parse(clustering.kriteria_clustering);
+
+              .col-12.mb-3
+                legend.col-form-label Pilih Kriteria
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('temperatur_avg')
+                    input.form-check-input(type='checkbox' id='criteria-1' value='temperatur_avg' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-1' value='temperatur_avg')
+                  label.form-check-label(for='criteria-1') Temperatur Avg
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('kelembaban_avg')
+                    input.form-check-input(type='checkbox' id='criteria-2' value='kelembaban_avg' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-2' value='kelembaban_avg')
+                  label.form-check-label(for='criteria-2') Kelembaban Avg
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('kecepatan_angin_avg')
+                    input.form-check-input(type='checkbox' id='criteria-3' value='kecepatan_angin_avg' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-3' value='kecepatan_angin_avg')
+                  label.form-check-label(for='criteria-3') Kecepatan Angin Avg
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('jum_curah_hujan')
+                    input.form-check-input(type='checkbox' id='criteria-4' value='jum_curah_hujan' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-4' value='jum_curah_hujan')
+                  label.form-check-label(for='criteria-4') Jum Curah Hujan
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('jum_hari_hujan')
+                    input.form-check-input(type='checkbox' id='criteria-5' value='jum_hari_hujan' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-5' value='jum_hari_hujan')
+                  label.form-check-label(for='criteria-5') Jum Hari Hujan
+
+                .form-check.form-check-inline
+                  if criteriaArray.includes('penyinaran_matahari_avg')
+                    input.form-check-input(type='checkbox' id='criteria-6' value='penyinaran_matahari_avg' checked)
+                  else
+                    input.form-check-input(type='checkbox' id='criteria-6' value='penyinaran_matahari_avg')
+                  label.form-check-label(for='criteria-6') Penyinaran Matahari Avg
+
+              .col-12.mb-3
+                button.btn.btn-primary(type='submit') Clustering
+
+    if clustering_result
+      .row
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Clustering Result
+              .mb-2.d-flex.justify-content-end
+                button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-del-clustering-result`)
+                  i.bi.bi-archive.me-1
+                  |  Delete Clustering Result
+              .table-responsive
+                table.table.table-hover.datatable(id='clustering-result-table')
+                  thead
+                    tr
+                      th.text-center tanggal
+                      each criteria in criteriaArray
+                        th.text-center= criteria
+                      th.text-center cluster
+                  tbody
+                    each obj in clustering_result
+                      tr
+                        td.text-end= obj.cuaca.tanggal
+                        each criteria in criteriaArray
+                          td.text-end= obj.cuaca[criteria]
+                        td.text-end= obj.cluster
+              // End Table with stripped rows
+
+    if clustering_result
+      .row
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Statistics

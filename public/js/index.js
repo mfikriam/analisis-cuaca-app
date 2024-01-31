@@ -10,6 +10,7 @@ import {
   delAllDataByUserId,
   importData,
 } from './manage-data';
+import { replaceClustering } from './clustering';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -44,6 +45,9 @@ const updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
 const delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
 const delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
+
+const clusteringResultTable = document.querySelector('#clustering-result-table');
+const addClusteringForm = document.querySelector('#form-add-clustering');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -361,6 +365,45 @@ if (importDataCuacaForm) {
     'penyinaran_matahari_avg',
   ];
   _importDataCSV('cuaca', importDataCuacaForm, inputData);
+}
+
+//***************** Clustering / Clustering Result Page ******************* */
+//? Datatables
+if (clusteringResultTable) {
+  const clusteringResultTableOptions = {
+    perPage: 10,
+    columns: [{ select: 0, type: 'date', format: 'MMM YYYY' }],
+  };
+  new DataTable(clusteringResultTable, clusteringResultTableOptions);
+}
+
+//? Add and Replace Data
+if (addClusteringForm) {
+  addClusteringForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    addClusteringForm.classList.add('was-validated');
+
+    if (addClusteringForm.checkValidity()) {
+      const user_id = addClusteringForm.querySelector('#add-user_id').value;
+      const jum_cluster = addClusteringForm.querySelector('#add-jum_cluster').value;
+
+      const checkboxes = addClusteringForm.querySelectorAll('[id^="criteria"]');
+      const selectedCheckboxes = [];
+      checkboxes.forEach((el) => {
+        if (el.checked) selectedCheckboxes.push(el.value);
+      });
+
+      if (selectedCheckboxes.length > 0) {
+        const kriteria_clustering = JSON.stringify(selectedCheckboxes);
+        const dataObj = { jum_cluster, kriteria_clustering, user_id };
+
+        console.log(dataObj);
+        replaceClustering(dataObj, addClusteringForm);
+      } else {
+        showAlert('Please select at least one criteria.', 'danger');
+      }
+    }
+  });
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */

@@ -1,5 +1,4 @@
-// User, Kecelakaan, Wisatawan, Cuaca, Clustering, ClusteringResult
-const { User, Cuaca, Wisatawan, Kecelakaan } = require('./../models');
+const { User, Cuaca, Wisatawan, Kecelakaan, Clustering, ClusteringResult } = require('./../models');
 const catchAsync = require('./../utils/catchAsync');
 
 //**************************** STATIC FUNCTIONS ******************************** */
@@ -194,12 +193,43 @@ exports.getCuacaPage = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getClusteringPage = (req, res) => {
+exports.getClusteringPage = catchAsync(async (req, res) => {
+  const userId = res.locals.local_user.id;
+  let clustering;
+  let clusteringResultList;
+
+  clustering = await Clustering.findOne({
+    where: {
+      user_id: userId,
+    },
+  });
+
+  if (clustering) {
+    clustering = clustering.toJSON();
+    const clusteringResultQuery = await ClusteringResult.findAll({
+      where: {
+        clustering_id: clustering.id,
+      },
+    });
+
+    clusteringResultList = clusteringResultQuery.map((el) => el.dataValues);
+
+    clusteringResultList = await Promise.all(
+      clusteringResultList.map(async (el, index) => {
+        el.cuaca = (await clusteringResultQuery[index].getCuaca()).toJSON();
+        el.cuaca.tanggal = _formatDate(el.cuaca.tanggal);
+        return el;
+      }),
+    );
+  }
+
   res.status(200).render('clustering', {
     title: 'Clustering',
     bread_crumbs: ['Clustering'],
+    clustering,
+    clustering_result: clusteringResultList,
   });
-};
+});
 
 exports.getAnalisisPage = (req, res) => {
   res.status(200).render('analisis', {
