@@ -58,7 +58,7 @@ const _getCuaca = async (userId) => {
   }
 };
 
-export const deleteClustering = async (userId) => {
+const _deleteClustering = async (userId) => {
   try {
     await axios({
       method: 'DELETE',
@@ -69,9 +69,10 @@ export const deleteClustering = async (userId) => {
   }
 };
 
+//***************** Exported Functions ******************* */
 export const replaceClustering = async (data, form) => {
   //? Delete Previous Clustering Data
-  await deleteClustering(data.user_id);
+  await _deleteClustering(data.user_id);
 
   //? Get All Data Cuaca
   const cuacaArr = await _getCuaca(data.user_id);
@@ -98,7 +99,7 @@ export const replaceClustering = async (data, form) => {
   //? K-Means Clustering
   const kMeansResult = _kMeansClustering(filteredCuacaArr, data.jum_cluster);
 
-  // //? Filter K-Means Result
+  //? Filter K-Means Result
   const clusteringResultFilter = ['clustering_id', 'cuaca_id', 'cluster'];
   const filteredClusteringResult = kMeansResult.map((clusteringResult) => {
     const obj = {};
@@ -108,8 +109,23 @@ export const replaceClustering = async (data, form) => {
     return obj;
   });
 
-  // //? Add Clustering Result Data
+  //? Add Clustering Result Data
   await _addClusteringResult(filteredClusteringResult);
 
   delayAlert('K-Means clustering successfully clustered data cuaca', 'success');
+};
+
+export const deleteAllClusteringResult = async (userId, modal) => {
+  try {
+    modal.hide();
+
+    await axios({
+      method: 'DELETE',
+      url: `/api/v1/clustering/purge/${userId}`,
+    });
+
+    delayAlert(`All clustering result data deleted successfully`, 'success');
+  } catch (err) {
+    showAlert(err.response.data.message, 'danger');
+  }
 };

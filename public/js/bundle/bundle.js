@@ -15394,7 +15394,7 @@ var importData = exports.importData = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.replaceClustering = exports.deleteClustering = void 0;
+exports.replaceClustering = exports.deleteAllClusteringResult = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -15514,7 +15514,7 @@ var _getCuaca = /*#__PURE__*/function () {
     return _ref3.apply(this, arguments);
   };
 }();
-var deleteClustering = exports.deleteClustering = /*#__PURE__*/function () {
+var _deleteClustering = /*#__PURE__*/function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(userId) {
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
@@ -15538,10 +15538,12 @@ var deleteClustering = exports.deleteClustering = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[0, 5]]);
   }));
-  return function deleteClustering(_x5) {
+  return function _deleteClustering(_x5) {
     return _ref4.apply(this, arguments);
   };
 }();
+
+//***************** Exported Functions ******************* */
 var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(data, form) {
     var cuacaArr, clustering, criteria, filteredCuacaArr, kMeansResult, clusteringResultFilter, filteredClusteringResult;
@@ -15549,7 +15551,7 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
           _context5.next = 2;
-          return deleteClustering(data.user_id);
+          return _deleteClustering(data.user_id);
         case 2:
           _context5.next = 4;
           return _getCuaca(data.user_id);
@@ -15577,7 +15579,7 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
             });
             return obj;
           }); //? K-Means Clustering
-          kMeansResult = _kMeansClustering(filteredCuacaArr, data.jum_cluster); // //? Filter K-Means Result
+          kMeansResult = _kMeansClustering(filteredCuacaArr, data.jum_cluster); //? Filter K-Means Result
           clusteringResultFilter = ['clustering_id', 'cuaca_id', 'cluster'];
           filteredClusteringResult = kMeansResult.map(function (clusteringResult) {
             var obj = {};
@@ -15585,7 +15587,7 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
               obj[el] = clusteringResult[el];
             });
             return obj;
-          }); // //? Add Clustering Result Data
+          }); //? Add Clustering Result Data
           _context5.next = 18;
           return _addClusteringResult(filteredClusteringResult);
         case 18:
@@ -15598,6 +15600,36 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
   }));
   return function replaceClustering(_x6, _x7) {
     return _ref5.apply(this, arguments);
+  };
+}();
+var deleteAllClusteringResult = exports.deleteAllClusteringResult = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(userId, modal) {
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          modal.hide();
+          _context6.next = 4;
+          return (0, _axios.default)({
+            method: 'DELETE',
+            url: "/api/v1/clustering/purge/".concat(userId)
+          });
+        case 4:
+          (0, _alert.delayAlert)("All clustering result data deleted successfully", 'success');
+          _context6.next = 10;
+          break;
+        case 7:
+          _context6.prev = 7;
+          _context6.t0 = _context6["catch"](0);
+          (0, _alert.showAlert)(_context6.t0.response.data.message, 'danger');
+        case 10:
+        case "end":
+          return _context6.stop();
+      }
+    }, _callee6, null, [[0, 7]]);
+  }));
+  return function deleteAllClusteringResult(_x8, _x9) {
+    return _ref6.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
@@ -15771,6 +15803,7 @@ var delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
+var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -16103,6 +16136,16 @@ if (addClusteringForm) {
         (0, _alert.showAlert)('Please select at least one criteria.', 'danger');
       }
     }
+  });
+}
+
+//? Delete All Data
+if (delAllClusteringResultBtn) {
+  var delAllClusteringResultModal = document.querySelector('#modal-del-all-clustering-result');
+  var bsDelAllClusteringResultModal = new bootstrap.Modal(delAllClusteringResultModal);
+  delAllClusteringResultBtn.addEventListener('click', function () {
+    var userId = delAllClusteringResultBtn.dataset.userId;
+    (0, _clustering.deleteAllClusteringResult)(userId, bsDelAllClusteringResultModal);
   });
 }
 

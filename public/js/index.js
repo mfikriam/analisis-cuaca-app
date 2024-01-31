@@ -10,7 +10,7 @@ import {
   delAllDataByUserId,
   importData,
 } from './manage-data';
-import { replaceClustering } from './clustering';
+import { replaceClustering, deleteAllClusteringResult } from './clustering';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -48,6 +48,7 @@ const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
+const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -402,6 +403,17 @@ if (addClusteringForm) {
         showAlert('Please select at least one criteria.', 'danger');
       }
     }
+  });
+}
+
+//? Delete All Data
+if (delAllClusteringResultBtn) {
+  const delAllClusteringResultModal = document.querySelector('#modal-del-all-clustering-result');
+  const bsDelAllClusteringResultModal = new bootstrap.Modal(delAllClusteringResultModal);
+
+  delAllClusteringResultBtn.addEventListener('click', () => {
+    const userId = delAllClusteringResultBtn.dataset.userId;
+    deleteAllClusteringResult(userId, bsDelAllClusteringResultModal);
   });
 }
 

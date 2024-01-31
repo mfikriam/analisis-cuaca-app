@@ -75,7 +75,7 @@ block main
             .card-body
               h5.card-title Clustering Result
               .mb-2.d-flex.justify-content-end
-                button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#modal-del-clustering-result`)
+                button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-del-all-clustering-result')
                   i.bi.bi-archive.me-1
                   |  Delete Clustering Result
               .table-responsive
@@ -94,6 +94,18 @@ block main
                           td.text-end= obj.cuaca[criteria]
                         td.text-end= obj.cluster
               // End Table with stripped rows
+
+      //- Delete Clustering Result Modal
+      #modal-del-all-clustering-result.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+          .modal-content
+            .modal-header
+              h1.modal-title.fs-4 Delete All Data Confirmation
+              button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body= 'Are you sure you want to delete all your clustering result data?'
+            .modal-footer
+              button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+              button.btn.btn-danger(class='btn-del-all-clustering-result' type='button' data-user-id=local_user.id) Delete All
 
     if clustering_result
       .row
