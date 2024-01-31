@@ -19,4 +19,6 @@ router
   .delete(clusteringController.deleteClustering);
 router.route('/:id/user').get(clusteringController.getClusteringUser);
 
+router.route('/purge/:userId').delete(clusteringController.deleteAllClustering);
+
 module.exports = router;

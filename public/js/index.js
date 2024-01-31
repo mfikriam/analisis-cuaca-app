@@ -397,7 +397,6 @@ if (addClusteringForm) {
         const kriteria_clustering = JSON.stringify(selectedCheckboxes);
         const dataObj = { jum_cluster, kriteria_clustering, user_id };
 
-        console.log(dataObj);
         replaceClustering(dataObj, addClusteringForm);
       } else {
         showAlert('Please select at least one criteria.', 'danger');

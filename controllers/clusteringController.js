@@ -9,3 +9,4 @@ exports.deleteClustering = factory.deleteOne(Clustering);
 
 exports.getClusteringUser = factory.getUser(Clustering);
 exports.createManyClustering = factory.createMany(Clustering);
+exports.deleteAllClustering = factory.deleteAll(Clustering);
