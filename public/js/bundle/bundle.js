@@ -31427,6 +31427,7 @@ var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusterModel = document.querySelector('#chart-cluster-model');
 var chartAnalisis = document.querySelector('#chart-analisis');
+var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -31826,22 +31827,85 @@ if (chartClusterModel) {
 }
 
 //***************** Analisis Page ******************* */
-//? Cluster Model Chart
-if (chartAnalisis) {
+var _plotChart = function _plotChart(chartEl, type, labels, datasets) {
   //? Generate Chart
-  new _auto.default(chartAnalisis, {
-    type: 'line',
+  return new _auto.default(chartEl, {
+    type: type,
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-      datasets: [{
-        label: 'Dataset',
-        // data: [65, 59, 80, 81, 56, 55, 40],
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
-      }]
+      labels: labels,
+      datasets: datasets
     }
   });
+};
+var _updateChart = function _updateChart(chart, labels, datasets) {
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart.update();
+};
+var _generateColor = function _generateColor(index, palette) {
+  return palette[index % 10];
+};
+
+//? Cluster Model Chart
+if (chartAnalisis) {
+  var default_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  var default_datasets = [{
+    label: 'Dataset',
+    // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
+    fill: false,
+    borderColor: '#167288',
+    backgroundColor: '#167288',
+    tension: 0.1
+  }];
+  var analisisChart = _plotChart(chartAnalisis, 'line', default_labels, default_datasets);
+
+  //? Add Plot Data
+  if (plotDataBtns) {
+    var analisisLabels = [];
+    var analisisDatasets = [];
+    var colorPalette = ['#167288', '#8cdaec', '#b45248', '#d48c84', '#a89a49', '#d6cfa2', '#3cb464', '#9bddb1', '#643c6a', '#836394'];
+    var colorIndex = 0;
+    plotDataBtns.forEach(function (checkbox) {
+      checkbox.addEventListener('change', function () {
+        var attrName = this.id;
+        var attrData = JSON.parse(this.dataset.attrData);
+        var attrLabel = attrData.map(function (el) {
+          return el.tanggal;
+        });
+
+        //? Check if switch is on
+        if (this.checked) {
+          if (attrLabel.length > analisisLabels.length) {
+            analisisLabels = attrLabel;
+          }
+          var color = _generateColor(colorIndex++, colorPalette);
+          analisisDatasets.push({
+            label: attrName,
+            data: attrData.map(function (el) {
+              return el[attrName];
+            }),
+            fill: false,
+            borderColor: color,
+            backgroundColor: color,
+            tension: 0.1
+          });
+
+          //? Update Chart
+          _updateChart(analisisChart, analisisLabels, analisisDatasets);
+        } else {
+          if (colorIndex !== 0) colorIndex--;
+
+          //? Remove attribute from datasets
+          analisisDatasets = analisisDatasets.filter(function (obj) {
+            return obj.label !== attrName;
+          });
+
+          //? Update Chart
+          _updateChart(analisisChart, analisisLabels, analisisDatasets);
+        }
+      });
+    });
+  }
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */

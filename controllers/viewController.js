@@ -232,8 +232,83 @@ exports.getClusteringPage = catchAsync(async (req, res) => {
 });
 
 exports.getAnalisisPage = catchAsync(async (req, res) => {
+  const userId = res.locals.local_user.id;
+
+  //? Data Cuaca
+  const cuaca = await _getDataset(userId, Cuaca);
+  cuaca.forEach((item) => {
+    item.tanggal = _formatDate(item.tanggal);
+    delete item.id;
+    delete item.createdAt;
+    delete item.updatedAt;
+    delete item.user_id;
+    delete item.userId;
+  });
+
+  //? Data Wisatawan
+  const wisatawan = await _getDataset(userId, Wisatawan);
+  wisatawan.forEach((item) => {
+    item.tanggal = _formatDate(item.tanggal);
+    delete item.id;
+    delete item.createdAt;
+    delete item.updatedAt;
+    delete item.user_id;
+    delete item.userId;
+  });
+
+  //? Data Kecelakaan
+  const kecelakaan = await _getDataset(userId, Kecelakaan);
+  kecelakaan.forEach((item) => {
+    item.tanggal = _formatDate(item.tanggal);
+    delete item.id;
+    delete item.createdAt;
+    delete item.updatedAt;
+    delete item.user_id;
+    delete item.userId;
+  });
+
+  //? Data Clustering Result
+  let clustering;
+  let clusteringResultList;
+  let clusteringResult = [];
+
+  clustering = await Clustering.findOne({
+    where: {
+      user_id: userId,
+    },
+  });
+
+  if (clustering) {
+    clustering = clustering.toJSON();
+    const clusteringResultQuery = await ClusteringResult.findAll({
+      where: {
+        clustering_id: clustering.id,
+      },
+    });
+
+    clusteringResultList = clusteringResultQuery.map((el) => el.dataValues);
+    clusteringResultList = await Promise.all(
+      clusteringResultList.map(async (el, index) => {
+        el.cuaca = (await clusteringResultQuery[index].getCuaca()).toJSON();
+        el.cuaca.tanggal = _formatDate(el.cuaca.tanggal);
+        return el;
+      }),
+    );
+
+    clusteringResult = clusteringResultList.map((el) => {
+      return {
+        tanggal: el.cuaca.tanggal,
+        cluster: el.cluster,
+      };
+    });
+  }
+
   res.status(200).render('analisis', {
     title: 'Analisis',
     bread_crumbs: ['Analisis'],
+    cuaca,
+    wisatawan,
+    kecelakaan,
+    clustering_result: clusteringResult,
   });
 });

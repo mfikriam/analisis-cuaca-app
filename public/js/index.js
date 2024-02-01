@@ -54,6 +54,7 @@ const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clusterin
 const chartClusterModel = document.querySelector('#chart-cluster-model');
 
 const chartAnalisis = document.querySelector('#chart-analisis');
+const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -462,24 +463,111 @@ if (chartClusterModel) {
 }
 
 //***************** Analisis Page ******************* */
-//? Cluster Model Chart
-if (chartAnalisis) {
+const _plotChart = (chartEl, type, labels, datasets) => {
   //? Generate Chart
-  new Chart(chartAnalisis, {
-    type: 'line',
+  return new Chart(chartEl, {
+    type,
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-      datasets: [
-        {
-          label: 'Dataset',
-          // data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1,
-        },
-      ],
+      labels,
+      datasets,
     },
   });
+};
+
+const _updateChart = (chart, labels, datasets) => {
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart.update();
+};
+
+const _generateColor = (index, palette) => {
+  return palette[index % 10];
+};
+
+//? Cluster Model Chart
+if (chartAnalisis) {
+  const default_labels = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agu',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
+  ];
+
+  const default_datasets = [
+    {
+      label: 'Dataset',
+      // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
+      fill: false,
+      borderColor: '#167288',
+      backgroundColor: '#167288',
+      tension: 0.1,
+    },
+  ];
+
+  const analisisChart = _plotChart(chartAnalisis, 'line', default_labels, default_datasets);
+
+  //? Add Plot Data
+  if (plotDataBtns) {
+    let analisisLabels = [];
+    let analisisDatasets = [];
+    const colorPalette = [
+      '#167288',
+      '#8cdaec',
+      '#b45248',
+      '#d48c84',
+      '#a89a49',
+      '#d6cfa2',
+      '#3cb464',
+      '#9bddb1',
+      '#643c6a',
+      '#836394',
+    ];
+    let colorIndex = 0;
+
+    plotDataBtns.forEach(function (checkbox) {
+      checkbox.addEventListener('change', function () {
+        const attrName = this.id;
+        const attrData = JSON.parse(this.dataset.attrData);
+        const attrLabel = attrData.map((el) => el.tanggal);
+
+        //? Check if switch is on
+        if (this.checked) {
+          if (attrLabel.length > analisisLabels.length) {
+            analisisLabels = attrLabel;
+          }
+
+          const color = _generateColor(colorIndex++, colorPalette);
+          analisisDatasets.push({
+            label: attrName,
+            data: attrData.map((el) => el[attrName]),
+            fill: false,
+            borderColor: color,
+            backgroundColor: color,
+            tension: 0.1,
+          });
+
+          //? Update Chart
+          _updateChart(analisisChart, analisisLabels, analisisDatasets);
+        } else {
+          if (colorIndex !== 0) colorIndex--;
+
+          //? Remove attribute from datasets
+          analisisDatasets = analisisDatasets.filter((obj) => obj.label !== attrName);
+
+          //? Update Chart
+          _updateChart(analisisChart, analisisLabels, analisisDatasets);
+        }
+      });
+    });
+  }
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */
