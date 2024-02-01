@@ -3,10 +3,8 @@ extends base
 block main
   section.section
     .row
-      .col-lg-6
+      .col-lg-12
         .card
           .card-body
-            h5.card-title Example Card
-            p
-              | This is an examle page with no contrnt. You can use it as a starter for your
-              | custom pages.
+            h5.card-title Compare Dataset
+            canvas#chart-analisis(style='max-height: 400px;' data-clustering-result=`${JSON.stringify(clustering_result)}`)

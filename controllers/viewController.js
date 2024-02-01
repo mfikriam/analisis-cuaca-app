@@ -231,9 +231,9 @@ exports.getClusteringPage = catchAsync(async (req, res) => {
   });
 });
 
-exports.getAnalisisPage = (req, res) => {
+exports.getAnalisisPage = catchAsync(async (req, res) => {
   res.status(200).render('analisis', {
     title: 'Analisis',
     bread_crumbs: ['Analisis'],
   });
-};
+});

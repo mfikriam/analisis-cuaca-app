@@ -53,6 +53,8 @@ const addClusteringForm = document.querySelector('#form-add-clustering');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 const chartClusterModel = document.querySelector('#chart-cluster-model');
 
+const chartAnalisis = document.querySelector('#chart-analisis');
+
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
   const addDataModal = document.querySelector('#modal-add-obj');
@@ -453,6 +455,27 @@ if (chartClusterModel) {
           label: 'Count',
           data: clusters.map((el) => el.count),
           hoverOffset: 4,
+        },
+      ],
+    },
+  });
+}
+
+//***************** Analisis Page ******************* */
+//? Cluster Model Chart
+if (chartAnalisis) {
+  //? Generate Chart
+  new Chart(chartAnalisis, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+      datasets: [
+        {
+          label: 'Dataset',
+          // data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
         },
       ],
     },

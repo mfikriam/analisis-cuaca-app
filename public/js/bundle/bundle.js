@@ -31426,6 +31426,7 @@ var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusterModel = document.querySelector('#chart-cluster-model');
+var chartAnalisis = document.querySelector('#chart-analisis');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -31824,6 +31825,25 @@ if (chartClusterModel) {
   });
 }
 
+//***************** Analisis Page ******************* */
+//? Cluster Model Chart
+if (chartAnalisis) {
+  //? Generate Chart
+  new _auto.default(chartAnalisis, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+      datasets: [{
+        label: 'Dataset',
+        // data: [65, 59, 80, 81, 56, 55, 40],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    }
+  });
+}
+
 //************************** MUST BE IN THE LAST LINE ********************************** */
 var delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 var delayAlertType = sessionStorage.getItem('delay-alert-type');
@@ -31857,7 +31877,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54720" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60773" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
