@@ -31878,16 +31878,29 @@ if (chartAnalisis) {
             analisisLabels = attrLabel;
           }
           var color = colorPalette.pop();
-          analisisDatasets.push({
-            label: formattedAttrName,
-            data: attrData.map(function (el) {
-              return el[attrName];
-            }),
-            fill: false,
-            borderColor: color,
-            backgroundColor: color,
-            tension: 0.1
-          });
+          if (attrName === 'cluster') {
+            analisisDatasets.push({
+              label: formattedAttrName,
+              data: attrData.map(function (el) {
+                return el[attrName].match(/\d+/)[0];
+              }),
+              fill: false,
+              borderColor: color,
+              backgroundColor: color,
+              tension: 0.1
+            });
+          } else {
+            analisisDatasets.push({
+              label: formattedAttrName,
+              data: attrData.map(function (el) {
+                return el[attrName];
+              }),
+              fill: false,
+              borderColor: color,
+              backgroundColor: color,
+              tension: 0.1
+            });
+          }
 
           //? Update Chart
           _updateChart(analisisChart, analisisLabels, analisisDatasets);
