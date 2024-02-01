@@ -31842,19 +31842,16 @@ var _updateChart = function _updateChart(chart, labels, datasets) {
   chart.data.datasets = datasets;
   chart.update();
 };
-var _generateColor = function _generateColor(index, palette) {
-  return palette[index % 10];
-};
 
 //? Cluster Model Chart
 if (chartAnalisis) {
   var default_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   var default_datasets = [{
-    label: 'Dataset',
+    label: '',
     // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
     fill: false,
-    borderColor: '#167288',
-    backgroundColor: '#167288',
+    borderColor: '#fff',
+    backgroundColor: '#fff',
     tension: 0.1
   }];
   var analisisChart = _plotChart(chartAnalisis, 'line', default_labels, default_datasets);
@@ -31863,11 +31860,13 @@ if (chartAnalisis) {
   if (plotDataBtns) {
     var analisisLabels = [];
     var analisisDatasets = [];
-    var colorPalette = ['#167288', '#8cdaec', '#b45248', '#d48c84', '#a89a49', '#d6cfa2', '#3cb464', '#9bddb1', '#643c6a', '#836394'];
-    var colorIndex = 0;
+    var colorPalette = ['#8cdaec', '#836394', '#d48c84', '#3cb464', '#d6cfa2', '#a89a49', '#9bddb1', '#b45248', '#643c6a', '#167288'];
     plotDataBtns.forEach(function (checkbox) {
       checkbox.addEventListener('change', function () {
         var attrName = this.id;
+        var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+          return char.toUpperCase();
+        });
         var attrData = JSON.parse(this.dataset.attrData);
         var attrLabel = attrData.map(function (el) {
           return el.tanggal;
@@ -31878,9 +31877,9 @@ if (chartAnalisis) {
           if (attrLabel.length > analisisLabels.length) {
             analisisLabels = attrLabel;
           }
-          var color = _generateColor(colorIndex++, colorPalette);
+          var color = colorPalette.pop();
           analisisDatasets.push({
-            label: attrName,
+            label: formattedAttrName,
             data: attrData.map(function (el) {
               return el[attrName];
             }),
@@ -31893,12 +31892,17 @@ if (chartAnalisis) {
           //? Update Chart
           _updateChart(analisisChart, analisisLabels, analisisDatasets);
         } else {
-          if (colorIndex !== 0) colorIndex--;
-
           //? Remove attribute from datasets
-          analisisDatasets = analisisDatasets.filter(function (obj) {
-            return obj.label !== attrName;
+          var newAnalisisDatasets = [];
+          analisisDatasets.forEach(function (obj) {
+            if (obj.label !== formattedAttrName) {
+              newAnalisisDatasets.push(obj);
+            } else {
+              //? Add the color back to the palette
+              colorPalette.push(obj.backgroundColor);
+            }
           });
+          analisisDatasets = newAnalisisDatasets;
 
           //? Update Chart
           _updateChart(analisisChart, analisisLabels, analisisDatasets);

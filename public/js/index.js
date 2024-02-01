@@ -480,10 +480,6 @@ const _updateChart = (chart, labels, datasets) => {
   chart.update();
 };
 
-const _generateColor = (index, palette) => {
-  return palette[index % 10];
-};
-
 //? Cluster Model Chart
 if (chartAnalisis) {
   const default_labels = [
@@ -503,11 +499,11 @@ if (chartAnalisis) {
 
   const default_datasets = [
     {
-      label: 'Dataset',
+      label: '',
       // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
       fill: false,
-      borderColor: '#167288',
-      backgroundColor: '#167288',
+      borderColor: '#fff',
+      backgroundColor: '#fff',
       tension: 0.1,
     },
   ];
@@ -519,22 +515,24 @@ if (chartAnalisis) {
     let analisisLabels = [];
     let analisisDatasets = [];
     const colorPalette = [
-      '#167288',
       '#8cdaec',
-      '#b45248',
-      '#d48c84',
-      '#a89a49',
-      '#d6cfa2',
-      '#3cb464',
-      '#9bddb1',
-      '#643c6a',
       '#836394',
+      '#d48c84',
+      '#3cb464',
+      '#d6cfa2',
+      '#a89a49',
+      '#9bddb1',
+      '#b45248',
+      '#643c6a',
+      '#167288',
     ];
-    let colorIndex = 0;
 
     plotDataBtns.forEach(function (checkbox) {
       checkbox.addEventListener('change', function () {
         const attrName = this.id;
+        const formattedAttrName = attrName
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (char) => char.toUpperCase());
         const attrData = JSON.parse(this.dataset.attrData);
         const attrLabel = attrData.map((el) => el.tanggal);
 
@@ -544,9 +542,9 @@ if (chartAnalisis) {
             analisisLabels = attrLabel;
           }
 
-          const color = _generateColor(colorIndex++, colorPalette);
+          const color = colorPalette.pop();
           analisisDatasets.push({
-            label: attrName,
+            label: formattedAttrName,
             data: attrData.map((el) => el[attrName]),
             fill: false,
             borderColor: color,
@@ -557,10 +555,17 @@ if (chartAnalisis) {
           //? Update Chart
           _updateChart(analisisChart, analisisLabels, analisisDatasets);
         } else {
-          if (colorIndex !== 0) colorIndex--;
-
           //? Remove attribute from datasets
-          analisisDatasets = analisisDatasets.filter((obj) => obj.label !== attrName);
+          const newAnalisisDatasets = [];
+          analisisDatasets.forEach((obj) => {
+            if (obj.label !== formattedAttrName) {
+              newAnalisisDatasets.push(obj);
+            } else {
+              //? Add the color back to the palette
+              colorPalette.push(obj.backgroundColor);
+            }
+          });
+          analisisDatasets = newAnalisisDatasets;
 
           //? Update Chart
           _updateChart(analisisChart, analisisLabels, analisisDatasets);
