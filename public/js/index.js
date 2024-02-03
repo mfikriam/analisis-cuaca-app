@@ -393,6 +393,7 @@ if (addClusteringForm) {
     if (addClusteringForm.checkValidity()) {
       const user_id = addClusteringForm.querySelector('#add-user_id').value;
       const jum_cluster = addClusteringForm.querySelector('#add-jum_cluster').value;
+      const jum_percobaan = addClusteringForm.querySelector('#add-jum_percobaan').value;
 
       const checkboxes = addClusteringForm.querySelectorAll('[id^="criteria"]');
       const selectedCheckboxes = [];
@@ -402,7 +403,7 @@ if (addClusteringForm) {
 
       if (selectedCheckboxes.length > 0) {
         const kriteria_clustering = JSON.stringify(selectedCheckboxes);
-        const dataObj = { jum_cluster, kriteria_clustering, user_id };
+        const dataObj = { jum_cluster, jum_percobaan, kriteria_clustering, user_id };
 
         replaceClustering(dataObj, addClusteringForm);
       } else {

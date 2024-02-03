@@ -16,6 +16,11 @@ block main
                 input#add-jum_cluster.form-control(type='number' name='jum_kecelakaan' min='2' value=`${(clustering) ? clustering.jum_cluster : ''}` required)
                 .invalid-feedback Jumlah cluster minimum 2
 
+              .col-md-3.mb-3
+                label.form-label(for='jum_percobaan') Jumlah Percobaan
+                input#add-jum_percobaan.form-control(type='number' name='jum_percobaan' min='1' value=`${(clustering) ? clustering.jum_percobaan : '10'}` required)
+                .invalid-feedback Jumlah percobaan minimum 1
+
               - let criteriaArray = [];
               if clustering
                 - criteriaArray = JSON.parse(clustering.kriteria_clustering);
@@ -123,5 +128,5 @@ block main
         .col-lg-12
           .card
             .card-body
-              h5.card-title Centroid Model (Line Chart)
+              h5.card-title Centroid Plot
     //- End if clustering_result

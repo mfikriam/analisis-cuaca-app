@@ -14,6 +14,19 @@ const clusteringSchema = {
       },
     },
   },
+  jum_percobaan: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      isInt: {
+        msg: 'Jum percobaan must be an integer.',
+      },
+      min: {
+        args: [1],
+        msg: 'Jum percobaan minimum 1',
+      },
+    },
+  },
   kriteria_clustering: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -23,6 +36,18 @@ const clusteringSchema = {
         msg: 'Kriteria clustering cannot be empty',
       },
     },
+  },
+  centroids: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  awcd: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  awcd_clusters: {
+    type: DataTypes.TEXT,
+    allowNull: true,
   },
 };
 
