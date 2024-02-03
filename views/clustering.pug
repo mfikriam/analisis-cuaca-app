@@ -145,5 +145,6 @@ block main
         .col-lg-12
           .card
             .card-body
-              h5.card-title Centroid Plot
+              h5.card-title Centroids Plot
+              canvas#chart-centroids(style='max-height: 400px;' data-centroids=clustering.centroids data-criteria=clustering.kriteria_clustering)
     //- End if clustering_result

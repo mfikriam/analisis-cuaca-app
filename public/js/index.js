@@ -52,6 +52,7 @@ const clusteringResultTable = document.querySelector('#clustering-result-table')
 const addClusteringForm = document.querySelector('#form-add-clustering');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 const chartClusterModel = document.querySelector('#chart-cluster-model');
+const chartCentroids = document.querySelector('#chart-centroids');
 
 const chartAnalisis = document.querySelector('#chart-analisis');
 const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
@@ -461,7 +462,7 @@ if (chartClusterModel) {
   //? Sort the cluster
   clusters.sort((a, b) => a.value.localeCompare(b.value));
 
-  //? Plot Pie Chart
+  //? Plot Cluster Model
   const clusterModelLabels = clusters.map((el) => el.value);
   const clusterModelDatasets = [
     {
@@ -473,10 +474,36 @@ if (chartClusterModel) {
   _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
 }
 
+if (chartCentroids) {
+  //? Get Centroids & Criteria
+  const centroidsString = chartCentroids.dataset.centroids;
+  const centroids = JSON.parse(centroidsString);
+  const criteriaString = chartCentroids.dataset.criteria;
+  const criteria = JSON.parse(criteriaString);
+
+  //? Get Clusters Name
+  const clustersName = Object.keys(centroids);
+  console.log(centroids);
+
+  //? Plot Centroids
+  const centroidsDatasets = [];
+  clustersName.forEach((cn) => {
+    const dataArr = criteria.map((crit) => centroids[cn][crit]);
+    centroidsDatasets.push({
+      label: cn,
+      data: dataArr,
+      fill: false,
+      tension: 0.1,
+    });
+  });
+
+  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
+}
+
 //***************** Analisis Page ******************* */
 //? Cluster Model Chart
 if (chartAnalisis) {
-  const default_labels = [
+  const defaultLabels = [
     'Jan',
     'Feb',
     'Mar',
@@ -491,7 +518,7 @@ if (chartAnalisis) {
     'Des',
   ];
 
-  const default_datasets = [
+  const defaultDatasets = [
     {
       label: '',
       // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
@@ -502,7 +529,7 @@ if (chartAnalisis) {
     },
   ];
 
-  const analisisChart = _plotChart(chartAnalisis, 'line', default_labels, default_datasets);
+  const analisisChart = _plotChart(chartAnalisis, 'line', defaultLabels, defaultDatasets);
 
   //? Add Plot Data
   if (plotDataBtns) {

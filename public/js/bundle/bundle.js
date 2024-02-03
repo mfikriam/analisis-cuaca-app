@@ -31575,6 +31575,7 @@ var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusterModel = document.querySelector('#chart-cluster-model');
+var chartCentroids = document.querySelector('#chart-centroids');
 var chartAnalisis = document.querySelector('#chart-analisis');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 
@@ -31969,7 +31970,7 @@ if (chartClusterModel) {
     return a.value.localeCompare(b.value);
   });
 
-  //? Plot Pie Chart
+  //? Plot Cluster Model
   var clusterModelLabels = clusters.map(function (el) {
     return el.value;
   });
@@ -31982,12 +31983,38 @@ if (chartClusterModel) {
   }];
   _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
 }
+if (chartCentroids) {
+  //? Get Centroids & Criteria
+  var centroidsString = chartCentroids.dataset.centroids;
+  var centroids = JSON.parse(centroidsString);
+  var criteriaString = chartCentroids.dataset.criteria;
+  var criteria = JSON.parse(criteriaString);
+
+  //? Get Clusters Name
+  var clustersName = Object.keys(centroids);
+  console.log(centroids);
+
+  //? Plot Centroids
+  var centroidsDatasets = [];
+  clustersName.forEach(function (cn) {
+    var dataArr = criteria.map(function (crit) {
+      return centroids[cn][crit];
+    });
+    centroidsDatasets.push({
+      label: cn,
+      data: dataArr,
+      fill: false,
+      tension: 0.1
+    });
+  });
+  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
+}
 
 //***************** Analisis Page ******************* */
 //? Cluster Model Chart
 if (chartAnalisis) {
-  var default_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  var default_datasets = [{
+  var defaultLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  var defaultDatasets = [{
     label: '',
     // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
     fill: false,
@@ -31995,7 +32022,7 @@ if (chartAnalisis) {
     backgroundColor: '#fff',
     tension: 0.1
   }];
-  var analisisChart = _plotChart(chartAnalisis, 'line', default_labels, default_datasets);
+  var analisisChart = _plotChart(chartAnalisis, 'line', defaultLabels, defaultDatasets);
 
   //? Add Plot Data
   if (plotDataBtns) {
