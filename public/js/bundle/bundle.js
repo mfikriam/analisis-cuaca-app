@@ -32028,7 +32028,7 @@ if (chartAnalisis) {
   if (plotDataBtns) {
     var analisisLabels = [];
     var analisisDatasets = [];
-    var colorPalette = ['#8cdaec', '#836394', '#d48c84', '#3cb464', '#d6cfa2', '#a89a49', '#9bddb1', '#b45248', '#643c6a', '#167288'];
+    var colorPalette = ['#cddc39', '#8cdaec', '#795548', '#d48c84', '#3cb464', '#009688', '#8a4af3', '#ff9800', '#e91e63', '#2196f3'];
     plotDataBtns.forEach(function (checkbox) {
       checkbox.addEventListener('change', function () {
         var attrName = this.id;
