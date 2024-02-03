@@ -15,13 +15,15 @@ exports.createAdmin = catchAsync(async (req, res, next) => {
     dataObj = {
       email: 'test@gmail.com',
       password: 'test123',
-      fullname: 'Test Akun',
+      fullname: 'Test Account',
+      role: 'admin',
     };
   } else if (req.params.type === 'super') {
     dataObj = {
       email: 'admin@gmail.com',
       password: 'admin123',
       fullname: 'Admin Account',
+      role: 'admin',
     };
   }
 
