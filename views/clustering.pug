@@ -116,13 +116,30 @@ block main
         .col-lg-6
           .card
             .card-body
-              h5.card-title Performance (Avg. within centroid distance)
+              h5.card-title Performance
+              .table-responsive
+                table.table.table-borderless
+                  tbody
+                    -
+                      const awcd_clusters = JSON.parse(clustering.awcd_clusters);
+                      const clusters_name = Object.keys(awcd_clusters);
+                    tr
+                      td Avg. within centroid distance
+                      td :
+                      td= clustering.awcd.toFixed(2)
+                    each cn in clusters_name
+                      tr
+                        td= `Avg. within centroid distance ${cn}`
+                        td :
+                        td= awcd_clusters[cn].toFixed(2)
 
         .col-lg-6
           .card
             .card-body
               h5.card-title Cluster Model
-              canvas#chart-cluster-model(style='max-height: 300px;' data-clustering-result=`${JSON.stringify(clustering_result)}`)
+              - const clustersArr = clustering_result.map((el) => el.cluster);
+              canvas#chart-cluster-model(style='max-height: 300px;' data-clusters-arr=`${JSON.stringify(clustersArr)}`)
+              p.mt-2.text-center.text-muted= `Total: ${clustering_result.length}`
 
       .row
         .col-lg-12

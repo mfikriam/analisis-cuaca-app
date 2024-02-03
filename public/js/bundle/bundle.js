@@ -31357,7 +31357,6 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
           return _addClusteringResult(newClusteringResult);
         case 20:
           (0, _alert.delayAlert)('K-Means clustering successfully clustered data cuaca', 'success');
-          // showAlert('K-Means clustering successfully clustered data cuaca', 'success');
         case 21:
         case "end":
           return _context5.stop();
@@ -31677,6 +31676,21 @@ var _importDataCSV = function _importDataCSV(modelName, form, inputData) {
     }
   });
 };
+var _plotChart = function _plotChart(chartEl, type, labels, datasets) {
+  //? Generate Chart
+  return new _auto.default(chartEl, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: datasets
+    }
+  });
+};
+var _updateChart = function _updateChart(chart, labels, datasets) {
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart.update();
+};
 
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
@@ -31927,14 +31941,9 @@ if (delAllClusteringResultBtn) {
 
 //? Cluster Model Chart
 if (chartClusterModel) {
-  //? Get Clustering Result Data
-  var clusteringResultString = chartClusterModel.dataset.clusteringResult;
-  var clusteringResult = JSON.parse(clusteringResultString);
-
-  //? Only get the clusters
-  var clusterArr = clusteringResult.map(function (el) {
-    return el.cluster;
-  });
+  //? Get Clusters Array
+  var clusterArrString = chartClusterModel.dataset.clustersArr;
+  var clusterArr = JSON.parse(clusterArrString);
 
   //? Count each cluster
   var countCluster = new Map();
@@ -31960,41 +31969,21 @@ if (chartClusterModel) {
     return a.value.localeCompare(b.value);
   });
 
-  //? Generate Chart
-  new _auto.default(chartClusterModel, {
-    type: 'pie',
-    data: {
-      labels: clusters.map(function (el) {
-        return el.value;
-      }),
-      datasets: [{
-        label: 'Count',
-        data: clusters.map(function (el) {
-          return el.count;
-        }),
-        hoverOffset: 4
-      }]
-    }
+  //? Plot Pie Chart
+  var clusterModelLabels = clusters.map(function (el) {
+    return el.value;
   });
+  var clusterModelDatasets = [{
+    label: 'Count',
+    data: clusters.map(function (el) {
+      return el.count;
+    }),
+    hoverOffset: 4
+  }];
+  _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
 }
 
 //***************** Analisis Page ******************* */
-var _plotChart = function _plotChart(chartEl, type, labels, datasets) {
-  //? Generate Chart
-  return new _auto.default(chartEl, {
-    type: type,
-    data: {
-      labels: labels,
-      datasets: datasets
-    }
-  });
-};
-var _updateChart = function _updateChart(chart, labels, datasets) {
-  chart.data.labels = labels;
-  chart.data.datasets = datasets;
-  chart.update();
-};
-
 //? Cluster Model Chart
 if (chartAnalisis) {
   var default_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];

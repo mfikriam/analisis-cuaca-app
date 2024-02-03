@@ -254,7 +254,6 @@ export const replaceClustering = async (data, form) => {
   await _addClusteringResult(newClusteringResult);
 
   delayAlert('K-Means clustering successfully clustered data cuaca', 'success');
-  // showAlert('K-Means clustering successfully clustered data cuaca', 'success');
 };
 
 export const deleteAllClusteringResult = async (userId, modal) => {

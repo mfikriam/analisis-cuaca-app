@@ -170,6 +170,23 @@ const _importDataCSV = (modelName, form, inputData) => {
   });
 };
 
+const _plotChart = (chartEl, type, labels, datasets) => {
+  //? Generate Chart
+  return new Chart(chartEl, {
+    type,
+    data: {
+      labels,
+      datasets,
+    },
+  });
+};
+
+const _updateChart = (chart, labels, datasets) => {
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart.update();
+};
+
 //? EVENT LISTENERS
 //***************** Login Page ******************* */
 if (loginForm) {
@@ -426,12 +443,9 @@ if (delAllClusteringResultBtn) {
 
 //? Cluster Model Chart
 if (chartClusterModel) {
-  //? Get Clustering Result Data
-  const clusteringResultString = chartClusterModel.dataset.clusteringResult;
-  const clusteringResult = JSON.parse(clusteringResultString);
-
-  //? Only get the clusters
-  const clusterArr = clusteringResult.map((el) => el.cluster);
+  //? Get Clusters Array
+  const clusterArrString = chartClusterModel.dataset.clustersArr;
+  const clusterArr = JSON.parse(clusterArrString);
 
   //? Count each cluster
   const countCluster = new Map();
@@ -447,40 +461,19 @@ if (chartClusterModel) {
   //? Sort the cluster
   clusters.sort((a, b) => a.value.localeCompare(b.value));
 
-  //? Generate Chart
-  new Chart(chartClusterModel, {
-    type: 'pie',
-    data: {
-      labels: clusters.map((el) => el.value),
-      datasets: [
-        {
-          label: 'Count',
-          data: clusters.map((el) => el.count),
-          hoverOffset: 4,
-        },
-      ],
+  //? Plot Pie Chart
+  const clusterModelLabels = clusters.map((el) => el.value);
+  const clusterModelDatasets = [
+    {
+      label: 'Count',
+      data: clusters.map((el) => el.count),
+      hoverOffset: 4,
     },
-  });
+  ];
+  _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
 }
 
 //***************** Analisis Page ******************* */
-const _plotChart = (chartEl, type, labels, datasets) => {
-  //? Generate Chart
-  return new Chart(chartEl, {
-    type,
-    data: {
-      labels,
-      datasets,
-    },
-  });
-};
-
-const _updateChart = (chart, labels, datasets) => {
-  chart.data.labels = labels;
-  chart.data.datasets = datasets;
-  chart.update();
-};
-
 //? Cluster Model Chart
 if (chartAnalisis) {
   const default_labels = [
