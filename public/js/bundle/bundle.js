@@ -32011,18 +32011,23 @@ if (chartCentroids) {
 }
 
 //***************** Analisis Page ******************* */
-var analisisLabels = [];
-var analisisDatasets = [];
+var analisisLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
+var analisisDatasets = [{
+  label: '',
+  fill: false,
+  borderColor: '#fff',
+  backgroundColor: '#fff'
+}];
 var tanggalArr, tanggalSlider, analisisChart;
 if (tanggalRange) {
   //? Get array of tanggal
   tanggalArr = JSON.parse(tanggalRange.dataset.tanggalArr);
 
   //? Load default chart
-  analisisLabels = tanggalArr;
   analisisChart = _plotChart(chartAnalisis, 'line', analisisLabels, analisisDatasets);
-  if (tanggalArr.length === 0) {
-    analisisLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
+  if (tanggalArr.length > 0) {
+    analisisLabels = tanggalArr;
+    analisisDatasets = [];
   }
 
   //? Load Tanggal Range Slider
