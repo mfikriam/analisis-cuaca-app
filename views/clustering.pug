@@ -88,16 +88,16 @@ block main
                   thead
                     tr
                       th.text-center tanggal
+                      th.text-center cluster
                       each criteria in criteriaArray
                         th.text-center= criteria
-                      th.text-center cluster
                   tbody
                     each obj in clustering_result
                       tr
                         td.text-end= obj.cuaca.tanggal
+                        td.text-end= obj.cluster
                         each criteria in criteriaArray
                           td.text-end= obj.cuaca[criteria]
-                        td.text-end= obj.cluster
               // End Table with stripped rows
 
       //- Delete Clustering Result Modal
@@ -139,7 +139,7 @@ block main
               h5.card-title Cluster Model
               - const clustersArr = clustering_result.map((el) => el.cluster);
               canvas#chart-cluster-model(style='max-height: 300px;' data-clusters-arr=`${JSON.stringify(clustersArr)}`)
-              p.mt-2.text-center.text-muted= `Total: ${clustering_result.length}`
+              h6.mt-2.text-center= `Total: ${clustering_result.length}`
 
       .row
         .col-lg-12
