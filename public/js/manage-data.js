@@ -22,7 +22,7 @@ export const addNewData = async (modelName, data, form, modal) => {
   }
 };
 
-export const updateDataById = async (modelName, objId, data, form, Modals) => {
+export const updateDataById = async (modelName, objId, data, form, Modals, userId) => {
   try {
     const res = await axios({
       method: 'PATCH',
@@ -31,6 +31,13 @@ export const updateDataById = async (modelName, objId, data, form, Modals) => {
     });
 
     if (res.data.status === 'success') {
+      if (modelName === 'cuaca') {
+        await axios({
+          method: 'DELETE',
+          url: `/api/v1/clustering/purge/${userId}`,
+        });
+      }
+
       const resObj = res.data.data[modelName];
       Modals.forEach((el) => el.hide());
 

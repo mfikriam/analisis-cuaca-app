@@ -30866,7 +30866,7 @@ var addNewData = exports.addNewData = /*#__PURE__*/function () {
   };
 }();
 var updateDataById = exports.updateDataById = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(modelName, objId, data, form, Modals) {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(modelName, objId, data, form, Modals, userId) {
     var res, resObj;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
@@ -30880,27 +30880,40 @@ var updateDataById = exports.updateDataById = /*#__PURE__*/function () {
           });
         case 3:
           res = _context2.sent;
-          if (res.data.status === 'success') {
-            resObj = res.data.data[modelName];
-            Modals.forEach(function (el) {
-              return el.hide();
-            });
-            (0, _alert.delayAlert)("Data ".concat(modelName, " updated successfully"), 'success');
+          if (!(res.data.status === 'success')) {
+            _context2.next = 11;
+            break;
           }
-          _context2.next = 11;
+          if (!(modelName === 'cuaca')) {
+            _context2.next = 8;
+            break;
+          }
+          _context2.next = 8;
+          return (0, _axios.default)({
+            method: 'DELETE',
+            url: "/api/v1/clustering/purge/".concat(userId)
+          });
+        case 8:
+          resObj = res.data.data[modelName];
+          Modals.forEach(function (el) {
+            return el.hide();
+          });
+          (0, _alert.delayAlert)("Data ".concat(modelName, " updated successfully"), 'success');
+        case 11:
+          _context2.next = 17;
           break;
-        case 7:
-          _context2.prev = 7;
+        case 13:
+          _context2.prev = 13;
           _context2.t0 = _context2["catch"](0);
           form.classList.remove('was-validated');
           (0, _alert.validationErrorAlert)(_context2.t0);
-        case 11:
+        case 17:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 7]]);
+    }, _callee2, null, [[0, 13]]);
   }));
-  return function updateDataById(_x5, _x6, _x7, _x8, _x9) {
+  return function updateDataById(_x5, _x6, _x7, _x8, _x9, _x10) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -30942,7 +30955,7 @@ var delDataById = exports.delDataById = /*#__PURE__*/function () {
       }
     }, _callee3, null, [[0, 10]]);
   }));
-  return function delDataById(_x10, _x11, _x12, _x13) {
+  return function delDataById(_x11, _x12, _x13, _x14) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -30982,7 +30995,7 @@ var delAllDataByUserId = exports.delAllDataByUserId = /*#__PURE__*/function () {
       }
     }, _callee4, null, [[0, 10]]);
   }));
-  return function delAllDataByUserId(_x14, _x15, _x16) {
+  return function delAllDataByUserId(_x15, _x16, _x17) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -31018,7 +31031,7 @@ var importData = exports.importData = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[0, 7]]);
   }));
-  return function importData(_x17, _x18, _x19, _x20) {
+  return function importData(_x18, _x19, _x20, _x21) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -31627,12 +31640,13 @@ var _updateData = function _updateData(modelName, inputData) {
       e.preventDefault();
       form.classList.add('was-validated');
       var objId = form.dataset.objId;
+      var userId = form.dataset.userId;
       if (form.checkValidity()) {
         var dataObj = {};
         inputData.forEach(function (data) {
           dataObj[data] = form.querySelector("#update-".concat(data, "-").concat(objId)).value;
         });
-        (0, _manageData.updateDataById)(modelName, objId, dataObj, form, bsUpdateDataModalList);
+        (0, _manageData.updateDataById)(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
       }
     });
   });

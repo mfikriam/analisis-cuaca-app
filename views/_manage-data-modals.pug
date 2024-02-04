@@ -22,7 +22,7 @@ mixin updateDataModals(obj)
           h1.modal-title.fs-4= `Update ${capitalModelName} ${obj.tanggal}`
           button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
         .modal-body
-          form.row(id=`form-update-${modelName}-${obj.id}` novalidate data-obj-id=obj.id)
+          form.row(id=`form-update-${modelName}-${obj.id}` novalidate data-obj-id=obj.id data-user-id=local_user.id)
             block input-update-data
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel

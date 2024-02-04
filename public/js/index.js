@@ -89,13 +89,14 @@ const _updateData = (modelName, inputData) => {
       e.preventDefault();
       form.classList.add('was-validated');
       const objId = form.dataset.objId;
+      const userId = form.dataset.userId;
 
       if (form.checkValidity()) {
         const dataObj = {};
         inputData.forEach((data) => {
           dataObj[data] = form.querySelector(`#update-${data}-${objId}`).value;
         });
-        updateDataById(modelName, objId, dataObj, form, bsUpdateDataModalList);
+        updateDataById(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
       }
     });
   });
