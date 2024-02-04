@@ -108,7 +108,8 @@ const _deleteData = (modelName, btnList) => {
   btnList.forEach((btn) => {
     btn.addEventListener('click', () => {
       const objId = btn.dataset.objId;
-      delDataById(modelName, objId, bsDelDataModalList);
+      const userId = btn.dataset.userId;
+      delDataById(modelName, objId, bsDelDataModalList, userId);
     });
   });
 };
@@ -525,6 +526,7 @@ let analisisDatasets = [
 ];
 let tanggalArr, tanggalSlider, analisisChart;
 
+//? Add Tanggal Slider
 if (tanggalRange) {
   //? Get array of tanggal
   tanggalArr = JSON.parse(tanggalRange.dataset.tanggalArr);

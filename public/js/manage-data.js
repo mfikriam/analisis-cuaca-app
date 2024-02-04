@@ -42,7 +42,7 @@ export const updateDataById = async (modelName, objId, data, form, Modals) => {
   }
 };
 
-export const delDataById = async (modelName, objId, Modals) => {
+export const delDataById = async (modelName, objId, Modals, userId) => {
   try {
     Modals.forEach((el) => el.hide());
 
@@ -50,6 +50,13 @@ export const delDataById = async (modelName, objId, Modals) => {
       method: 'DELETE',
       url: `/api/v1/${modelName}/${objId}`,
     });
+
+    if (modelName === 'cuaca') {
+      await axios({
+        method: 'DELETE',
+        url: `/api/v1/clustering/purge/${userId}`,
+      });
+    }
 
     delayAlert(`Data ${modelName} deleted successfully`, 'success');
   } catch (err) {
@@ -65,6 +72,13 @@ export const delAllDataByUserId = async (modelName, userId, modal) => {
       method: 'DELETE',
       url: `/api/v1/${modelName}/purge/${userId}`,
     });
+
+    if (modelName === 'cuaca') {
+      await axios({
+        method: 'DELETE',
+        url: `/api/v1/clustering/purge/${userId}`,
+      });
+    }
 
     delayAlert(`All ${modelName}'s data deleted successfully`, 'success');
   } catch (err) {

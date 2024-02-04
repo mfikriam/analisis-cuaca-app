@@ -30905,7 +30905,7 @@ var updateDataById = exports.updateDataById = /*#__PURE__*/function () {
   };
 }();
 var delDataById = exports.delDataById = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(modelName, objId, Modals) {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(modelName, objId, Modals, userId) {
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
@@ -30919,20 +30919,30 @@ var delDataById = exports.delDataById = /*#__PURE__*/function () {
             url: "/api/v1/".concat(modelName, "/").concat(objId)
           });
         case 4:
-          (0, _alert.delayAlert)("Data ".concat(modelName, " deleted successfully"), 'success');
-          _context3.next = 10;
-          break;
+          if (!(modelName === 'cuaca')) {
+            _context3.next = 7;
+            break;
+          }
+          _context3.next = 7;
+          return (0, _axios.default)({
+            method: 'DELETE',
+            url: "/api/v1/clustering/purge/".concat(userId)
+          });
         case 7:
-          _context3.prev = 7;
+          (0, _alert.delayAlert)("Data ".concat(modelName, " deleted successfully"), 'success');
+          _context3.next = 13;
+          break;
+        case 10:
+          _context3.prev = 10;
           _context3.t0 = _context3["catch"](0);
           (0, _alert.showAlert)(_context3.t0.response.data.message, 'danger');
-        case 10:
+        case 13:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[0, 7]]);
+    }, _callee3, null, [[0, 10]]);
   }));
-  return function delDataById(_x10, _x11, _x12) {
+  return function delDataById(_x10, _x11, _x12, _x13) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -30949,20 +30959,30 @@ var delAllDataByUserId = exports.delAllDataByUserId = /*#__PURE__*/function () {
             url: "/api/v1/".concat(modelName, "/purge/").concat(userId)
           });
         case 4:
-          (0, _alert.delayAlert)("All ".concat(modelName, "'s data deleted successfully"), 'success');
-          _context4.next = 10;
-          break;
+          if (!(modelName === 'cuaca')) {
+            _context4.next = 7;
+            break;
+          }
+          _context4.next = 7;
+          return (0, _axios.default)({
+            method: 'DELETE',
+            url: "/api/v1/clustering/purge/".concat(userId)
+          });
         case 7:
-          _context4.prev = 7;
+          (0, _alert.delayAlert)("All ".concat(modelName, "'s data deleted successfully"), 'success');
+          _context4.next = 13;
+          break;
+        case 10:
+          _context4.prev = 10;
           _context4.t0 = _context4["catch"](0);
           (0, _alert.showAlert)(_context4.t0.response.data.message, 'danger');
-        case 10:
+        case 13:
         case "end":
           return _context4.stop();
       }
-    }, _callee4, null, [[0, 7]]);
+    }, _callee4, null, [[0, 10]]);
   }));
-  return function delAllDataByUserId(_x13, _x14, _x15) {
+  return function delAllDataByUserId(_x14, _x15, _x16) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -30998,7 +31018,7 @@ var importData = exports.importData = /*#__PURE__*/function () {
       }
     }, _callee5, null, [[0, 7]]);
   }));
-  return function importData(_x16, _x17, _x18, _x19) {
+  return function importData(_x17, _x18, _x19, _x20) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -31625,7 +31645,8 @@ var _deleteData = function _deleteData(modelName, btnList) {
   btnList.forEach(function (btn) {
     btn.addEventListener('click', function () {
       var objId = btn.dataset.objId;
-      (0, _manageData.delDataById)(modelName, objId, bsDelDataModalList);
+      var userId = btn.dataset.userId;
+      (0, _manageData.delDataById)(modelName, objId, bsDelDataModalList, userId);
     });
   });
 };
@@ -32019,6 +32040,8 @@ var analisisDatasets = [{
   backgroundColor: '#fff'
 }];
 var tanggalArr, tanggalSlider, analisisChart;
+
+//? Add Tanggal Slider
 if (tanggalRange) {
   //? Get array of tanggal
   tanggalArr = JSON.parse(tanggalRange.dataset.tanggalArr);

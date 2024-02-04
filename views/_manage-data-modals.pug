@@ -39,7 +39,7 @@ mixin delDataModals(objId, objUnique)
           span.fw-bold= objUnique
         .modal-footer
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
-          button.btn.btn-danger(class=`btn-del-${modelName}` type='button' data-obj-id=objId) Delete
+          button.btn.btn-danger(class=`btn-del-${modelName}` type='button' data-obj-id=objId data-user-id=local_user.id) Delete
 
 mixin delAllDataModal()
   #modal-del-all.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
