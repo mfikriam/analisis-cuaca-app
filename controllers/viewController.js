@@ -196,7 +196,7 @@ exports.getCuacaPage = catchAsync(async (req, res, next) => {
 exports.getClusteringPage = catchAsync(async (req, res) => {
   const userId = res.locals.local_user.id;
   let clustering;
-  let clusteringResultList;
+  let clusteringResultList = [];
 
   clustering = await Clustering.findOne({
     where: {

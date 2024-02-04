@@ -54,6 +54,7 @@ const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clusterin
 const chartClusterModel = document.querySelector('#chart-cluster-model');
 const chartCentroids = document.querySelector('#chart-centroids');
 
+const tanggalRange = document.querySelector('#tanggal-range');
 const chartAnalisis = document.querySelector('#chart-analisis');
 const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 
@@ -500,108 +501,138 @@ if (chartCentroids) {
 }
 
 //***************** Analisis Page ******************* */
-//? Analisis Chart
-if (chartAnalisis) {
-  const defaultLabels = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'Mei',
-    'Jun',
-    'Jul',
-    'Agu',
-    'Sep',
-    'Okt',
-    'Nov',
-    'Des',
-  ];
+let analisisLabels = [];
+let analisisDatasets = [];
+let tanggalArr, tanggalSlider, analisisChart;
 
-  const defaultDatasets = [
-    {
-      label: '',
-      // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
-      fill: false,
-      borderColor: '#fff',
-      backgroundColor: '#fff',
-    },
-  ];
+if (tanggalRange) {
+  //? Get array of tanggal
+  tanggalArr = JSON.parse(tanggalRange.dataset.tanggalArr);
 
-  const analisisChart = _plotChart(chartAnalisis, 'line', defaultLabels, defaultDatasets);
+  //? Load default chart
+  analisisLabels = tanggalArr;
+  analisisChart = _plotChart(chartAnalisis, 'line', analisisLabels, analisisDatasets);
 
-  //? Add Plot Data
-  if (plotDataBtns) {
-    let analisisLabels = [];
-    let analisisDatasets = [];
-    const colorPalette = [
-      '#cddc39',
-      '#8cdaec',
-      '#795548',
-      '#d48c84',
-      '#3cb464',
-      '#009688',
-      '#8a4af3',
-      '#ff9800',
-      '#e91e63',
-      '#2196f3',
+  if (tanggalArr.length === 0) {
+    analisisLabels = [
+      'Jan 2024',
+      'Feb 2024',
+      'Mar 2024',
+      'Apr 2024',
+      'Mei 2024',
+      'Jun 2024',
+      'Jul 2024',
+      'Agu 2024',
+      'Sep 2024',
+      'Okt 2024',
+      'Nov 2024',
+      'Des 2024',
     ];
-
-    plotDataBtns.forEach(function (checkbox) {
-      checkbox.addEventListener('change', function () {
-        const attrName = this.id;
-        const formattedAttrName = attrName
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, (char) => char.toUpperCase());
-        const attrData = JSON.parse(this.dataset.attrData);
-        const attrLabel = attrData.map((el) => el.tanggal);
-
-        //? Check if switch is on
-        if (this.checked) {
-          if (attrLabel.length > analisisLabels.length) {
-            analisisLabels = attrLabel;
-          }
-
-          const color = colorPalette.pop();
-
-          if (attrName === 'cluster') {
-            analisisDatasets.push({
-              label: formattedAttrName,
-              data: attrData.map((el) => el[attrName].match(/\d+/)[0]),
-              fill: false,
-              borderColor: color,
-              backgroundColor: color,
-            });
-          } else {
-            analisisDatasets.push({
-              label: formattedAttrName,
-              data: attrData.map((el) => el[attrName]),
-              fill: false,
-              borderColor: color,
-              backgroundColor: color,
-            });
-          }
-
-          //? Update Chart
-          _updateChart(analisisChart, analisisLabels, analisisDatasets);
-        } else {
-          //? Remove attribute from datasets
-          const newAnalisisDatasets = [];
-          analisisDatasets.forEach((obj) => {
-            if (obj.label !== formattedAttrName) {
-              newAnalisisDatasets.push(obj);
-            } else {
-              //? Add the color back to the palette
-              colorPalette.push(obj.backgroundColor);
-            }
-          });
-          analisisDatasets = newAnalisisDatasets;
-
-          //? Update Chart
-          _updateChart(analisisChart, analisisLabels, analisisDatasets);
-        }
-      });
-    });
   }
+
+  //? Load Tanggal Range Slider
+  tanggalSlider = new rSlider({
+    target: tanggalRange,
+    values: analisisLabels,
+    range: true,
+    scale: true,
+    labels: false,
+    tooltip: true,
+    onChange: function (vals) {
+      if (tanggalArr.length > 0) {
+        //? Filter Labels
+        const [minDate, maxDate] = vals.split(',');
+        let inRanges = false;
+
+        const filteredDates = [];
+        tanggalArr.forEach((tanggal) => {
+          if (tanggal === minDate) inRanges = true;
+          if (inRanges) filteredDates.push(tanggal);
+          if (tanggal === maxDate) inRanges = false;
+        });
+
+        //? Update Chart's Labels
+        analisisLabels = filteredDates;
+
+        //? Update Chart's Datasets
+        analisisDatasets.forEach((el) => {
+          el.data = el.original.filter((obj) => analisisLabels.includes(obj.x));
+        });
+
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      }
+    },
+  });
+
+  if (tanggalArr.length === 0) tanggalSlider.disabled(true);
+}
+
+//? Add Plot Data
+if (plotDataBtns) {
+  const colorPalette = [
+    '#cddc39',
+    '#8cdaec',
+    '#795548',
+    '#d48c84',
+    '#3cb464',
+    '#009688',
+    '#8a4af3',
+    '#ff9800',
+    '#e91e63',
+    '#2196f3',
+  ];
+
+  plotDataBtns.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      const attrName = this.id;
+      const formattedAttrName = attrName
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+      const attrData = JSON.parse(this.dataset.attrData);
+
+      if (attrName === 'cluster') {
+        attrData.forEach((el) => (el.cluster = el.cluster.match(/\d+/)[0]));
+      }
+
+      //? Check if switch is on
+      if (this.checked) {
+        const color = colorPalette.pop();
+
+        analisisDatasets.push({
+          label: formattedAttrName,
+          data: attrData
+            .filter((el) => analisisLabels.includes(el.tanggal))
+            .map((el) => {
+              return { x: el.tanggal, y: el[attrName] };
+            }),
+          original: attrData.map((el) => {
+            return { x: el.tanggal, y: el[attrName] };
+          }),
+          fill: false,
+          borderColor: color,
+          backgroundColor: color,
+        });
+
+        //? Update Chart
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      } else {
+        //? Remove attribute from datasets
+        const newAnalisisDatasets = [];
+        analisisDatasets.forEach((obj) => {
+          if (obj.label !== formattedAttrName) {
+            newAnalisisDatasets.push(obj);
+          } else {
+            //? Add the color back to the palette
+            colorPalette.push(obj.backgroundColor);
+          }
+        });
+        analisisDatasets = newAnalisisDatasets;
+
+        //? Update Chart
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      }
+    });
+  });
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */

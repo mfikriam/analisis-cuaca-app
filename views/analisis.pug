@@ -8,6 +8,8 @@ block main
           .card-body
             h5.card-title Compare Dataset
             
+            - let longestTanggal = [];
+
             #accordion.accordion
               .accordion-item
                 h2#heading.accordion-header
@@ -18,6 +20,7 @@ block main
                     .col-12.mb-3
                       legend.col-form-label.fw-bold Data Cuaca
                       if cuaca.length > 0
+                        - if (cuaca.length > longestTanggal.length) longestTanggal = cuaca.map((el) => el.tanggal);
                         - const cuaca_attr = ['temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
                         each attr in cuaca_attr
                           -
@@ -37,6 +40,7 @@ block main
                     .col-lg-4.mb-3
                       legend.col-form-label.fw-bold Data Wisatawan
                       if wisatawan.length > 0
+                        - if (wisatawan.length > longestTanggal.length) longestTanggal = wisatawan.map((el) => el.tanggal);
                         - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
                         each attr in wisatawan_attr
                           -
@@ -56,6 +60,7 @@ block main
                     .col-lg-4.mb-3
                       legend.col-form-label.fw-bold Data Kecelakaan
                       if kecelakaan.length > 0
+                        - if (kecelakaan.length > longestTanggal.length) longestTanggal = kecelakaan.map((el) => el.tanggal);
                         - const kecelakaan_attr = ['jum_kecelakaan'];
                         each attr in kecelakaan_attr
                           -
@@ -75,6 +80,7 @@ block main
                     .col-lg-4.mb-3
                       legend.col-form-label.fw-bold Clustering Result
                       if clustering_result.length > 0
+                        - if (clustering_result.length > longestTanggal.length) longestTanggal = clustering_result.map((el) => el.tanggal);
                         - const clustering_result_attr = ['cluster'];
                         each attr in clustering_result_attr
                           -
@@ -90,7 +96,12 @@ block main
                             label.form-check-label(for=attr)= attr_display
                       else
                         p No data
+
+                    .col-12.mb-3
+                      label.form-label.fw-bold.mb-5(for='tanggal-range') Tanggal Range
+                      .px-5
+                        input#tanggal-range(type='text' data-tanggal-arr=`${JSON.stringify(longestTanggal)}`)
+
             //- End of accordion
 
-            canvas#chart-analisis(style='max-height: 400px;' data-clustering-result=`${JSON.stringify(clustering_result)}`)
-
+            canvas#chart-analisis(style='max-height: 400px;')

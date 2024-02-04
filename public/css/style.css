@@ -12,3 +12,7 @@
   color: #f03e3e;
   background: #fff5f5;
 }
+
+.rs-tooltip {
+  min-width: 80px;
+}

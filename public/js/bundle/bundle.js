@@ -31576,6 +31576,7 @@ var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusterModel = document.querySelector('#chart-cluster-model');
 var chartCentroids = document.querySelector('#chart-centroids');
+var tanggalRange = document.querySelector('#tanggal-range');
 var chartAnalisis = document.querySelector('#chart-analisis');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 
@@ -32010,83 +32011,119 @@ if (chartCentroids) {
 }
 
 //***************** Analisis Page ******************* */
-//? Analisis Chart
-if (chartAnalisis) {
-  var defaultLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-  var defaultDatasets = [{
-    label: '',
-    // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
-    fill: false,
-    borderColor: '#fff',
-    backgroundColor: '#fff'
-  }];
-  var analisisChart = _plotChart(chartAnalisis, 'line', defaultLabels, defaultDatasets);
+var analisisLabels = [];
+var analisisDatasets = [];
+var tanggalArr, tanggalSlider, analisisChart;
+if (tanggalRange) {
+  //? Get array of tanggal
+  tanggalArr = JSON.parse(tanggalRange.dataset.tanggalArr);
 
-  //? Add Plot Data
-  if (plotDataBtns) {
-    var analisisLabels = [];
-    var analisisDatasets = [];
-    var colorPalette = ['#cddc39', '#8cdaec', '#795548', '#d48c84', '#3cb464', '#009688', '#8a4af3', '#ff9800', '#e91e63', '#2196f3'];
-    plotDataBtns.forEach(function (checkbox) {
-      checkbox.addEventListener('change', function () {
-        var attrName = this.id;
-        var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
-          return char.toUpperCase();
-        });
-        var attrData = JSON.parse(this.dataset.attrData);
-        var attrLabel = attrData.map(function (el) {
-          return el.tanggal;
-        });
-
-        //? Check if switch is on
-        if (this.checked) {
-          if (attrLabel.length > analisisLabels.length) {
-            analisisLabels = attrLabel;
-          }
-          var color = colorPalette.pop();
-          if (attrName === 'cluster') {
-            analisisDatasets.push({
-              label: formattedAttrName,
-              data: attrData.map(function (el) {
-                return el[attrName].match(/\d+/)[0];
-              }),
-              fill: false,
-              borderColor: color,
-              backgroundColor: color
-            });
-          } else {
-            analisisDatasets.push({
-              label: formattedAttrName,
-              data: attrData.map(function (el) {
-                return el[attrName];
-              }),
-              fill: false,
-              borderColor: color,
-              backgroundColor: color
-            });
-          }
-
-          //? Update Chart
-          _updateChart(analisisChart, analisisLabels, analisisDatasets);
-        } else {
-          //? Remove attribute from datasets
-          var newAnalisisDatasets = [];
-          analisisDatasets.forEach(function (obj) {
-            if (obj.label !== formattedAttrName) {
-              newAnalisisDatasets.push(obj);
-            } else {
-              //? Add the color back to the palette
-              colorPalette.push(obj.backgroundColor);
-            }
-          });
-          analisisDatasets = newAnalisisDatasets;
-
-          //? Update Chart
-          _updateChart(analisisChart, analisisLabels, analisisDatasets);
-        }
-      });
-    });
+  //? Load default chart
+  analisisLabels = tanggalArr;
+  analisisChart = _plotChart(chartAnalisis, 'line', analisisLabels, analisisDatasets);
+  if (tanggalArr.length === 0) {
+    analisisLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
   }
+
+  //? Load Tanggal Range Slider
+  tanggalSlider = new rSlider({
+    target: tanggalRange,
+    values: analisisLabels,
+    range: true,
+    scale: true,
+    labels: false,
+    tooltip: true,
+    onChange: function onChange(vals) {
+      if (tanggalArr.length > 0) {
+        //? Filter Labels
+        var _vals$split = vals.split(','),
+          _vals$split2 = _slicedToArray(_vals$split, 2),
+          minDate = _vals$split2[0],
+          maxDate = _vals$split2[1];
+        var inRanges = false;
+        var filteredDates = [];
+        tanggalArr.forEach(function (tanggal) {
+          if (tanggal === minDate) inRanges = true;
+          if (inRanges) filteredDates.push(tanggal);
+          if (tanggal === maxDate) inRanges = false;
+        });
+
+        //? Update Chart's Labels
+        analisisLabels = filteredDates;
+
+        //? Update Chart's Datasets
+        analisisDatasets.forEach(function (el) {
+          el.data = el.original.filter(function (obj) {
+            return analisisLabels.includes(obj.x);
+          });
+        });
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      }
+    }
+  });
+  if (tanggalArr.length === 0) tanggalSlider.disabled(true);
+}
+
+//? Add Plot Data
+if (plotDataBtns) {
+  var colorPalette = ['#cddc39', '#8cdaec', '#795548', '#d48c84', '#3cb464', '#009688', '#8a4af3', '#ff9800', '#e91e63', '#2196f3'];
+  plotDataBtns.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      var attrName = this.id;
+      var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+        return char.toUpperCase();
+      });
+      var attrData = JSON.parse(this.dataset.attrData);
+      if (attrName === 'cluster') {
+        attrData.forEach(function (el) {
+          return el.cluster = el.cluster.match(/\d+/)[0];
+        });
+      }
+
+      //? Check if switch is on
+      if (this.checked) {
+        var color = colorPalette.pop();
+        analisisDatasets.push({
+          label: formattedAttrName,
+          data: attrData.filter(function (el) {
+            return analisisLabels.includes(el.tanggal);
+          }).map(function (el) {
+            return {
+              x: el.tanggal,
+              y: el[attrName]
+            };
+          }),
+          original: attrData.map(function (el) {
+            return {
+              x: el.tanggal,
+              y: el[attrName]
+            };
+          }),
+          fill: false,
+          borderColor: color,
+          backgroundColor: color
+        });
+
+        //? Update Chart
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      } else {
+        //? Remove attribute from datasets
+        var newAnalisisDatasets = [];
+        analisisDatasets.forEach(function (obj) {
+          if (obj.label !== formattedAttrName) {
+            newAnalisisDatasets.push(obj);
+          } else {
+            //? Add the color back to the palette
+            colorPalette.push(obj.backgroundColor);
+          }
+        });
+        analisisDatasets = newAnalisisDatasets;
+
+        //? Update Chart
+        _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      }
+    });
+  });
 }
 
 //************************** MUST BE IN THE LAST LINE ********************************** */
@@ -32122,7 +32159,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59484" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64255" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
