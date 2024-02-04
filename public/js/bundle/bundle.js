@@ -31992,7 +31992,6 @@ if (chartCentroids) {
 
   //? Get Clusters Name
   var clustersName = Object.keys(centroids);
-  console.log(centroids);
 
   //? Plot Centroids
   var centroidsDatasets = [];
@@ -32003,15 +32002,15 @@ if (chartCentroids) {
     centroidsDatasets.push({
       label: cn,
       data: dataArr,
-      fill: false,
-      tension: 0.1
+      fill: false
+      // tension: 0.1,
     });
   });
   _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
 }
 
 //***************** Analisis Page ******************* */
-//? Cluster Model Chart
+//? Analisis Chart
 if (chartAnalisis) {
   var defaultLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   var defaultDatasets = [{
@@ -32019,8 +32018,7 @@ if (chartAnalisis) {
     // data: [65, 59, 80, 81, 56, 55, 40, 19, 23, 42, 38, 98],
     fill: false,
     borderColor: '#fff',
-    backgroundColor: '#fff',
-    tension: 0.1
+    backgroundColor: '#fff'
   }];
   var analisisChart = _plotChart(chartAnalisis, 'line', defaultLabels, defaultDatasets);
 
@@ -32054,8 +32052,7 @@ if (chartAnalisis) {
               }),
               fill: false,
               borderColor: color,
-              backgroundColor: color,
-              tension: 0.1
+              backgroundColor: color
             });
           } else {
             analisisDatasets.push({
@@ -32065,8 +32062,7 @@ if (chartAnalisis) {
               }),
               fill: false,
               borderColor: color,
-              backgroundColor: color,
-              tension: 0.1
+              backgroundColor: color
             });
           }
 
@@ -32126,7 +32122,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59138" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59484" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

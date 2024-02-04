@@ -483,7 +483,6 @@ if (chartCentroids) {
 
   //? Get Clusters Name
   const clustersName = Object.keys(centroids);
-  console.log(centroids);
 
   //? Plot Centroids
   const centroidsDatasets = [];
@@ -493,7 +492,7 @@ if (chartCentroids) {
       label: cn,
       data: dataArr,
       fill: false,
-      tension: 0.1,
+      // tension: 0.1,
     });
   });
 
@@ -501,7 +500,7 @@ if (chartCentroids) {
 }
 
 //***************** Analisis Page ******************* */
-//? Cluster Model Chart
+//? Analisis Chart
 if (chartAnalisis) {
   const defaultLabels = [
     'Jan',
@@ -525,7 +524,6 @@ if (chartAnalisis) {
       fill: false,
       borderColor: '#fff',
       backgroundColor: '#fff',
-      tension: 0.1,
     },
   ];
 
@@ -572,7 +570,6 @@ if (chartAnalisis) {
               fill: false,
               borderColor: color,
               backgroundColor: color,
-              tension: 0.1,
             });
           } else {
             analisisDatasets.push({
@@ -581,7 +578,6 @@ if (chartAnalisis) {
               fill: false,
               borderColor: color,
               backgroundColor: color,
-              tension: 0.1,
             });
           }
 
