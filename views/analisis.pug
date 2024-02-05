@@ -105,3 +105,81 @@ block main
             //- End of accordion
 
             canvas#chart-analisis(style='max-height: 400px;')
+            
+      if wisatawan.length > 0 || kecelakaan.length > 0
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Prediction
+              
+              .row
+                .col-lg-5.mb-3
+                  legend.col-form-label.fw-bold Data Wisatawan
+                  if wisatawan.length > 0
+                    - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
+                    each attr in wisatawan_attr
+                      -
+                        const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+
+                        const formattedClusteringResult = {};
+                        clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
+                        const predictionObj = {};
+                        clusters_name.forEach((cn) => {
+                          predictionObj[cn] = wisatawan
+                            .filter((el) => cn === formattedClusteringResult[el.tanggal])
+                            .map((el) => {
+                              const obj = {};
+                              obj.tanggal = el.tanggal;
+                              obj[attr] = el[attr];
+                              return obj;
+                            });
+                        });
+                        const tanggalArr = wisatawan.map((el) => el.tanggal);
+
+                      .form-check.form-check-inline.form-switch
+                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        label.form-check-label(for=attr)= attr_display
+                  else
+                    p No data
+                
+                .col-lg-5.mb-3
+                  legend.col-form-label.fw-bold Data Kecelakaan
+                  if kecelakaan.length > 0
+                    - const kecelakaan_attr = ['jum_kecelakaan'];
+                    each attr in kecelakaan_attr
+                      -
+                        const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+
+                        const formattedClusteringResult = {};
+                        clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
+                        const predictionObj = {};
+                        clusters_name.forEach((cn) => {
+                          predictionObj[cn] = kecelakaan
+                            .filter((el) => cn === formattedClusteringResult[el.tanggal])
+                            .map((el) => {
+                              const obj = {};
+                              obj.tanggal = el.tanggal;
+                              obj[attr] = el[attr];
+                              return obj;
+                            });
+                        });
+                        const tanggalArr = kecelakaan.map((el) => el.tanggal);
+
+                      .form-check.form-check-inline.form-switch
+                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        label.form-check-label(for=attr)= attr_display
+                  else
+                    p No data
+
+              -
+                const formattedClusteringResult = {};
+                clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
+                const predictionObj = {};
+                clusters_name.forEach((cn) => {
+                  predictionObj[cn] = kecelakaan.filter((el) => cn === formattedClusteringResult[el.tanggal]);
+                });
+                const tanggalArr = kecelakaan.map((el) => el.tanggal);
+
+              canvas#chart-prediction(style='max-height: 400px;')
+
+              h6.mt-2.text-center= 'F1 score: -'

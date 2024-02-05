@@ -309,6 +309,7 @@ exports.getAnalisisPage = catchAsync(async (req, res) => {
     cuaca,
     wisatawan,
     kecelakaan,
+    clusters_name: Object.keys(JSON.parse(clustering.centroids)),
     clustering_result: clusteringResult,
   });
 });

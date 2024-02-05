@@ -55,8 +55,10 @@ const chartClusterModel = document.querySelector('#chart-cluster-model');
 const chartCentroids = document.querySelector('#chart-centroids');
 
 const tanggalRange = document.querySelector('#tanggal-range');
-const chartAnalisis = document.querySelector('#chart-analisis');
 const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
+const predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
+const chartAnalisis = document.querySelector('#chart-analisis');
+const chartPrediction = document.querySelector('#chart-prediction');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -174,7 +176,7 @@ const _importDataCSV = (modelName, form, inputData) => {
   });
 };
 
-const _plotChart = (chartEl, type, labels, datasets) => {
+const _plotChart = (chartEl, type, labels, datasets, options = {}) => {
   //? Generate Chart
   return new Chart(chartEl, {
     type,
@@ -182,12 +184,14 @@ const _plotChart = (chartEl, type, labels, datasets) => {
       labels,
       datasets,
     },
+    options,
   });
 };
 
-const _updateChart = (chart, labels, datasets) => {
+const _updateChart = (chart, labels, datasets, options = undefined) => {
   chart.data.labels = labels;
   chart.data.datasets = datasets;
+  if (options) chart.options = options;
   chart.update();
 };
 
@@ -576,7 +580,7 @@ if (tanggalRange) {
   if (tanggalArr.length === 0) tanggalSlider.disabled(true);
 }
 
-//? Add Plot Data
+//? Plot Dataset To Analisis Chart
 if (plotDataBtns) {
   const colorPalette = [
     '#cddc39',
@@ -639,6 +643,106 @@ if (plotDataBtns) {
 
         //? Update Chart
         _updateChart(analisisChart, analisisLabels, analisisDatasets);
+      }
+    });
+  });
+}
+
+//? Plot Dataset To Prediction Chart
+if (predictionDataBtns) {
+  let predictionLabels = [
+    'Jan 2024',
+    'Feb 2024',
+    'Mar 2024',
+    'Apr 2024',
+    'Mei 2024',
+    'Jun 2024',
+    'Jul 2024',
+    'Agu 2024',
+    'Sep 2024',
+    'Okt 2024',
+    'Nov 2024',
+    'Des 2024',
+  ];
+  let predictionDatasets = [];
+  let predictionOptions = {
+    scales: {
+      x: {
+        type: 'category',
+        position: 'bottom',
+      },
+      y: {
+        type: 'linear',
+        position: 'left',
+      },
+    },
+  };
+
+  const predictionChart = _plotChart(
+    chartPrediction,
+    'scatter',
+    predictionLabels,
+    predictionDatasets,
+    predictionOptions,
+  );
+
+  predictionDataBtns.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      const attrName = this.id;
+      const formattedAttrName = attrName
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+      const predictionObj = JSON.parse(this.dataset.predictionObj);
+      const predictionTanggalArr = JSON.parse(this.dataset.predictionTanggalArr);
+      const clustersName = Object.keys(predictionObj);
+
+      //? Check if switch is on
+      if (this.checked) {
+        //? Uncheck other switches
+        predictionDataBtns.forEach(function (otherCheckbox) {
+          if (otherCheckbox !== checkbox) {
+            otherCheckbox.checked = false;
+          }
+        });
+
+        predictionLabels = [...predictionTanggalArr];
+        predictionDatasets = clustersName.map((cn) => {
+          return {
+            label: cn,
+            data: predictionObj[cn].map((el) => {
+              return { x: el.tanggal, y: el[attrName] };
+            }),
+            pointRadius: 5,
+            hoverRadius: 6,
+          };
+        });
+        predictionOptions = {
+          plugins: {
+            title: {
+              display: true,
+              text: formattedAttrName,
+            },
+          },
+          scales: {
+            x: {
+              type: 'category',
+              position: 'bottom',
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+            },
+          },
+        };
+
+        //? Update Chart
+        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+      } else {
+        predictionDatasets = [];
+
+        //? Update Chart
+        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       }
     });
   });

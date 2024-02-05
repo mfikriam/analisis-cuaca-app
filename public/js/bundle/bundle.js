@@ -31571,6 +31571,10 @@ var _manageData = require("./manage-data");
 var _clustering = require("./clustering");
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -31610,8 +31614,10 @@ var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-
 var chartClusterModel = document.querySelector('#chart-cluster-model');
 var chartCentroids = document.querySelector('#chart-centroids');
 var tanggalRange = document.querySelector('#tanggal-range');
-var chartAnalisis = document.querySelector('#chart-analisis');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
+var predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
+var chartAnalisis = document.querySelector('#chart-analisis');
+var chartPrediction = document.querySelector('#chart-prediction');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -31714,18 +31720,22 @@ var _importDataCSV = function _importDataCSV(modelName, form, inputData) {
   });
 };
 var _plotChart = function _plotChart(chartEl, type, labels, datasets) {
+  var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
   //? Generate Chart
   return new _auto.default(chartEl, {
     type: type,
     data: {
       labels: labels,
       datasets: datasets
-    }
+    },
+    options: options
   });
 };
 var _updateChart = function _updateChart(chart, labels, datasets) {
+  var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
   chart.data.labels = labels;
   chart.data.datasets = datasets;
+  if (options) chart.options = options;
   chart.update();
 };
 
@@ -32106,7 +32116,7 @@ if (tanggalRange) {
   if (tanggalArr.length === 0) tanggalSlider.disabled(true);
 }
 
-//? Add Plot Data
+//? Plot Dataset To Analisis Chart
 if (plotDataBtns) {
   var colorPalette = ['#cddc39', '#8cdaec', '#795548', '#d48c84', '#3cb464', '#009688', '#8a4af3', '#ff9800', '#e91e63', '#2196f3'];
   plotDataBtns.forEach(function (checkbox) {
@@ -32168,6 +32178,86 @@ if (plotDataBtns) {
   });
 }
 
+//? Plot Dataset To Prediction Chart
+if (predictionDataBtns) {
+  var predictionLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
+  var predictionDatasets = [];
+  var predictionOptions = {
+    scales: {
+      x: {
+        type: 'category',
+        position: 'bottom'
+      },
+      y: {
+        type: 'linear',
+        position: 'left'
+      }
+    }
+  };
+  var predictionChart = _plotChart(chartPrediction, 'scatter', predictionLabels, predictionDatasets, predictionOptions);
+  predictionDataBtns.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      var attrName = this.id;
+      var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+        return char.toUpperCase();
+      });
+      var predictionObj = JSON.parse(this.dataset.predictionObj);
+      var predictionTanggalArr = JSON.parse(this.dataset.predictionTanggalArr);
+      var clustersName = Object.keys(predictionObj);
+
+      //? Check if switch is on
+      if (this.checked) {
+        //? Uncheck other switches
+        predictionDataBtns.forEach(function (otherCheckbox) {
+          if (otherCheckbox !== checkbox) {
+            otherCheckbox.checked = false;
+          }
+        });
+        predictionLabels = _toConsumableArray(predictionTanggalArr);
+        predictionDatasets = clustersName.map(function (cn) {
+          return {
+            label: cn,
+            data: predictionObj[cn].map(function (el) {
+              return {
+                x: el.tanggal,
+                y: el[attrName]
+              };
+            }),
+            pointRadius: 5,
+            hoverRadius: 6
+          };
+        });
+        predictionOptions = {
+          plugins: {
+            title: {
+              display: true,
+              text: formattedAttrName
+            }
+          },
+          scales: {
+            x: {
+              type: 'category',
+              position: 'bottom'
+            },
+            y: {
+              type: 'linear',
+              position: 'left'
+            }
+          }
+        };
+
+        //? Update Chart
+        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+      } else {
+        predictionDatasets = [];
+
+        //? Update Chart
+        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+      }
+    });
+  });
+}
+
 //************************** MUST BE IN THE LAST LINE ********************************** */
 var delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 var delayAlertType = sessionStorage.getItem('delay-alert-type');
@@ -32201,7 +32291,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64255" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50859" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
