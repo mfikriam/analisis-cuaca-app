@@ -106,7 +106,7 @@ block main
 
             canvas#chart-analisis(style='max-height: 400px;')
             
-      if wisatawan.length > 0 || kecelakaan.length > 0
+      if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
         .col-lg-12
           .card
             .card-body

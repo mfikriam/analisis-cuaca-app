@@ -32183,6 +32183,12 @@ if (predictionDataBtns) {
   var predictionLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
   var predictionDatasets = [];
   var predictionOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: ''
+      }
+    },
     scales: {
       x: {
         type: 'category',
@@ -32227,29 +32233,13 @@ if (predictionDataBtns) {
             hoverRadius: 6
           };
         });
-        predictionOptions = {
-          plugins: {
-            title: {
-              display: true,
-              text: formattedAttrName
-            }
-          },
-          scales: {
-            x: {
-              type: 'category',
-              position: 'bottom'
-            },
-            y: {
-              type: 'linear',
-              position: 'left'
-            }
-          }
-        };
+        predictionOptions.plugins.title.text = formattedAttrName;
 
         //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       } else {
         predictionDatasets = [];
+        predictionOptions.plugins.title.text = '';
 
         //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
@@ -32291,7 +32281,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50859" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61940" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

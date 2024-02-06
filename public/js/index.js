@@ -666,6 +666,12 @@ if (predictionDataBtns) {
   ];
   let predictionDatasets = [];
   let predictionOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: '',
+      },
+    },
     scales: {
       x: {
         type: 'category',
@@ -717,29 +723,13 @@ if (predictionDataBtns) {
             hoverRadius: 6,
           };
         });
-        predictionOptions = {
-          plugins: {
-            title: {
-              display: true,
-              text: formattedAttrName,
-            },
-          },
-          scales: {
-            x: {
-              type: 'category',
-              position: 'bottom',
-            },
-            y: {
-              type: 'linear',
-              position: 'left',
-            },
-          },
-        };
+        predictionOptions.plugins.title.text = formattedAttrName;
 
         //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       } else {
         predictionDatasets = [];
+        predictionOptions.plugins.title.text = '';
 
         //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
