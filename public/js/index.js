@@ -16,8 +16,8 @@ import { replaceClustering, deleteAllClusteringResult } from './clustering';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
-const loginForm = document.querySelector('.form--login');
-const logOutBtn = document.querySelector('.btn--logout');
+const loginForm = document.querySelector('.form-login');
+const logOutBtn = document.querySelector('.btn-logout');
 const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 
 let inputData;
