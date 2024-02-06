@@ -3,6 +3,7 @@ extends base
 block main
   section.section
     .row
+      // Clustering Form
       .col-lg-12
         .card
           .card-body
@@ -74,7 +75,13 @@ block main
                 button.btn.btn-primary(type='submit') Clustering
 
     if clustering_result.length > 0
+      -
+        const awcd_clusters = JSON.parse(clustering.awcd_clusters);
+        const clusters_name = Object.keys(awcd_clusters);
+        const clusters_arr = clustering_result.map((el) => el.cluster);
+        
       .row
+        // Table Clustering Result
         .col-lg-12
           .card
             .card-body
@@ -100,6 +107,51 @@ block main
                           td.text-end= obj.cuaca[criteria]
               // End Table with stripped rows
 
+        // Performance Details
+        .col-lg-6
+          .card
+            .card-body
+              h5.card-title Performance
+              .table-responsive
+                table.table.table-borderless
+                  tbody
+                    tr
+                      td Avg. within centroid distance
+                      td :
+                      td= clustering.awcd.toFixed(2)
+                    each cn in clusters_name
+                      tr
+                        td= `Avg. within centroid distance ${cn}`
+                        td :
+                        td= awcd_clusters[cn].toFixed(2)
+
+        // Clusters Count
+        .col-lg-6
+          .card
+            .card-body
+              h5.card-title Clusters Count
+              canvas#chart-clusters-count(style='max-height: 300px;' data-clusters-arr=`${JSON.stringify(clusters_arr)}` data-clusters-name=`${JSON.stringify(clusters_name)}`)
+              h6.mt-2.text-center= `Total: ${clustering_result.length}`
+
+        // Data Plot
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Data Cuaca Visualization
+
+        // Centroids
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Centroids
+              canvas#chart-centroids(style='max-height: 400px;' data-centroids=clustering.centroids data-criteria=clustering.kriteria_clustering data-clusters-name=`${JSON.stringify(clusters_name)}`)
+
+        // Find Optimal k
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Find Optimal k
+      
       //- Delete Clustering Result Modal
       #modal-del-all-clustering-result.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
         .modal-dialog.modal-dialog-centered
@@ -111,40 +163,4 @@ block main
             .modal-footer
               button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
               button.btn.btn-danger(class='btn-del-all-clustering-result' type='button' data-user-id=local_user.id) Delete All
-
-      .row
-        .col-lg-6
-          .card
-            .card-body
-              h5.card-title Performance
-              .table-responsive
-                table.table.table-borderless
-                  tbody
-                    -
-                      const awcd_clusters = JSON.parse(clustering.awcd_clusters);
-                      const clusters_name = Object.keys(awcd_clusters);
-                    tr
-                      td Avg. within centroid distance
-                      td :
-                      td= clustering.awcd.toFixed(2)
-                    each cn in clusters_name
-                      tr
-                        td= `Avg. within centroid distance ${cn}`
-                        td :
-                        td= awcd_clusters[cn].toFixed(2)
-
-        .col-lg-6
-          .card
-            .card-body
-              h5.card-title Cluster Model
-              - const clustersArr = clustering_result.map((el) => el.cluster);
-              canvas#chart-cluster-model(style='max-height: 300px;' data-clusters-arr=`${JSON.stringify(clustersArr)}`)
-              h6.mt-2.text-center= `Total: ${clustering_result.length}`
-
-      .row
-        .col-lg-12
-          .card
-            .card-body
-              h5.card-title Centroids Plot
-              canvas#chart-centroids(style='max-height: 400px;' data-centroids=clustering.centroids data-criteria=clustering.kriteria_clustering)
-    //- End if clustering_result
+    //- End if

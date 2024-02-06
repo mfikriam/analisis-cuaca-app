@@ -51,7 +51,7 @@ const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
-const chartClusterModel = document.querySelector('#chart-cluster-model');
+const chartClustersCount = document.querySelector('#chart-clusters-count');
 const chartCentroids = document.querySelector('#chart-centroids');
 
 const tanggalRange = document.querySelector('#tanggal-range');
@@ -449,47 +449,38 @@ if (delAllClusteringResultBtn) {
   });
 }
 
-//? Cluster Model Chart
-if (chartClusterModel) {
-  //? Get Clusters Array
-  const clusterArrString = chartClusterModel.dataset.clustersArr;
-  const clusterArr = JSON.parse(clusterArrString);
+//? Clusters Count Chart
+if (chartClustersCount) {
+  //? Get Clusters Array & Clusters Name
+  const clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
+  const clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
+
+  //? Create Map Count Clusters
+  const countClusters = new Map();
+  clustersName.forEach((cn) => countClusters.set(cn, 0));
 
   //? Count each cluster
-  const countCluster = new Map();
-  clusterArr.forEach((value) => {
-    if (countCluster.has(value)) {
-      countCluster.set(value, countCluster.get(value) + 1);
-    } else {
-      countCluster.set(value, 1);
-    }
-  });
-  const clusters = Array.from(countCluster.entries()).map(([value, count]) => ({ value, count }));
+  clustersArr.forEach((cluster) => countClusters.set(cluster, countClusters.get(cluster) + 1));
+  const clusters = Array.from(countClusters.entries()).map(([value, count]) => ({ value, count }));
 
-  //? Sort the cluster
-  clusters.sort((a, b) => a.value.localeCompare(b.value));
-
-  //? Plot Cluster Model
-  const clusterModelLabels = clusters.map((el) => el.value);
-  const clusterModelDatasets = [
+  //? Plot Clusters Count
+  const clustersCountLabels = clusters.map((el) => el.value);
+  const clustersCountDatasets = [
     {
       label: 'Count',
       data: clusters.map((el) => el.count),
       hoverOffset: 4,
     },
   ];
-  _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
+  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
 }
 
+//? Centroids Chart
 if (chartCentroids) {
-  //? Get Centroids & Criteria
-  const centroidsString = chartCentroids.dataset.centroids;
-  const centroids = JSON.parse(centroidsString);
-  const criteriaString = chartCentroids.dataset.criteria;
-  const criteria = JSON.parse(criteriaString);
-
-  //? Get Clusters Name
-  const clustersName = Object.keys(centroids);
+  //? Get Centroids, Criteria, & Clusters Name
+  const centroids = JSON.parse(chartCentroids.dataset.centroids);
+  const criteria = JSON.parse(chartCentroids.dataset.criteria);
+  const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Plot Centroids
   const centroidsDatasets = [];

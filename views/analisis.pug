@@ -171,15 +171,6 @@ block main
                   else
                     p No data
 
-              -
-                const formattedClusteringResult = {};
-                clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
-                const predictionObj = {};
-                clusters_name.forEach((cn) => {
-                  predictionObj[cn] = kecelakaan.filter((el) => cn === formattedClusteringResult[el.tanggal]);
-                });
-                const tanggalArr = kecelakaan.map((el) => el.tanggal);
-
               canvas#chart-prediction(style='max-height: 400px;')
-
               h6.mt-2.text-center= 'F1 score: -'
+              

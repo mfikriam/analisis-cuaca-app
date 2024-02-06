@@ -31611,7 +31611,7 @@ var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
-var chartClusterModel = document.querySelector('#chart-cluster-model');
+var chartClustersCount = document.querySelector('#chart-clusters-count');
 var chartCentroids = document.querySelector('#chart-centroids');
 var tanggalRange = document.querySelector('#tanggal-range');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
@@ -31986,22 +31986,23 @@ if (delAllClusteringResultBtn) {
   });
 }
 
-//? Cluster Model Chart
-if (chartClusterModel) {
-  //? Get Clusters Array
-  var clusterArrString = chartClusterModel.dataset.clustersArr;
-  var clusterArr = JSON.parse(clusterArrString);
+//? Clusters Count Chart
+if (chartClustersCount) {
+  //? Get Clusters Array & Clusters Name
+  var clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
+  var clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
+
+  //? Create Map Count Clusters
+  var countClusters = new Map();
+  clustersName.forEach(function (cn) {
+    return countClusters.set(cn, 0);
+  });
 
   //? Count each cluster
-  var countCluster = new Map();
-  clusterArr.forEach(function (value) {
-    if (countCluster.has(value)) {
-      countCluster.set(value, countCluster.get(value) + 1);
-    } else {
-      countCluster.set(value, 1);
-    }
+  clustersArr.forEach(function (cluster) {
+    return countClusters.set(cluster, countClusters.get(cluster) + 1);
   });
-  var clusters = Array.from(countCluster.entries()).map(function (_ref) {
+  var clusters = Array.from(countClusters.entries()).map(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
       value = _ref2[0],
       count = _ref2[1];
@@ -32011,37 +32012,30 @@ if (chartClusterModel) {
     };
   });
 
-  //? Sort the cluster
-  clusters.sort(function (a, b) {
-    return a.value.localeCompare(b.value);
-  });
-
-  //? Plot Cluster Model
-  var clusterModelLabels = clusters.map(function (el) {
+  //? Plot Clusters Count
+  var clustersCountLabels = clusters.map(function (el) {
     return el.value;
   });
-  var clusterModelDatasets = [{
+  var clustersCountDatasets = [{
     label: 'Count',
     data: clusters.map(function (el) {
       return el.count;
     }),
     hoverOffset: 4
   }];
-  _plotChart(chartClusterModel, 'pie', clusterModelLabels, clusterModelDatasets);
+  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
 }
-if (chartCentroids) {
-  //? Get Centroids & Criteria
-  var centroidsString = chartCentroids.dataset.centroids;
-  var centroids = JSON.parse(centroidsString);
-  var criteriaString = chartCentroids.dataset.criteria;
-  var criteria = JSON.parse(criteriaString);
 
-  //? Get Clusters Name
-  var clustersName = Object.keys(centroids);
+//? Centroids Chart
+if (chartCentroids) {
+  //? Get Centroids, Criteria, & Clusters Name
+  var centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var criteria = JSON.parse(chartCentroids.dataset.criteria);
+  var _clustersName = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Plot Centroids
   var centroidsDatasets = [];
-  clustersName.forEach(function (cn) {
+  _clustersName.forEach(function (cn) {
     var dataArr = criteria.map(function (crit) {
       return centroids[cn][crit];
     });
