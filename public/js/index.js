@@ -458,60 +458,88 @@ if (delAllClusteringResultBtn) {
 
 //? Clustering Result Chart
 if (chartClusteringResult) {
+  //? Local Functions
+  const _updateClusteringResultChartData = (
+    clustersName,
+    clusteringResultDatasets,
+    clusteringResult,
+    centroids,
+    criteria1,
+    criteria2,
+  ) => {
+    //? Add Data Cuaca To Datasets
+    clustersName.forEach((cn) => {
+      clusteringResultDatasets.push({
+        label: cn,
+        data: clusteringResult
+          .filter((cr) => cr.cluster === cn)
+          .map((cr) => ({ x: cr[criteria1], y: cr[criteria2] })),
+        pointRadius: 5,
+        hoverRadius: 6,
+      });
+    });
+
+    //? Add Centroids To Datasets
+    clustersName.forEach((cn) => {
+      clusteringResultDatasets.push({
+        label: `centroids ${cn}`,
+        data: [{ x: centroids[cn][criteria1], y: centroids[cn][criteria2] }],
+        pointRadius: 9,
+        hoverRadius: 10,
+      });
+    });
+  };
+
+  //? Get Criteria1 and Criteria2
+  const criteria1El = document.querySelector('#cr-criteria-1');
+  const criteria2El = document.querySelector('#cr-criteria-2');
+  let criteria1 = criteria1El.value;
+  let criteria2 = criteria2El.value;
+
   //? Get Clustering Result Data & Centroids
   const clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
   const centroids = JSON.parse(chartCentroids.dataset.centroids);
   const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
 
-  //? Get Criteria1 and Criteria2
-  const criteria1 = 'jum_curah_hujan';
-  const criteria2 = 'jum_hari_hujan';
-
+  //? Initial Chart Config
   let clusteringResultLabels = [];
   let clusteringResultDatasets = [];
   let clusteringResultOptions = {
+    responsive: true,
     scales: {
       x: {
         type: 'linear',
         position: 'bottom',
+        title: {
+          display: true,
+          text: criteria1.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+          font: {
+            weight: 'bold',
+          },
+        },
       },
       y: {
         type: 'linear',
         position: 'left',
+        title: {
+          display: true,
+          text: criteria2.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+        },
       },
     },
   };
 
-  //? Add Data Cuaca
-  clustersName.forEach((cn) => {
-    clusteringResultDatasets.push({
-      label: cn,
-      data: clusteringResult
-        .filter((cr) => cr.cluster === cn)
-        .map((cr) => ({ x: cr[criteria1], y: cr[criteria2] })),
-      pointRadius: 5,
-      hoverRadius: 6,
-    });
-  });
+  //? Updates Clustering Result Labels And Datasets
+  _updateClusteringResultChartData(
+    clustersName,
+    clusteringResultDatasets,
+    clusteringResult,
+    centroids,
+    criteria1,
+    criteria2,
+  );
 
-  //? Add Centroids
-  // clusteringResultDatasets.push({
-  //   label: 'centroids',
-  //   data: clustersName.map((cn) => ({ x: centroids[cn][criteria1], y: centroids[cn][criteria2] })),
-  //   pointRadius: 7,
-  //   hoverRadius: 8,
-  //   // backgroundColor: '#000',
-  // });
-
-  clustersName.forEach((cn) => {
-    clusteringResultDatasets.push({
-      label: `centroids ${cn}`,
-      data: [{ x: centroids[cn][criteria1], y: centroids[cn][criteria2] }],
-      pointRadius: 7,
-      hoverRadius: 8,
-    });
-  });
-
+  //? Initial Plot Clustering Result Chart
   const clusteringResultChart = _plotChart(
     chartClusteringResult,
     'scatter',
@@ -519,6 +547,71 @@ if (chartClusteringResult) {
     clusteringResultDatasets,
     clusteringResultOptions,
   );
+
+  //? Add Event Listener To Criteria El
+  criteria1El.addEventListener('change', function (event) {
+    //? Update criteria value
+    criteria1 = event.target.value;
+
+    //? Reset Clustering Result Labels And Datasets
+    clusteringResultLabels = [];
+    clusteringResultDatasets = [];
+
+    //? Updates Clustering Result Labels And Datasets
+    _updateClusteringResultChartData(
+      clustersName,
+      clusteringResultDatasets,
+      clusteringResult,
+      centroids,
+      criteria1,
+      criteria2,
+    );
+
+    //? Update Clustering Result Options
+    clusteringResultOptions.scales.x.title.text = criteria1
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
+    //? Update Chart
+    _updateChart(
+      clusteringResultChart,
+      clusteringResultLabels,
+      clusteringResultDatasets,
+      clusteringResultOptions,
+    );
+  });
+
+  criteria2El.addEventListener('change', function (event) {
+    //? Update criteria value
+    criteria2 = event.target.value;
+
+    //? Reset Clustering Result Labels And Datasets
+    clusteringResultLabels = [];
+    clusteringResultDatasets = [];
+
+    //? Updates Clustering Result Labels And Datasets
+    _updateClusteringResultChartData(
+      clustersName,
+      clusteringResultDatasets,
+      clusteringResult,
+      centroids,
+      criteria1,
+      criteria2,
+    );
+
+    //? Update Clustering Result Options
+    clusteringResultOptions.scales.y.title.text = criteria2
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
+    //? Update Chart
+    _updateChart(
+      clusteringResultChart,
+      clusteringResultLabels,
+      clusteringResultDatasets,
+      clusteringResultOptions,
+    );
+  });
 }
 
 //? Clusters Count Chart

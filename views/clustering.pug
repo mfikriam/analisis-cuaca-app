@@ -18,6 +18,8 @@ block main
       return obj;
     });
 
+    let selected_index;
+
   section.section
     .row
       // Clustering Form
@@ -115,13 +117,6 @@ block main
                           td.text-end= obj.cuaca[criteria]
               // End Table with stripped rows
 
-        // Clustering Result Visualization
-        .col-lg-12
-          .card
-            .card-body
-              h5.card-title Clustering Result Visualization
-              canvas#chart-clustering-result(style='max-height: 400px;' data-clustering-result=`${JSON.stringify(formatted_clustering_result)}` data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
-
         // Performance Details
         .col-lg-6
           .card
@@ -154,6 +149,43 @@ block main
             .card-body
               h5.card-title Centroids
               canvas#chart-centroids(style='max-height: 400px;' data-centroids=clustering.centroids data-criteria=clustering.kriteria_clustering data-clusters-name=`${JSON.stringify(clusters_name)}`)
+
+        // Clustering Result Visualization
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Clustering Result Visualization
+
+              .row
+                .col-md-5
+                  .row.mb-3.align-items-center
+                    label.col-md-auto.form-label.fw-semibold(for='cr-criteria-1') Kriteria 1:
+                    .col-md-auto
+                      select#cr-criteria-1.form-select(name='cr-criteria-1')
+                        - selected_index = 0;
+                        each criteria, index in criteria_array
+                          - const criteria_display = criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                          if index === selected_index
+                            option(value=criteria selected)= criteria_display
+                          else
+                            option(value=criteria)= criteria_display
+                .col-md-5
+                  .row.mb-3.align-items-center
+                    label.col-md-auto.form-label.fw-semibold(for='cr-criteria-2') Kriteria 2:
+                    .col-md-auto
+                      select#cr-criteria-2.form-select(name='cr-criteria-2')
+                        -
+                          if (criteria_array.length > 1) selected_index = 1;
+                          else selected_index = 0;
+                        each criteria, index in criteria_array
+                          - const criteria_display = criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                          if index === selected_index
+                            option(value=criteria selected)= criteria_display
+                          else
+                            option(value=criteria)= criteria_display
+
+
+              canvas#chart-clustering-result(style='max-height: 400px;' data-clustering-result=`${JSON.stringify(formatted_clustering_result)}` data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
 
         // Find Optimal k
         .col-lg-12
