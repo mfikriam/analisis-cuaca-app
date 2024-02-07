@@ -22,11 +22,13 @@ const toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 
 let inputData;
 
+// Manage Data User
 const userTable = document.querySelector('#user-table');
 const addUserForm = document.querySelector('#form-add-user');
 const updateUserBtns = document.querySelectorAll('.btn-update-user');
 const delUserBtns = document.querySelectorAll('.btn-del-user');
 
+// Manage Data Kecelakaan
 const kecelakaanTable = document.querySelector('#kecelakaan-table');
 const addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 const updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
@@ -34,6 +36,7 @@ const delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 const delAllKecelakaanBtn = document.querySelector('.btn-del-all-kecelakaan');
 const importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
 
+// Manage Data Wisatawan
 const wisatawanTable = document.querySelector('#wisatawan-table');
 const addWisatawanForm = document.querySelector('#form-add-wisatawan');
 const updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
@@ -41,6 +44,7 @@ const delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
 const delAllWisatawanBtn = document.querySelector('.btn-del-all-wisatawan');
 const importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
 
+// Manage Data Cuaca
 const cuacaTable = document.querySelector('#cuaca-table');
 const addCuacaForm = document.querySelector('#form-add-cuaca');
 const updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
@@ -48,12 +52,15 @@ const delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
 const delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 
+// Clustering
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
+const chartClusteringResult = document.querySelector('#chart-clustering-result');
 const chartClustersCount = document.querySelector('#chart-clusters-count');
 const chartCentroids = document.querySelector('#chart-centroids');
 
+// Analisis
 const tanggalRange = document.querySelector('#tanggal-range');
 const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 const predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
@@ -447,6 +454,74 @@ if (delAllClusteringResultBtn) {
     const userId = delAllClusteringResultBtn.dataset.userId;
     deleteAllClusteringResult(userId, bsDelAllClusteringResultModal);
   });
+}
+
+//? Clustering Result Chart
+if (chartClusteringResult) {
+  //? Get Clustering Result Data & Centroids
+  const clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
+  const centroids = JSON.parse(chartCentroids.dataset.centroids);
+  const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  console.log(clusteringResult);
+  console.log(centroids);
+  console.log(clustersName);
+
+  //? Get Criteria1 and Criteria2
+  const criteria1 = 'jum_curah_hujan';
+  const criteria2 = 'jum_hari_hujan';
+
+  let clusteringResultLabels = [];
+  let clusteringResultDatasets = [];
+  let clusteringResultOptions = {
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'bottom',
+      },
+      y: {
+        type: 'linear',
+        position: 'left',
+      },
+    },
+  };
+
+  //? Add Data Cuaca
+  clustersName.forEach((cn) => {
+    clusteringResultDatasets.push({
+      label: cn,
+      data: clusteringResult
+        .filter((cr) => cr.cluster === cn)
+        .map((cr) => ({ x: cr[criteria1], y: cr[criteria2] })),
+      pointRadius: 5,
+      hoverRadius: 6,
+    });
+  });
+
+  //? Add Centroids
+  // clusteringResultDatasets.push({
+  //   label: 'centroids',
+  //   data: clustersName.map((cn) => ({ x: centroids[cn][criteria1], y: centroids[cn][criteria2] })),
+  //   pointRadius: 7,
+  //   hoverRadius: 8,
+  //   // backgroundColor: '#000',
+  // });
+
+  clustersName.forEach((cn) => {
+    clusteringResultDatasets.push({
+      label: `centroids ${cn}`,
+      data: [{ x: centroids[cn][criteria1], y: centroids[cn][criteria2] }],
+      pointRadius: 7,
+      hoverRadius: 8,
+    });
+  });
+
+  const clusteringResultChart = _plotChart(
+    chartClusteringResult,
+    'scatter',
+    clusteringResultLabels,
+    clusteringResultDatasets,
+    clusteringResultOptions,
+  );
 }
 
 //? Clusters Count Chart

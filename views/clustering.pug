@@ -1,6 +1,23 @@
 extends base
 
 block main
+  -
+    const awcd_clusters = JSON.parse(clustering.awcd_clusters);
+    const clusters_name = Object.keys(awcd_clusters);
+    const clusters_arr = clustering_result.map((el) => el.cluster);
+
+    let criteria_array;
+    if (clustering) criteria_array = JSON.parse(clustering.kriteria_clustering);
+    else criteria_array = [];
+
+    const formatted_clustering_result = clustering_result.map((cr) => {
+      const obj = {};
+      obj.tanggal = cr.tanggal;
+      criteria_array.forEach((crit) => obj[crit] = cr.cuaca[crit]);
+      obj.cluster = cr.cluster;
+      return obj;
+    });
+
   section.section
     .row
       // Clustering Form
@@ -22,50 +39,46 @@ block main
                 input#add-jum_percobaan.form-control(type='number' name='jum_percobaan' min='1' value=`${(clustering) ? clustering.jum_percobaan : '10'}` required)
                 .invalid-feedback Jumlah percobaan minimum 1
 
-              - let criteriaArray = [];
-              if clustering
-                - criteriaArray = JSON.parse(clustering.kriteria_clustering);
-
               .col-12.mb-3
                 legend.col-form-label Pilih Kriteria
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('temperatur_avg')
+                  if criteria_array.includes('temperatur_avg')
                     input.form-check-input(type='checkbox' id='criteria-1' value='temperatur_avg' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-1' value='temperatur_avg')
                   label.form-check-label(for='criteria-1') Temperatur Avg
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('kelembaban_avg')
+                  if criteria_array.includes('kelembaban_avg')
                     input.form-check-input(type='checkbox' id='criteria-2' value='kelembaban_avg' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-2' value='kelembaban_avg')
                   label.form-check-label(for='criteria-2') Kelembaban Avg
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('kecepatan_angin_avg')
+                  if criteria_array.includes('kecepatan_angin_avg')
                     input.form-check-input(type='checkbox' id='criteria-3' value='kecepatan_angin_avg' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-3' value='kecepatan_angin_avg')
                   label.form-check-label(for='criteria-3') Kecepatan Angin Avg
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('jum_curah_hujan')
+                  if criteria_array.includes('jum_curah_hujan')
                     input.form-check-input(type='checkbox' id='criteria-4' value='jum_curah_hujan' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-4' value='jum_curah_hujan')
                   label.form-check-label(for='criteria-4') Jum Curah Hujan
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('jum_hari_hujan')
+                  if criteria_array.includes('jum_hari_hujan')
                     input.form-check-input(type='checkbox' id='criteria-5' value='jum_hari_hujan' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-5' value='jum_hari_hujan')
                   label.form-check-label(for='criteria-5') Jum Hari Hujan
 
                 .form-check.form-check-inline
-                  if criteriaArray.includes('penyinaran_matahari_avg')
+                  if criteria_array.includes('penyinaran_matahari_avg')
                     input.form-check-input(type='checkbox' id='criteria-6' value='penyinaran_matahari_avg' checked)
                   else
                     input.form-check-input(type='checkbox' id='criteria-6' value='penyinaran_matahari_avg')
@@ -74,12 +87,7 @@ block main
               .col-12.mb-3
                 button.btn.btn-primary(type='submit') Clustering
 
-    if clustering_result.length > 0
-      -
-        const awcd_clusters = JSON.parse(clustering.awcd_clusters);
-        const clusters_name = Object.keys(awcd_clusters);
-        const clusters_arr = clustering_result.map((el) => el.cluster);
-        
+    if clustering_result.length > 0    
       .row
         // Table Clustering Result
         .col-lg-12
@@ -96,16 +104,23 @@ block main
                     tr
                       th.text-center tanggal
                       th.text-center cluster
-                      each criteria in criteriaArray
+                      each criteria in criteria_array
                         th.text-center= criteria
                   tbody
                     each obj in clustering_result
                       tr
                         td.text-end= obj.cuaca.tanggal
                         td.text-end= obj.cluster
-                        each criteria in criteriaArray
+                        each criteria in criteria_array
                           td.text-end= obj.cuaca[criteria]
               // End Table with stripped rows
+
+        // Clustering Result Visualization
+        .col-lg-12
+          .card
+            .card-body
+              h5.card-title Clustering Result Visualization
+              canvas#chart-clustering-result(style='max-height: 400px;' data-clustering-result=`${JSON.stringify(formatted_clustering_result)}` data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
 
         // Performance Details
         .col-lg-6
@@ -132,12 +147,6 @@ block main
               h5.card-title Clusters Count
               canvas#chart-clusters-count(style='max-height: 300px;' data-clusters-arr=`${JSON.stringify(clusters_arr)}` data-clusters-name=`${JSON.stringify(clusters_name)}`)
               h6.mt-2.text-center= `Total: ${clustering_result.length}`
-
-        // Data Plot
-        .col-lg-12
-          .card
-            .card-body
-              h5.card-title Data Cuaca Visualization
 
         // Centroids
         .col-lg-12

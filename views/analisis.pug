@@ -101,12 +101,12 @@ block main
                       label.form-label.fw-bold.mb-5(for='tanggal-range') Tanggal Range
                       .px-5
                         input#tanggal-range(type='text' data-tanggal-arr=`${JSON.stringify(longestTanggal)}`)
-
             //- End of accordion
 
             canvas#chart-analisis(style='max-height: 400px;')
             
       if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
+        // Prediction
         .col-lg-12
           .card
             .card-body
@@ -173,4 +173,4 @@ block main
 
               canvas#chart-prediction(style='max-height: 400px;')
               h6.mt-2.text-center= 'F1 score: -'
-              
+      // End if    

@@ -31586,33 +31586,46 @@ var loginForm = document.querySelector('.form-login');
 var logOutBtn = document.querySelector('.btn-logout');
 var toggleSidebarBtn = document.querySelector('.toggle-sidebar-btn');
 var inputData;
+
+// Manage Data User
 var userTable = document.querySelector('#user-table');
 var addUserForm = document.querySelector('#form-add-user');
 var updateUserBtns = document.querySelectorAll('.btn-update-user');
 var delUserBtns = document.querySelectorAll('.btn-del-user');
+
+// Manage Data Kecelakaan
 var kecelakaanTable = document.querySelector('#kecelakaan-table');
 var addKecelakaanForm = document.querySelector('#form-add-kecelakaan');
 var updateKecelakaanBtns = document.querySelectorAll('.btn-update-kecelakaan');
 var delKecelakaanBtns = document.querySelectorAll('.btn-del-kecelakaan');
 var delAllKecelakaanBtn = document.querySelector('.btn-del-all-kecelakaan');
 var importDataKecelakaanForm = document.querySelector('#form-import-data-kecelakaan');
+
+// Manage Data Wisatawan
 var wisatawanTable = document.querySelector('#wisatawan-table');
 var addWisatawanForm = document.querySelector('#form-add-wisatawan');
 var updateWisatawanBtns = document.querySelectorAll('.btn-update-wisatawan');
 var delWisatawanBtns = document.querySelectorAll('.btn-del-wisatawan');
 var delAllWisatawanBtn = document.querySelector('.btn-del-all-wisatawan');
 var importDataWisatawanForm = document.querySelector('#form-import-data-wisatawan');
+
+// Manage Data Cuaca
 var cuacaTable = document.querySelector('#cuaca-table');
 var addCuacaForm = document.querySelector('#form-add-cuaca');
 var updateCuacaBtns = document.querySelectorAll('.btn-update-cuaca');
 var delCuacaBtns = document.querySelectorAll('.btn-del-cuaca');
 var delAllCuacaBtn = document.querySelector('.btn-del-all-cuaca');
 var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
+
+// Clustering
 var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
+var chartClusteringResult = document.querySelector('#chart-clustering-result');
 var chartClustersCount = document.querySelector('#chart-clusters-count');
 var chartCentroids = document.querySelector('#chart-centroids');
+
+// Analisis
 var tanggalRange = document.querySelector('#tanggal-range');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 var predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
@@ -31986,15 +31999,83 @@ if (delAllClusteringResultBtn) {
   });
 }
 
+//? Clustering Result Chart
+if (chartClusteringResult) {
+  //? Get Clustering Result Data & Centroids
+  var clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
+  var centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  console.log(clusteringResult);
+  console.log(centroids);
+  console.log(clustersName);
+
+  //? Get Criteria1 and Criteria2
+  var criteria1 = 'jum_curah_hujan';
+  var criteria2 = 'jum_hari_hujan';
+  var clusteringResultLabels = [];
+  var clusteringResultDatasets = [];
+  var clusteringResultOptions = {
+    scales: {
+      x: {
+        type: 'linear',
+        position: 'bottom'
+      },
+      y: {
+        type: 'linear',
+        position: 'left'
+      }
+    }
+  };
+
+  //? Add Data Cuaca
+  clustersName.forEach(function (cn) {
+    clusteringResultDatasets.push({
+      label: cn,
+      data: clusteringResult.filter(function (cr) {
+        return cr.cluster === cn;
+      }).map(function (cr) {
+        return {
+          x: cr[criteria1],
+          y: cr[criteria2]
+        };
+      }),
+      pointRadius: 5,
+      hoverRadius: 6
+    });
+  });
+
+  //? Add Centroids
+  // clusteringResultDatasets.push({
+  //   label: 'centroids',
+  //   data: clustersName.map((cn) => ({ x: centroids[cn][criteria1], y: centroids[cn][criteria2] })),
+  //   pointRadius: 7,
+  //   hoverRadius: 8,
+  //   // backgroundColor: '#000',
+  // });
+
+  clustersName.forEach(function (cn) {
+    clusteringResultDatasets.push({
+      label: "centroids ".concat(cn),
+      data: [{
+        x: centroids[cn][criteria1],
+        y: centroids[cn][criteria2]
+      }],
+      pointRadius: 7,
+      hoverRadius: 8
+    });
+  });
+  var clusteringResultChart = _plotChart(chartClusteringResult, 'scatter', clusteringResultLabels, clusteringResultDatasets, clusteringResultOptions);
+}
+
 //? Clusters Count Chart
 if (chartClustersCount) {
   //? Get Clusters Array & Clusters Name
   var clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
-  var clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
+  var _clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
 
   //? Create Map Count Clusters
   var countClusters = new Map();
-  clustersName.forEach(function (cn) {
+  _clustersName.forEach(function (cn) {
     return countClusters.set(cn, 0);
   });
 
@@ -32029,15 +32110,15 @@ if (chartClustersCount) {
 //? Centroids Chart
 if (chartCentroids) {
   //? Get Centroids, Criteria, & Clusters Name
-  var centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var _centroids = JSON.parse(chartCentroids.dataset.centroids);
   var criteria = JSON.parse(chartCentroids.dataset.criteria);
-  var _clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  var _clustersName2 = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Plot Centroids
   var centroidsDatasets = [];
-  _clustersName.forEach(function (cn) {
+  _clustersName2.forEach(function (cn) {
     var dataArr = criteria.map(function (crit) {
-      return centroids[cn][crit];
+      return _centroids[cn][crit];
     });
     centroidsDatasets.push({
       label: cn,
@@ -32275,7 +32356,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61940" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56408" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
