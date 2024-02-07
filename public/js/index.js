@@ -462,9 +462,6 @@ if (chartClusteringResult) {
   const clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
   const centroids = JSON.parse(chartCentroids.dataset.centroids);
   const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
-  console.log(clusteringResult);
-  console.log(centroids);
-  console.log(clustersName);
 
   //? Get Criteria1 and Criteria2
   const criteria1 = 'jum_curah_hujan';

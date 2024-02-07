@@ -61,8 +61,7 @@ const _calculateAverageWithinCentroidDistance = (dataCuaca, centroidsObj, objKey
   return [overallAverage, averageDistances];
 };
 
-const _kMeansClustering = (dataCuaca, criteria, k, maxIterations) => {
-  const dataset = [...dataCuaca];
+const _kmeans = (dataset, criteria, k, maxIterations) => {
   let numOfIterations = 0;
 
   //? 1. Initialize clusters with k random cuaca object from the dataset
@@ -125,14 +124,14 @@ const _dataClustering = (dataCuaca, criteria, numOfClusters, numberOfRuns, maxIt
   const results = [];
 
   for (let i = 0; i < numberOfRuns; i++) {
-    const [kMeansResult, centroidsObj, numOfIterations] = _kMeansClustering(
-      dataCuaca,
+    const [kMeansResult, centroidsObj, numOfIterations] = _kmeans(
+      [...dataCuaca],
       criteria,
       numOfClusters,
       maxIterations,
     );
     const [avgWithinCentroidDistance, avgWithinCentroidDistanceForCluster] =
-      _calculateAverageWithinCentroidDistance(kMeansResult, centroidsObj, criteria);
+      _calculateAverageWithinCentroidDistance([...kMeansResult], centroidsObj, criteria);
 
     results.push({
       dataset: kMeansResult,
@@ -230,7 +229,7 @@ export const replaceClustering = async (data, form) => {
 
   //? K-Means Clustering
   const dataClusteringResult = _dataClustering(
-    filteredCuacaArr,
+    [...filteredCuacaArr],
     criteria,
     data.jum_cluster * 1,
     data.jum_percobaan * 1,

@@ -31114,8 +31114,7 @@ var _calculateAverageWithinCentroidDistance = function _calculateAverageWithinCe
   }, 0) / centroidsName.length;
   return [overallAverage, averageDistances];
 };
-var _kMeansClustering = function _kMeansClustering(dataCuaca, criteria, k, maxIterations) {
-  var dataset = _toConsumableArray(dataCuaca);
+var _kmeans = function _kmeans(dataset, criteria, k, maxIterations) {
   var numOfIterations = 0;
 
   //? 1. Initialize clusters with k random cuaca object from the dataset
@@ -31182,12 +31181,12 @@ var _dataClustering = function _dataClustering(dataCuaca, criteria, numOfCluster
   var maxIterations = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 100;
   var results = [];
   for (var i = 0; i < numberOfRuns; i++) {
-    var _kMeansClustering2 = _kMeansClustering(dataCuaca, criteria, numOfClusters, maxIterations),
-      _kMeansClustering3 = _slicedToArray(_kMeansClustering2, 3),
-      kMeansResult = _kMeansClustering3[0],
-      centroidsObj = _kMeansClustering3[1],
-      numOfIterations = _kMeansClustering3[2];
-    var _calculateAverageWith = _calculateAverageWithinCentroidDistance(kMeansResult, centroidsObj, criteria),
+    var _kmeans2 = _kmeans(_toConsumableArray(dataCuaca), criteria, numOfClusters, maxIterations),
+      _kmeans3 = _slicedToArray(_kmeans2, 3),
+      kMeansResult = _kmeans3[0],
+      centroidsObj = _kmeans3[1],
+      numOfIterations = _kmeans3[2];
+    var _calculateAverageWith = _calculateAverageWithinCentroidDistance(_toConsumableArray(kMeansResult), centroidsObj, criteria),
       _calculateAverageWith2 = _slicedToArray(_calculateAverageWith, 2),
       avgWithinCentroidDistance = _calculateAverageWith2[0],
       avgWithinCentroidDistanceForCluster = _calculateAverageWith2[1];
@@ -31368,7 +31367,7 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
             });
             return obj;
           }); //? K-Means Clustering
-          dataClusteringResult = _dataClustering(filteredCuacaArr, criteria, data.jum_cluster * 1, data.jum_percobaan * 1);
+          dataClusteringResult = _dataClustering(_toConsumableArray(filteredCuacaArr), criteria, data.jum_cluster * 1, data.jum_percobaan * 1);
           data.centroids = JSON.stringify(dataClusteringResult.centroids);
           data.awcd = dataClusteringResult.awcd;
           data.awcd_clusters = JSON.stringify(dataClusteringResult.awcd_clusters);
@@ -32005,9 +32004,6 @@ if (chartClusteringResult) {
   var clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
   var centroids = JSON.parse(chartCentroids.dataset.centroids);
   var clustersName = JSON.parse(chartCentroids.dataset.clustersName);
-  console.log(clusteringResult);
-  console.log(centroids);
-  console.log(clustersName);
 
   //? Get Criteria1 and Criteria2
   var criteria1 = 'jum_curah_hujan';
