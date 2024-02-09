@@ -832,10 +832,6 @@ if (plotDataBtns) {
         .replace(/\b\w/g, (char) => char.toUpperCase());
       const attrData = JSON.parse(this.dataset.attrData);
 
-      if (attrName === 'cluster') {
-        attrData.forEach((el) => (el.cluster = el.cluster.match(/\d+/)[0]));
-      }
-
       //? Check if switch is on
       if (this.checked) {
         const color = colorPalette.pop();

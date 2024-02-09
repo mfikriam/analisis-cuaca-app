@@ -32368,11 +32368,6 @@ if (plotDataBtns) {
         return char.toUpperCase();
       });
       var attrData = JSON.parse(this.dataset.attrData);
-      if (attrName === 'cluster') {
-        attrData.forEach(function (el) {
-          return el.cluster = el.cluster.match(/\d+/)[0];
-        });
-      }
 
       //? Check if switch is on
       if (this.checked) {
