@@ -805,7 +805,7 @@ if (plotDataBtns) {
 }
 
 //? Plot Dataset To Prediction Chart
-if (predictionDataBtns) {
+if (predictionDataBtns.length > 0) {
   let predictionLabels = [
     'Jan 2024',
     'Feb 2024',

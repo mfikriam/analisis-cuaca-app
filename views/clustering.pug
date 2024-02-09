@@ -1,25 +1,6 @@
 extends base
 
 block main
-  -
-    const awcd_clusters = JSON.parse(clustering.awcd_clusters);
-    const clusters_name = Object.keys(awcd_clusters);
-    const clusters_arr = clustering_result.map((el) => el.cluster);
-
-    let criteria_array;
-    if (clustering) criteria_array = JSON.parse(clustering.kriteria_clustering);
-    else criteria_array = [];
-
-    const formatted_clustering_result = clustering_result.map((cr) => {
-      const obj = {};
-      obj.tanggal = cr.tanggal;
-      criteria_array.forEach((crit) => obj[crit] = cr.cuaca[crit]);
-      obj.cluster = cr.cluster;
-      return obj;
-    });
-
-    let selected_index;
-
   section.section
     .row
       // Clustering Form
@@ -42,6 +23,8 @@ block main
                 .invalid-feedback Jumlah percobaan minimum 1
 
               .col-12.mb-3
+                - const criteria_array = clustering ? JSON.parse(clustering.kriteria_clustering) : [];
+                  
                 legend.col-form-label Pilih Kriteria
 
                 .form-check.form-check-inline
@@ -89,7 +72,21 @@ block main
               .col-12.mb-3
                 button.btn.btn-primary(type='submit') Clustering
 
-    if clustering_result.length > 0    
+    if clustering_result.length > 0
+      -
+        const centroids = JSON.parse(clustering.centroids);
+        const clusters_name = Object.keys(centroids);
+        const clusters_arr = clustering_result.map((el) => el.cluster);
+
+        const formatted_clustering_result = clustering_result.map((cr) => {
+          const obj = {};
+          obj.tanggal = cr.tanggal;
+          criteria_array.forEach((crit) => obj[crit] = cr.cuaca[crit]);
+          obj.cluster = cr.cluster;
+          return obj;
+        });
+
+        let selected_index;
       .row
         // Table Clustering Result
         .col-lg-12
@@ -126,14 +123,13 @@ block main
                 table.table.table-borderless
                   tbody
                     tr
-                      td Avg. within centroid distance
+                      td Inertia
                       td :
-                      td= clustering.awcd.toFixed(2)
-                    each cn in clusters_name
-                      tr
-                        td= `Avg. within centroid distance ${cn}`
-                        td :
-                        td= awcd_clusters[cn].toFixed(2)
+                      td= clustering.inertia.toFixed(2)
+                    tr
+                      td Num of Iterations
+                      td :
+                      td= clustering.num_of_iterations
 
         // Clusters Count
         .col-lg-6

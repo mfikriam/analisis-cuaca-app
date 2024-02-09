@@ -5,7 +5,7 @@ import { delayAlert, showAlert, validationErrorAlert } from './alert';
 //***************** Static Functions ******************* */
 const _getRandomDatasets = (dataset, k) => {
   const randomDatasets = [];
-  const dataCopy = [...dataset];
+  const dataCopy = JSON.parse(JSON.stringify(dataset));
 
   for (let i = 0; i < k; i++) {
     const randomIndex = Math.floor(Math.random() * dataCopy.length);
@@ -22,10 +22,11 @@ const _euclideanDistance = (obj1, obj2, objKeys) => {
   return Math.sqrt(sum);
 };
 
-const _centroidsConverged = (oldCentroids, newCentroids, objKeys) => {
-  return oldCentroids.every((oldCentroid, i) => {
-    const newCentroid = newCentroids[i];
-    return objKeys.every((key) => oldCentroid[key] === newCentroid[key]);
+const _centroidsConverged = (oldCentroids, newCentroids, clustersName, objKeys) => {
+  return clustersName.every((cluster) => {
+    return objKeys.every((key) => {
+      return oldCentroids[cluster][key] === newCentroids[cluster][key];
+    });
   });
 };
 
@@ -61,93 +62,141 @@ const _calculateAverageWithinCentroidDistance = (dataCuaca, centroidsObj, objKey
   return [overallAverage, averageDistances];
 };
 
+const _calculateInertia = (dataCuaca, centroidsObj, objKeys) => {
+  let inertia = 0;
+
+  //? Calculate distances between each data cuaca and the centroid of its assigned cluster
+  dataCuaca.forEach((cuacaObj) => {
+    const centroid = centroidsObj[cuacaObj.cluster];
+    inertia += _euclideanDistance(cuacaObj, centroid, objKeys);
+  });
+
+  return inertia;
+};
+
 const _kmeans = (dataset, criteria, k, maxIterations) => {
   let numOfIterations = 0;
 
-  //? 1. Initialize clusters with k random cuaca object from the dataset
+  //* 1. Initialize clusters with k random cuaca object from the dataset
   let clusters = _getRandomDatasets(dataset, k).map((obj, index) => ({
     name: `cluster_${index + 1}`,
     centroid: obj,
     members: [],
   }));
+  const clustersName = clusters.map((cluster) => cluster.name);
 
   for (let iteration = 0; iteration < maxIterations; iteration++) {
     numOfIterations++;
-    const oldCentroids = clusters.map((cluster) => cluster.centroid);
+    const oldCentroids = clusters.reduce(
+      (acc, cluster) => ((acc[cluster.name] = cluster.centroid), acc),
+      {},
+    );
 
-    //? 2. Assign each cuaca obj to the nearest cluster
-    dataset.forEach((obj) => {
+    //* 2. Assign each cuaca obj to the nearest cluster
+    dataset.forEach((cuacaObj) => {
       const distances = clusters.map((cluster) => ({
-        cluster,
-        distance: _euclideanDistance(obj, cluster.centroid, criteria),
+        clusterName: cluster.name,
+        distance: _euclideanDistance(cuacaObj, cluster.centroid, criteria),
       }));
+
       const nearestCluster = distances.reduce((min, current) =>
         current.distance < min.distance ? current : min,
-      ).cluster;
-      nearestCluster.members.push(obj);
-      obj.cluster = nearestCluster.name;
+      ).clusterName;
+
+      clusters.forEach((cluster) => {
+        if (cluster.name === nearestCluster) {
+          cluster.members.push(cuacaObj);
+        }
+      });
     });
 
-    //? 3. Update the centroids of each cluster
+    //* 3. Update the centroids of each cluster
     clusters.forEach((cluster) => {
       if (cluster.members.length > 0) {
-        const newCentroid = cluster.members.reduce((accumulator, currentObj) => {
-          criteria.forEach((key) => {
-            accumulator[key] += currentObj[key]; // Adding the value to the corresponding key
-          });
-          return accumulator;
-        }, Object.fromEntries(criteria.map((key) => [key, 0])));
+        //? Initialize centroid object with attribute value = 0
+        const centroid = criteria.reduce((acc, crit) => ((acc[crit] = 0), acc), {});
 
-        criteria.forEach((key) => {
-          newCentroid[key] = newCentroid[key] / cluster.members.length;
+        //? Sum each attribute value
+        cluster.members.forEach((memberObj) => {
+          criteria.forEach((crit) => {
+            centroid[crit] += memberObj[crit];
+          });
         });
 
-        cluster.centroid = newCentroid;
+        //? Divide each attribute value with cluster length
+        criteria.forEach((crit) => {
+          centroid[crit] /= cluster.members.length;
+        });
+
+        //? Update centroid value
+        cluster.centroid = centroid;
       }
+
+      //? Reset cluster members for next iteration
       cluster.members = [];
     });
-    const newCentroids = clusters.map((cluster) => cluster.centroid);
 
-    //? 4. Stop iteration if centroids convergence
-    if (_centroidsConverged(oldCentroids, newCentroids, criteria)) break;
+    //? Create New Centroids Object
+    const newCentroids = clusters.reduce(
+      (acc, cluster) => ((acc[cluster.name] = cluster.centroid), acc),
+      {},
+    );
+
+    //* 4. Stop iteration if centroids convergence
+    if (_centroidsConverged(oldCentroids, newCentroids, clustersName, criteria)) break;
   }
 
-  const centroidsObj = {};
-  clusters.forEach((cluster) => {
-    centroidsObj[cluster.name] = cluster.centroid;
+  //? Create Centroids Object
+  const centroidsObj = clusters.reduce(
+    (acc, cluster) => ((acc[cluster.name] = cluster.centroid), acc),
+    {},
+  );
+
+  //? Add cluster name to each cuaca obj
+  dataset.forEach((cuacaObj) => {
+    const distances = clusters.map((cluster) => ({
+      clusterName: cluster.name,
+      distance: _euclideanDistance(cuacaObj, cluster.centroid, criteria),
+    }));
+    const nearestCluster = distances.reduce((min, current) =>
+      current.distance < min.distance ? current : min,
+    ).clusterName;
+
+    cuacaObj.cluster = nearestCluster;
   });
 
-  return [dataset, centroidsObj, numOfIterations];
+  return {
+    dataset,
+    centroidsObj,
+    numOfIterations,
+  };
 };
 
 const _dataClustering = (dataCuaca, criteria, numOfClusters, numberOfRuns, maxIterations = 100) => {
   const results = [];
 
   for (let i = 0; i < numberOfRuns; i++) {
-    const [kMeansResult, centroidsObj, numOfIterations] = _kmeans(
-      [...dataCuaca],
-      criteria,
-      numOfClusters,
-      maxIterations,
-    );
-    const [avgWithinCentroidDistance, avgWithinCentroidDistanceForCluster] =
-      _calculateAverageWithinCentroidDistance([...kMeansResult], centroidsObj, criteria);
+    //? K-Means Clustering
+    const dataCuacaCopy = JSON.parse(JSON.stringify(dataCuaca));
+    const kMeansResult = _kmeans(dataCuacaCopy, criteria, numOfClusters, maxIterations);
+
+    //? Calculate Inertia
+    const inertia = _calculateInertia(kMeansResult.dataset, kMeansResult.centroidsObj, criteria);
 
     results.push({
-      dataset: kMeansResult,
-      centroids: centroidsObj,
-      num_of_iterations: numOfIterations,
-      awcd: avgWithinCentroidDistance,
-      awcd_clusters: avgWithinCentroidDistanceForCluster,
+      dataset: kMeansResult.dataset,
+      centroids: kMeansResult.centroidsObj,
+      num_of_iterations: kMeansResult.numOfIterations,
+      inertia,
     });
   }
 
-  //? Identify the run with the lowest average within-centroid distance
-  const bestAvgWithinCentroidResult = results.reduce((best, current) =>
-    current.awcd < best.awcd ? current : best,
+  //? Identify the run with the lowest inertia
+  const bestRun = results.reduce((best, current) =>
+    current.inertia < best.inertia ? current : best,
   );
 
-  return bestAvgWithinCentroidResult;
+  return bestRun;
 };
 
 const _addClustering = async (data, form) => {
@@ -221,6 +270,7 @@ export const replaceClustering = async (data, form) => {
   const criteria = JSON.parse(data.kriteria_clustering);
   const filteredCuacaArr = cuacaArr.map((cuaca) => {
     const obj = {};
+    obj.id = cuaca.id;
     criteria.forEach((el) => {
       obj[el] = cuaca[el];
     });
@@ -236,22 +286,23 @@ export const replaceClustering = async (data, form) => {
   );
 
   data.centroids = JSON.stringify(dataClusteringResult.centroids);
-  data.awcd = dataClusteringResult.awcd;
-  data.awcd_clusters = JSON.stringify(dataClusteringResult.awcd_clusters);
+  data.num_of_iterations = dataClusteringResult.num_of_iterations;
+  data.inertia = dataClusteringResult.inertia;
 
-  //? Add Clustering Data
+  //? Add Clustering
   const clustering = await _addClustering(data, form);
 
-  // //? Create New K-Means Result Data
-  const newClusteringResult = dataClusteringResult.dataset.map((clusteringResult, index) => ({
+  //? Create New Clustering Result Data
+  const newClusteringResult = dataClusteringResult.dataset.map((cuacaObj) => ({
     clustering_id: clustering.id,
-    cuaca_id: cuacaArr[index].id,
-    cluster: clusteringResult.cluster,
+    cuaca_id: cuacaObj.id,
+    cluster: cuacaObj.cluster,
   }));
 
-  // //? Add Clustering Result Data
+  //? Add Clustering Result
   await _addClusteringResult(newClusteringResult);
 
+  // showAlert('K-Means clustering successfully clustered data cuaca', 'success');
   delayAlert('K-Means clustering successfully clustered data cuaca', 'success');
 };
 

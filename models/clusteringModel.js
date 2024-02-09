@@ -39,15 +39,15 @@ const clusteringSchema = {
   },
   centroids: {
     type: DataTypes.TEXT,
-    allowNull: true,
+    allowNull: false,
   },
-  awcd: {
+  num_of_iterations: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  inertia: {
     type: DataTypes.FLOAT,
-    allowNull: true,
-  },
-  awcd_clusters: {
-    type: DataTypes.TEXT,
-    allowNull: true,
+    allowNull: false,
   },
 };
 
