@@ -99,7 +99,7 @@ block main
                 button.btn.btn-sm.btn-danger.me-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-del-all-clustering-result')
                   i.bi.bi-archive.me-1
                   |  Delete Clustering Result
-              //- .mb-2.d-flex.justify-content-end
+              
               .table-responsive
                 table.table.table-hover.datatable(id='clustering-result-table')
                   thead
@@ -146,7 +146,12 @@ block main
         .col-lg-12
           .card
             .card-body
-              h5.card-title Centroids
+              .d-flex.justify-content-between.align-items-center
+                h5.card-title Centroids
+                button.btn.btn-sm.btn-success.me-2(type='button' data-bs-toggle='modal' data-bs-target='#modal-update-clusters-name')
+                  i.bi.bi-pencil-square
+                  |  Change Clusters Name
+
               canvas#chart-centroids(style='max-height: 400px;' data-centroids=clustering.centroids data-criteria=clustering.kriteria_clustering data-clusters-name=`${JSON.stringify(clusters_name)}`)
 
         // Clustering Result Visualization
@@ -215,7 +220,7 @@ block main
                         canvas#chart-elbow-method(style='max-height: 400px;' data-clustering=`${JSON.stringify(clustering)}` data-clustering-result=`${JSON.stringify(formatted_clustering_result)}`)
               //- End of accordion
 
-      //- Delete Clustering Result Modal
+      // Delete Clustering Result Modal
       #modal-del-all-clustering-result.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
         .modal-dialog.modal-dialog-centered
           .modal-content
@@ -226,4 +231,18 @@ block main
             .modal-footer
               button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
               button.btn.btn-danger(class='btn-del-all-clustering-result' type='button' data-user-id=local_user.id) Delete All
+      
+      // Update Clusters Name Model
+      .modal.fade(id='modal-update-clusters-name' data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+        .modal-dialog.modal-dialog-scrollable
+          .modal-content
+            .modal-header
+              h1.modal-title.fs-4 Change Clusters Name
+              button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+              form.row(id='form-update-clusters-name' novalidate data-user-id=local_user.id)
+                //- block input-update-data
+            .modal-footer
+              button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+              button.btn.btn-info(class='btn-update-clusters-name' type='submit' form='form-update-clusters-name') Update
     //- End if
