@@ -12,7 +12,7 @@ import {
   delAllDataByUserId,
   importData,
 } from './manage-data';
-import { replaceClustering, deleteAllClusteringResult } from './clustering';
+import { replaceClustering, deleteAllClusteringResult, elbowMethod } from './clustering';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -55,10 +55,12 @@ const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 // Clustering
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
+const elbowMethodForm = document.querySelector('#form-elbow-method');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 const chartClusteringResult = document.querySelector('#chart-clustering-result');
 const chartClustersCount = document.querySelector('#chart-clusters-count');
 const chartCentroids = document.querySelector('#chart-centroids');
+const chartElbowMethod = document.querySelector('#chart-elbow-method');
 
 // Analisis
 const tanggalRange = document.querySelector('#tanggal-range');
@@ -456,6 +458,54 @@ if (delAllClusteringResultBtn) {
   });
 }
 
+//? Clusters Count Chart
+if (chartClustersCount) {
+  //? Get Clusters Array & Clusters Name
+  const clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
+  const clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
+
+  //? Create Map Count Clusters
+  const countClusters = new Map();
+  clustersName.forEach((cn) => countClusters.set(cn, 0));
+
+  //? Count each cluster
+  clustersArr.forEach((cluster) => countClusters.set(cluster, countClusters.get(cluster) + 1));
+  const clusters = Array.from(countClusters.entries()).map(([value, count]) => ({ value, count }));
+
+  //? Plot Clusters Count
+  const clustersCountLabels = clusters.map((el) => el.value);
+  const clustersCountDatasets = [
+    {
+      label: 'Count',
+      data: clusters.map((el) => el.count),
+      hoverOffset: 4,
+    },
+  ];
+  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
+}
+
+//? Centroids Chart
+if (chartCentroids) {
+  //? Get Centroids, Criteria, & Clusters Name
+  const centroids = JSON.parse(chartCentroids.dataset.centroids);
+  const criteria = JSON.parse(chartCentroids.dataset.criteria);
+  const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+
+  //? Plot Centroids
+  const centroidsDatasets = [];
+  clustersName.forEach((cn) => {
+    const dataArr = criteria.map((crit) => centroids[cn][crit]);
+    centroidsDatasets.push({
+      label: cn,
+      data: dataArr,
+      fill: false,
+      // tension: 0.1,
+    });
+  });
+
+  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
+}
+
 //? Clustering Result Chart
 if (chartClusteringResult) {
   //? Local Functions
@@ -614,52 +664,75 @@ if (chartClusteringResult) {
   });
 }
 
-//? Clusters Count Chart
-if (chartClustersCount) {
-  //? Get Clusters Array & Clusters Name
-  const clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
-  const clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
-
-  //? Create Map Count Clusters
-  const countClusters = new Map();
-  clustersName.forEach((cn) => countClusters.set(cn, 0));
-
-  //? Count each cluster
-  clustersArr.forEach((cluster) => countClusters.set(cluster, countClusters.get(cluster) + 1));
-  const clusters = Array.from(countClusters.entries()).map(([value, count]) => ({ value, count }));
-
-  //? Plot Clusters Count
-  const clustersCountLabels = clusters.map((el) => el.value);
-  const clustersCountDatasets = [
+//? Elbow Method Chart
+if (chartElbowMethod) {
+  let elbowMethodLabels = Array.from(Array(10).keys()).map((num) => num + 1);
+  let elbowMethodDatasets = [
     {
-      label: 'Count',
-      data: clusters.map((el) => el.count),
-      hoverOffset: 4,
+      label: '',
+      fill: false,
+      borderColor: '#fff',
+      backgroundColor: '#fff',
     },
   ];
-  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
-}
+  let elbowMethodOptions = {
+    responsive: true,
+    scales: {
+      x: {
+        position: 'bottom',
+        title: {
+          display: true,
+          text: 'k',
+          font: {
+            weight: 'bold',
+          },
+        },
+      },
+    },
+  };
 
-//? Centroids Chart
-if (chartCentroids) {
-  //? Get Centroids, Criteria, & Clusters Name
-  const centroids = JSON.parse(chartCentroids.dataset.centroids);
-  const criteria = JSON.parse(chartCentroids.dataset.criteria);
-  const clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  const elbowMethodChart = _plotChart(
+    chartElbowMethod,
+    'line',
+    elbowMethodLabels,
+    elbowMethodDatasets,
+    elbowMethodOptions,
+  );
 
-  //? Plot Centroids
-  const centroidsDatasets = [];
-  clustersName.forEach((cn) => {
-    const dataArr = criteria.map((crit) => centroids[cn][crit]);
-    centroidsDatasets.push({
-      label: cn,
-      data: dataArr,
-      fill: false,
-      // tension: 0.1,
-    });
+  elbowMethodForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    elbowMethodForm.classList.add('was-validated');
+
+    if (elbowMethodForm.checkValidity()) {
+      //? Get Data
+      const max_k = elbowMethodForm.querySelector('#max_k').value;
+      const clusteringResult = JSON.parse(chartElbowMethod.dataset.clusteringResult);
+      const clustering = JSON.parse(chartElbowMethod.dataset.clustering);
+
+      const maxClusters = max_k * 1;
+      const criteria = JSON.parse(clustering.kriteria_clustering);
+      const numberOfRuns = clustering.jum_percobaan;
+
+      //? Update Chart's Labels
+      elbowMethodLabels = Array.from(Array(maxClusters).keys()).map((num) => num + 1);
+
+      //? Update Chart's Datasets
+      const elbowMethodResult = elbowMethod(clusteringResult, criteria, numberOfRuns, maxClusters);
+      elbowMethodDatasets = [
+        {
+          label: 'Inertia',
+          data: elbowMethodResult,
+          fill: false,
+        },
+      ];
+
+      //? Update Chart
+      _updateChart(elbowMethodChart, elbowMethodLabels, elbowMethodDatasets, elbowMethodOptions);
+
+      //? Show Alert
+      showAlert('The elbow method successfully calculates all k values', 'success');
+    }
   });
-
-  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
 }
 
 //***************** Analisis Page ******************* */

@@ -80,8 +80,10 @@ block main
 
         const formatted_clustering_result = clustering_result.map((cr) => {
           const obj = {};
-          obj.tanggal = cr.tanggal;
-          criteria_array.forEach((crit) => obj[crit] = cr.cuaca[crit]);
+          criteria_array.forEach((crit) => {
+            obj.tanggal = cr.cuaca.tanggal;
+            obj[crit] = cr.cuaca[crit]
+          });
           obj.cluster = cr.cluster;
           return obj;
         });
@@ -188,7 +190,31 @@ block main
           .card
             .card-body
               h5.card-title Find Optimal k
-      
+
+              #accordion.accordion
+                .accordion-item
+                  h2#heading.accordion-header
+                    button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion' aria-expanded='false' aria-controls='collapse-accordion')
+                      | Elbow Method
+                  #collapse-accordion.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion')
+                    .accordion-body.row
+                      // Form Elbow Method
+                      .col-md-12
+                        form(id='form-elbow-method' novalidate)
+                          .row.g-3.d-flex.align-items-start
+                            label.col-auto.form-label.pt-2(for='max_k') Max k:
+                            .col-md-3
+                              input#max_k.form-control(type='number' name='max_k' min='3' max=clustering_result.length required)
+                              .invalid-feedback= `k ranges value is 3-${clustering_result.length}`
+                            .col-auto
+                              button.btn.btn-secondary(type='submit') Calculate
+                            
+                      
+                      // Chart Elbow Method
+                      .col-md-12.mb-3
+                        canvas#chart-elbow-method(style='max-height: 400px;' data-clustering=`${JSON.stringify(clustering)}` data-clustering-result=`${JSON.stringify(formatted_clustering_result)}`)
+              //- End of accordion
+
       //- Delete Clustering Result Modal
       #modal-del-all-clustering-result.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
         .modal-dialog.modal-dialog-centered

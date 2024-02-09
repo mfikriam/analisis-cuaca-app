@@ -31041,7 +31041,7 @@ var importData = exports.importData = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.replaceClustering = exports.deleteAllClusteringResult = void 0;
+exports.replaceClustering = exports.elbowMethod = exports.deleteAllClusteringResult = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -31468,6 +31468,15 @@ var deleteAllClusteringResult = exports.deleteAllClusteringResult = /*#__PURE__*
     return _ref6.apply(this, arguments);
   };
 }();
+var elbowMethod = exports.elbowMethod = function elbowMethod(dataCuaca, criteria, numberOfRuns, maxClusters) {
+  var results = [];
+  for (var k = 1; k <= maxClusters; k++) {
+    results.push(_dataClustering(dataCuaca, criteria, k, numberOfRuns));
+  }
+  return results.map(function (el) {
+    return el.inertia;
+  });
+};
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -31658,10 +31667,12 @@ var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 // Clustering
 var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
+var elbowMethodForm = document.querySelector('#form-elbow-method');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusteringResult = document.querySelector('#chart-clustering-result');
 var chartClustersCount = document.querySelector('#chart-clusters-count');
 var chartCentroids = document.querySelector('#chart-centroids');
+var chartElbowMethod = document.querySelector('#chart-elbow-method');
 
 // Analisis
 var tanggalRange = document.querySelector('#tanggal-range');
@@ -32037,6 +32048,69 @@ if (delAllClusteringResultBtn) {
   });
 }
 
+//? Clusters Count Chart
+if (chartClustersCount) {
+  //? Get Clusters Array & Clusters Name
+  var clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
+  var clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
+
+  //? Create Map Count Clusters
+  var countClusters = new Map();
+  clustersName.forEach(function (cn) {
+    return countClusters.set(cn, 0);
+  });
+
+  //? Count each cluster
+  clustersArr.forEach(function (cluster) {
+    return countClusters.set(cluster, countClusters.get(cluster) + 1);
+  });
+  var clusters = Array.from(countClusters.entries()).map(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      value = _ref2[0],
+      count = _ref2[1];
+    return {
+      value: value,
+      count: count
+    };
+  });
+
+  //? Plot Clusters Count
+  var clustersCountLabels = clusters.map(function (el) {
+    return el.value;
+  });
+  var clustersCountDatasets = [{
+    label: 'Count',
+    data: clusters.map(function (el) {
+      return el.count;
+    }),
+    hoverOffset: 4
+  }];
+  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
+}
+
+//? Centroids Chart
+if (chartCentroids) {
+  //? Get Centroids, Criteria, & Clusters Name
+  var centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var criteria = JSON.parse(chartCentroids.dataset.criteria);
+  var _clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+
+  //? Plot Centroids
+  var centroidsDatasets = [];
+  _clustersName.forEach(function (cn) {
+    var dataArr = criteria.map(function (crit) {
+      return centroids[cn][crit];
+    });
+    centroidsDatasets.push({
+      label: cn,
+      data: dataArr,
+      fill: false
+      // tension: 0.1,
+    });
+  });
+  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
+}
+
 //? Clustering Result Chart
 if (chartClusteringResult) {
   //? Local Functions
@@ -32080,8 +32154,8 @@ if (chartClusteringResult) {
 
   //? Get Clustering Result Data & Centroids
   var clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
-  var centroids = JSON.parse(chartCentroids.dataset.centroids);
-  var clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  var _centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var _clustersName2 = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Initial Chart Config
   var clusteringResultLabels = [];
@@ -32116,7 +32190,7 @@ if (chartClusteringResult) {
   };
 
   //? Updates Clustering Result Labels And Datasets
-  _updateClusteringResultChartData(clustersName, clusteringResultDatasets, clusteringResult, centroids, criteria1, criteria2);
+  _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
 
   //? Initial Plot Clustering Result Chart
   var clusteringResultChart = _plotChart(chartClusteringResult, 'scatter', clusteringResultLabels, clusteringResultDatasets, clusteringResultOptions);
@@ -32131,7 +32205,7 @@ if (chartClusteringResult) {
     clusteringResultDatasets = [];
 
     //? Updates Clustering Result Labels And Datasets
-    _updateClusteringResultChartData(clustersName, clusteringResultDatasets, clusteringResult, centroids, criteria1, criteria2);
+    _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
 
     //? Update Clustering Result Options
     clusteringResultOptions.scales.x.title.text = criteria1.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
@@ -32150,7 +32224,7 @@ if (chartClusteringResult) {
     clusteringResultDatasets = [];
 
     //? Updates Clustering Result Labels And Datasets
-    _updateClusteringResultChartData(clustersName, clusteringResultDatasets, clusteringResult, centroids, criteria1, criteria2);
+    _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
 
     //? Update Clustering Result Options
     clusteringResultOptions.scales.y.title.text = criteria2.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
@@ -32162,67 +32236,65 @@ if (chartClusteringResult) {
   });
 }
 
-//? Clusters Count Chart
-if (chartClustersCount) {
-  //? Get Clusters Array & Clusters Name
-  var clustersArr = JSON.parse(chartClustersCount.dataset.clustersArr);
-  var _clustersName = JSON.parse(chartClustersCount.dataset.clustersName);
-
-  //? Create Map Count Clusters
-  var countClusters = new Map();
-  _clustersName.forEach(function (cn) {
-    return countClusters.set(cn, 0);
+//? Elbow Method Chart
+if (chartElbowMethod) {
+  var elbowMethodLabels = Array.from(Array(10).keys()).map(function (num) {
+    return num + 1;
   });
-
-  //? Count each cluster
-  clustersArr.forEach(function (cluster) {
-    return countClusters.set(cluster, countClusters.get(cluster) + 1);
-  });
-  var clusters = Array.from(countClusters.entries()).map(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 2),
-      value = _ref2[0],
-      count = _ref2[1];
-    return {
-      value: value,
-      count: count
-    };
-  });
-
-  //? Plot Clusters Count
-  var clustersCountLabels = clusters.map(function (el) {
-    return el.value;
-  });
-  var clustersCountDatasets = [{
-    label: 'Count',
-    data: clusters.map(function (el) {
-      return el.count;
-    }),
-    hoverOffset: 4
+  var elbowMethodDatasets = [{
+    label: '',
+    fill: false,
+    borderColor: '#fff',
+    backgroundColor: '#fff'
   }];
-  _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
-}
+  var elbowMethodOptions = {
+    responsive: true,
+    scales: {
+      x: {
+        position: 'bottom',
+        title: {
+          display: true,
+          text: 'k',
+          font: {
+            weight: 'bold'
+          }
+        }
+      }
+    }
+  };
+  var elbowMethodChart = _plotChart(chartElbowMethod, 'line', elbowMethodLabels, elbowMethodDatasets, elbowMethodOptions);
+  elbowMethodForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    elbowMethodForm.classList.add('was-validated');
+    if (elbowMethodForm.checkValidity()) {
+      //? Get Data
+      var max_k = elbowMethodForm.querySelector('#max_k').value;
+      var _clusteringResult = JSON.parse(chartElbowMethod.dataset.clusteringResult);
+      var clustering = JSON.parse(chartElbowMethod.dataset.clustering);
+      var maxClusters = max_k * 1;
+      var _criteria = JSON.parse(clustering.kriteria_clustering);
+      var numberOfRuns = clustering.jum_percobaan;
 
-//? Centroids Chart
-if (chartCentroids) {
-  //? Get Centroids, Criteria, & Clusters Name
-  var _centroids = JSON.parse(chartCentroids.dataset.centroids);
-  var criteria = JSON.parse(chartCentroids.dataset.criteria);
-  var _clustersName2 = JSON.parse(chartCentroids.dataset.clustersName);
+      //? Update Chart's Labels
+      elbowMethodLabels = Array.from(Array(maxClusters).keys()).map(function (num) {
+        return num + 1;
+      });
 
-  //? Plot Centroids
-  var centroidsDatasets = [];
-  _clustersName2.forEach(function (cn) {
-    var dataArr = criteria.map(function (crit) {
-      return _centroids[cn][crit];
-    });
-    centroidsDatasets.push({
-      label: cn,
-      data: dataArr,
-      fill: false
-      // tension: 0.1,
-    });
+      //? Update Chart's Datasets
+      var elbowMethodResult = (0, _clustering.elbowMethod)(_clusteringResult, _criteria, numberOfRuns, maxClusters);
+      elbowMethodDatasets = [{
+        label: 'Inertia',
+        data: elbowMethodResult,
+        fill: false
+      }];
+
+      //? Update Chart
+      _updateChart(elbowMethodChart, elbowMethodLabels, elbowMethodDatasets, elbowMethodOptions);
+
+      //? Show Alert
+      (0, _alert.showAlert)('The elbow method successfully calculates all k values', 'success');
+    }
   });
-  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
 }
 
 //***************** Analisis Page ******************* */

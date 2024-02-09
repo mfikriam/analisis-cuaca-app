@@ -320,3 +320,12 @@ export const deleteAllClusteringResult = async (userId, modal) => {
     showAlert(err.response.data.message, 'danger');
   }
 };
+
+export const elbowMethod = (dataCuaca, criteria, numberOfRuns, maxClusters) => {
+  const results = [];
+  for (let k = 1; k <= maxClusters; k++) {
+    results.push(_dataClustering(dataCuaca, criteria, k, numberOfRuns));
+  }
+
+  return results.map((el) => el.inertia);
+};
