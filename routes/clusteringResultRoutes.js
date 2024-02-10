@@ -23,4 +23,8 @@ router
   .get(clusteringResultController.getAllClusteringResultByClusteringId)
   .delete(clusteringResultController.deleteClusteringResultByClusteringId);
 
+router
+  .route('/clustering/:clusteringId/cluster/:oldCluster')
+  .patch(clusteringResultController.updateClusteringResultClusterByClusteringId);
+
 module.exports = router;

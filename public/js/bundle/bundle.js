@@ -31041,7 +31041,7 @@ var importData = exports.importData = /*#__PURE__*/function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.replaceClustering = exports.elbowMethod = exports.deleteAllClusteringResult = void 0;
+exports.updateClustersName = exports.replaceClustering = exports.elbowMethod = exports.deleteAllClusteringResult = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -31373,27 +31373,85 @@ var _deleteClustering = /*#__PURE__*/function () {
     return _ref4.apply(this, arguments);
   };
 }();
-
-//***************** Exported Functions ******************* */
-var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(data, form) {
-    var cuacaArr, criteria, filteredCuacaArr, dataClusteringResult, clustering, newClusteringResult;
+var _updateClusteringById = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(clusteringId, data) {
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
-          _context5.next = 2;
+          _context5.prev = 0;
+          _context5.next = 3;
+          return (0, _axios.default)({
+            method: 'PATCH',
+            url: "/api/v1/clustering/".concat(clusteringId),
+            data: data
+          });
+        case 3:
+          _context5.next = 8;
+          break;
+        case 5:
+          _context5.prev = 5;
+          _context5.t0 = _context5["catch"](0);
+          (0, _alert.validationErrorAlert)(_context5.t0);
+        case 8:
+        case "end":
+          return _context5.stop();
+      }
+    }, _callee5, null, [[0, 5]]);
+  }));
+  return function _updateClusteringById(_x6, _x7) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+var _updateClusteringResultClusterByClusteringId = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(clusteringId, oldCluster, data) {
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          _context6.next = 3;
+          return (0, _axios.default)({
+            method: 'PATCH',
+            url: "/api/v1/clustering-result/clustering/".concat(clusteringId, "/cluster/").concat(oldCluster),
+            data: data
+          });
+        case 3:
+          _context6.next = 8;
+          break;
+        case 5:
+          _context6.prev = 5;
+          _context6.t0 = _context6["catch"](0);
+          (0, _alert.validationErrorAlert)(_context6.t0);
+        case 8:
+        case "end":
+          return _context6.stop();
+      }
+    }, _callee6, null, [[0, 5]]);
+  }));
+  return function _updateClusteringResultClusterByClusteringId(_x8, _x9, _x10) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+
+//***************** Exported Functions ******************* */
+var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(data, form) {
+    var cuacaArr, criteria, filteredCuacaArr, dataClusteringResult, clustering, newClusteringResult;
+    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.next = 2;
           return _deleteClustering(data.user_id);
         case 2:
-          _context5.next = 4;
+          _context7.next = 4;
           return _getCuaca(data.user_id);
         case 4:
-          cuacaArr = _context5.sent;
+          cuacaArr = _context7.sent;
           if (!(cuacaArr.length === 0)) {
-            _context5.next = 8;
+            _context7.next = 8;
             break;
           }
           (0, _alert.showAlert)('You do not have data cuaca. Insert data cuaca first!', 'danger');
-          return _context5.abrupt("return");
+          return _context7.abrupt("return");
         case 8:
           //? Filter Data Cuaca
           criteria = JSON.parse(data.kriteria_clustering);
@@ -31411,10 +31469,10 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
           data.inertia = dataClusteringResult.inertia;
 
           //? Add Clustering
-          _context5.next = 16;
+          _context7.next = 16;
           return _addClustering(data, form);
         case 16:
-          clustering = _context5.sent;
+          clustering = _context7.sent;
           //? Create New Clustering Result Data
           newClusteringResult = dataClusteringResult.dataset.map(function (cuacaObj) {
             return {
@@ -31423,49 +31481,49 @@ var replaceClustering = exports.replaceClustering = /*#__PURE__*/function () {
               cluster: cuacaObj.cluster
             };
           }); //? Add Clustering Result
-          _context5.next = 20;
+          _context7.next = 20;
           return _addClusteringResult(newClusteringResult);
         case 20:
           // showAlert('K-Means clustering successfully clustered data cuaca', 'success');
           (0, _alert.delayAlert)('K-Means clustering successfully clustered data cuaca', 'success');
         case 21:
         case "end":
-          return _context5.stop();
+          return _context7.stop();
       }
-    }, _callee5);
+    }, _callee7);
   }));
-  return function replaceClustering(_x6, _x7) {
-    return _ref5.apply(this, arguments);
+  return function replaceClustering(_x11, _x12) {
+    return _ref7.apply(this, arguments);
   };
 }();
 var deleteAllClusteringResult = exports.deleteAllClusteringResult = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(userId, modal) {
-    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-      while (1) switch (_context6.prev = _context6.next) {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(userId, modal) {
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
         case 0:
-          _context6.prev = 0;
+          _context8.prev = 0;
           modal.hide();
-          _context6.next = 4;
+          _context8.next = 4;
           return (0, _axios.default)({
             method: 'DELETE',
             url: "/api/v1/clustering/purge/".concat(userId)
           });
         case 4:
           (0, _alert.delayAlert)("All clustering result data deleted successfully", 'success');
-          _context6.next = 10;
+          _context8.next = 10;
           break;
         case 7:
-          _context6.prev = 7;
-          _context6.t0 = _context6["catch"](0);
-          (0, _alert.showAlert)(_context6.t0.response.data.message, 'danger');
+          _context8.prev = 7;
+          _context8.t0 = _context8["catch"](0);
+          (0, _alert.showAlert)(_context8.t0.response.data.message, 'danger');
         case 10:
         case "end":
-          return _context6.stop();
+          return _context8.stop();
       }
-    }, _callee6, null, [[0, 7]]);
+    }, _callee8, null, [[0, 7]]);
   }));
-  return function deleteAllClusteringResult(_x8, _x9) {
-    return _ref6.apply(this, arguments);
+  return function deleteAllClusteringResult(_x13, _x14) {
+    return _ref8.apply(this, arguments);
   };
 }();
 var elbowMethod = exports.elbowMethod = function elbowMethod(dataCuaca, criteria, numberOfRuns, maxClusters) {
@@ -31477,6 +31535,54 @@ var elbowMethod = exports.elbowMethod = function elbowMethod(dataCuaca, criteria
     return el.inertia;
   });
 };
+var updateClustersName = exports.updateClustersName = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(clusteringId, clustersName, newClustersNameObj, newCentroidsObj, modal) {
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          _context10.next = 2;
+          return _updateClusteringById(clusteringId, {
+            centroids: JSON.stringify(newCentroidsObj)
+          });
+        case 2:
+          _context10.next = 4;
+          return Promise.all(clustersName.map( /*#__PURE__*/function () {
+            var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(cn) {
+              var data;
+              return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+                while (1) switch (_context9.prev = _context9.next) {
+                  case 0:
+                    data = {
+                      cluster: newClustersNameObj[cn]
+                    };
+                    _context9.next = 3;
+                    return _updateClusteringResultClusterByClusteringId(clusteringId, cn, data);
+                  case 3:
+                  case "end":
+                    return _context9.stop();
+                }
+              }, _callee9);
+            }));
+            return function (_x20) {
+              return _ref10.apply(this, arguments);
+            };
+          }()));
+        case 4:
+          //? Hide modal
+          modal.hide();
+
+          //? Show Alert
+          (0, _alert.delayAlert)('Cluster name changed successfully', 'success');
+        case 6:
+        case "end":
+          return _context10.stop();
+      }
+    }, _callee10);
+  }));
+  return function updateClustersName(_x15, _x16, _x17, _x18, _x19) {
+    return _ref9.apply(this, arguments);
+  };
+}();
 },{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
@@ -31615,7 +31721,7 @@ var _papaparse = _interopRequireDefault(require("papaparse"));
 var _auto = _interopRequireDefault(require("chart.js/auto"));
 var _auth = require("./auth");
 var _manageData = require("./manage-data");
-var _clustering = require("./clustering");
+var _clustering2 = require("./clustering");
 var _alert = require("./alert");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -31667,6 +31773,7 @@ var importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 // Clustering
 var clusteringResultTable = document.querySelector('#clustering-result-table');
 var addClusteringForm = document.querySelector('#form-add-clustering');
+var updateClustersNameForm = document.querySelector('#form-update-clusters-name');
 var elbowMethodForm = document.querySelector('#form-elbow-method');
 var delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 var chartClusteringResult = document.querySelector('#chart-clustering-result');
@@ -32008,7 +32115,7 @@ if (clusteringResultTable) {
   new _simpleDatatables.DataTable(clusteringResultTable, clusteringResultTableOptions);
 }
 
-//? Add and Replace Data
+//? Add Clustering Form
 if (addClusteringForm) {
   addClusteringForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -32030,7 +32137,7 @@ if (addClusteringForm) {
           kriteria_clustering: kriteria_clustering,
           user_id: user_id
         };
-        (0, _clustering.replaceClustering)(dataObj, addClusteringForm);
+        (0, _clustering2.replaceClustering)(dataObj, addClusteringForm);
       } else {
         (0, _alert.showAlert)('Please select at least one criteria.', 'danger');
       }
@@ -32044,7 +32151,7 @@ if (delAllClusteringResultBtn) {
   var bsDelAllClusteringResultModal = new bootstrap.Modal(delAllClusteringResultModal);
   delAllClusteringResultBtn.addEventListener('click', function () {
     var userId = delAllClusteringResultBtn.dataset.userId;
-    (0, _clustering.deleteAllClusteringResult)(userId, bsDelAllClusteringResultModal);
+    (0, _clustering2.deleteAllClusteringResult)(userId, bsDelAllClusteringResultModal);
   });
 }
 
@@ -32088,18 +32195,136 @@ if (chartClustersCount) {
   _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
 }
 
+//? Update Clusters Name Form
+if (updateClustersNameForm) {
+  //? Local Functions
+  function _hasSpacesOrUppercase(inputString) {
+    return inputString.includes(' ') || /[A-Z]/.test(inputString);
+  }
+  function _areValuesUnique(obj) {
+    var valueSet = new Set();
+    for (var key in obj) {
+      var value = obj[key];
+
+      // If the value is already in the set, it's not unique
+      if (valueSet.has(value)) {
+        return false;
+      }
+
+      // Add the value to the set
+      valueSet.add(value);
+    }
+
+    // All values are unique
+    return true;
+  }
+
+  //? Get Datasets
+  var clustering = JSON.parse(updateClustersNameForm.dataset.clustering);
+  var clusteringId = clustering.id;
+  var centroids = JSON.parse(clustering.centroids);
+  var _clustersName = Object.keys(centroids);
+
+  //? Get Elements
+  var criteriaEl = document.querySelector('#update-clusters-name-criteria');
+  var criteriaHeaderEl = document.querySelector('#update-clusters-name-criteria-header');
+  var clustersNameElList = document.querySelectorAll('.clusters-name');
+  var clustersNameSortByEL = document.querySelector('#update-clusters-sort-by');
+  var updateClustersNameModal = document.querySelector('#modal-update-clusters-name');
+  var bsUpdateClustersNameModal = new bootstrap.Modal(updateClustersNameModal);
+  var criteria = criteriaEl[0].value;
+
+  //? Add Event Listener To Criteria El
+  criteriaEl.addEventListener('change', function (el) {
+    //? Get its value
+    criteria = el.target.value;
+
+    //? Update Criteria Header
+    criteriaHeaderEl.textContent = criteria.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+      return char.toUpperCase();
+    });
+
+    //? Update Criteria Values
+    _clustersName.forEach(function (cn) {
+      var criteriaValueEl = document.querySelector("#update-clusters-name-criteria-value-".concat(cn));
+      criteriaValueEl.textContent = centroids[cn][criteria].toFixed(2);
+    });
+  });
+
+  //? Form Submitted
+  updateClustersNameForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (updateClustersNameForm.checkValidity()) {
+      //? Create new clusters name object
+      var newClustersNameObj = {};
+
+      //? Create new clusters name
+      var hasInvalidInput = false;
+      clustersNameElList.forEach(function (el) {
+        if (_hasSpacesOrUppercase(el.value)) {
+          (0, _alert.showAlert)('Invalid data: no spaces and no uppercase for clusters name', 'danger');
+          hasInvalidInput = true;
+          return;
+        } else {
+          newClustersNameObj[el.id] = 'cluster_' + el.value;
+        }
+      });
+
+      //? Check if clusters name input data is valid
+      if (hasInvalidInput) {
+        return;
+      }
+
+      //? Check if clusters name is unique
+      if (!_areValuesUnique(newClustersNameObj)) {
+        (0, _alert.showAlert)('Duplicate data: clusters name must be unique', 'danger');
+        return;
+      }
+
+      //? Create new centroids with new cluster name
+      var newCentroidsObj = {};
+      _clustersName.forEach(function (cn) {
+        newCentroidsObj[newClustersNameObj[cn]] = centroids[cn];
+      });
+
+      //? Sorting new centroids obj based on selected criteria
+      var clustersNameSortBy = clustersNameSortByEL.value;
+      if (clustersNameSortBy === 'asc') {
+        newCentroidsObj = Object.fromEntries(Object.entries(newCentroidsObj).sort(function (_ref3, _ref4) {
+          var _ref5 = _slicedToArray(_ref3, 2),
+            a = _ref5[1];
+          var _ref6 = _slicedToArray(_ref4, 2),
+            b = _ref6[1];
+          return a[criteria] - b[criteria];
+        }));
+      } else {
+        newCentroidsObj = Object.fromEntries(Object.entries(newCentroidsObj).sort(function (_ref7, _ref8) {
+          var _ref9 = _slicedToArray(_ref7, 2),
+            a = _ref9[1];
+          var _ref10 = _slicedToArray(_ref8, 2),
+            b = _ref10[1];
+          return b[criteria] - a[criteria];
+        }));
+      }
+
+      //? Update clusters name in database
+      (0, _clustering2.updateClustersName)(clusteringId, _clustersName, newClustersNameObj, newCentroidsObj, bsUpdateClustersNameModal);
+    }
+  });
+}
+
 //? Centroids Chart
 if (chartCentroids) {
   //? Get Centroids, Criteria, & Clusters Name
-  var centroids = JSON.parse(chartCentroids.dataset.centroids);
-  var criteria = JSON.parse(chartCentroids.dataset.criteria);
-  var _clustersName = JSON.parse(chartCentroids.dataset.clustersName);
+  var _centroids = JSON.parse(chartCentroids.dataset.centroids);
+  var _criteria = JSON.parse(chartCentroids.dataset.criteria);
+  var _clustersName2 = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Plot Centroids
   var centroidsDatasets = [];
-  _clustersName.forEach(function (cn) {
-    var dataArr = criteria.map(function (crit) {
-      return centroids[cn][crit];
+  _clustersName2.forEach(function (cn) {
+    var dataArr = _criteria.map(function (crit) {
+      return _centroids[cn][crit];
     });
     centroidsDatasets.push({
       label: cn,
@@ -32108,7 +32333,7 @@ if (chartCentroids) {
       // tension: 0.1,
     });
   });
-  _plotChart(chartCentroids, 'line', criteria, centroidsDatasets);
+  _plotChart(chartCentroids, 'line', _criteria, centroidsDatasets);
 }
 
 //? Clustering Result Chart
@@ -32154,8 +32379,8 @@ if (chartClusteringResult) {
 
   //? Get Clustering Result Data & Centroids
   var clusteringResult = JSON.parse(chartClusteringResult.dataset.clusteringResult);
-  var _centroids = JSON.parse(chartCentroids.dataset.centroids);
-  var _clustersName2 = JSON.parse(chartCentroids.dataset.clustersName);
+  var _centroids2 = JSON.parse(chartCentroids.dataset.centroids);
+  var _clustersName3 = JSON.parse(chartCentroids.dataset.clustersName);
 
   //? Initial Chart Config
   var clusteringResultLabels = [];
@@ -32190,7 +32415,7 @@ if (chartClusteringResult) {
   };
 
   //? Updates Clustering Result Labels And Datasets
-  _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
+  _updateClusteringResultChartData(_clustersName3, clusteringResultDatasets, clusteringResult, _centroids2, criteria1, criteria2);
 
   //? Initial Plot Clustering Result Chart
   var clusteringResultChart = _plotChart(chartClusteringResult, 'scatter', clusteringResultLabels, clusteringResultDatasets, clusteringResultOptions);
@@ -32205,7 +32430,7 @@ if (chartClusteringResult) {
     clusteringResultDatasets = [];
 
     //? Updates Clustering Result Labels And Datasets
-    _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
+    _updateClusteringResultChartData(_clustersName3, clusteringResultDatasets, clusteringResult, _centroids2, criteria1, criteria2);
 
     //? Update Clustering Result Options
     clusteringResultOptions.scales.x.title.text = criteria1.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
@@ -32224,7 +32449,7 @@ if (chartClusteringResult) {
     clusteringResultDatasets = [];
 
     //? Updates Clustering Result Labels And Datasets
-    _updateClusteringResultChartData(_clustersName2, clusteringResultDatasets, clusteringResult, _centroids, criteria1, criteria2);
+    _updateClusteringResultChartData(_clustersName3, clusteringResultDatasets, clusteringResult, _centroids2, criteria1, criteria2);
 
     //? Update Clustering Result Options
     clusteringResultOptions.scales.y.title.text = criteria2.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
@@ -32270,10 +32495,10 @@ if (chartElbowMethod) {
       //? Get Data
       var max_k = elbowMethodForm.querySelector('#max_k').value;
       var _clusteringResult = JSON.parse(chartElbowMethod.dataset.clusteringResult);
-      var clustering = JSON.parse(chartElbowMethod.dataset.clustering);
+      var _clustering = JSON.parse(chartElbowMethod.dataset.clustering);
       var maxClusters = max_k * 1;
-      var _criteria = JSON.parse(clustering.kriteria_clustering);
-      var numberOfRuns = clustering.jum_percobaan;
+      var _criteria2 = JSON.parse(_clustering.kriteria_clustering);
+      var numberOfRuns = _clustering.jum_percobaan;
 
       //? Update Chart's Labels
       elbowMethodLabels = Array.from(Array(maxClusters).keys()).map(function (num) {
@@ -32281,7 +32506,7 @@ if (chartElbowMethod) {
       });
 
       //? Update Chart's Datasets
-      var elbowMethodResult = (0, _clustering.elbowMethod)(_clusteringResult, _criteria, numberOfRuns, maxClusters);
+      var elbowMethodResult = (0, _clustering2.elbowMethod)(_clusteringResult, _criteria2, numberOfRuns, maxClusters);
       elbowMethodDatasets = [{
         label: 'Inertia',
         data: elbowMethodResult,
@@ -32518,7 +32743,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56345" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64366" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

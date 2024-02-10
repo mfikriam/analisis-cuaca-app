@@ -12,7 +12,12 @@ import {
   delAllDataByUserId,
   importData,
 } from './manage-data';
-import { replaceClustering, deleteAllClusteringResult, elbowMethod } from './clustering';
+import {
+  replaceClustering,
+  deleteAllClusteringResult,
+  elbowMethod,
+  updateClustersName,
+} from './clustering';
 import { showAlert } from './alert';
 
 //? DOM ELEMENTS
@@ -55,6 +60,7 @@ const importDataCuacaForm = document.querySelector('#form-import-data-cuaca');
 // Clustering
 const clusteringResultTable = document.querySelector('#clustering-result-table');
 const addClusteringForm = document.querySelector('#form-add-clustering');
+const updateClustersNameForm = document.querySelector('#form-update-clusters-name');
 const elbowMethodForm = document.querySelector('#form-elbow-method');
 const delAllClusteringResultBtn = document.querySelector('.btn-del-all-clustering-result');
 const chartClusteringResult = document.querySelector('#chart-clustering-result');
@@ -418,7 +424,7 @@ if (clusteringResultTable) {
   new DataTable(clusteringResultTable, clusteringResultTableOptions);
 }
 
-//? Add and Replace Data
+//? Add Clustering Form
 if (addClusteringForm) {
   addClusteringForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -482,6 +488,127 @@ if (chartClustersCount) {
     },
   ];
   _plotChart(chartClustersCount, 'pie', clustersCountLabels, clustersCountDatasets);
+}
+
+//? Update Clusters Name Form
+if (updateClustersNameForm) {
+  //? Local Functions
+  function _hasSpacesOrUppercase(inputString) {
+    return inputString.includes(' ') || /[A-Z]/.test(inputString);
+  }
+
+  function _areValuesUnique(obj) {
+    const valueSet = new Set();
+
+    for (const key in obj) {
+      const value = obj[key];
+
+      // If the value is already in the set, it's not unique
+      if (valueSet.has(value)) {
+        return false;
+      }
+
+      // Add the value to the set
+      valueSet.add(value);
+    }
+
+    // All values are unique
+    return true;
+  }
+
+  //? Get Datasets
+  const clustering = JSON.parse(updateClustersNameForm.dataset.clustering);
+  const clusteringId = clustering.id;
+
+  const centroids = JSON.parse(clustering.centroids);
+  const clustersName = Object.keys(centroids);
+
+  //? Get Elements
+  const criteriaEl = document.querySelector('#update-clusters-name-criteria');
+  const criteriaHeaderEl = document.querySelector('#update-clusters-name-criteria-header');
+  const clustersNameElList = document.querySelectorAll('.clusters-name');
+  const clustersNameSortByEL = document.querySelector('#update-clusters-sort-by');
+  const updateClustersNameModal = document.querySelector('#modal-update-clusters-name');
+  const bsUpdateClustersNameModal = new bootstrap.Modal(updateClustersNameModal);
+
+  let criteria = criteriaEl[0].value;
+
+  //? Add Event Listener To Criteria El
+  criteriaEl.addEventListener('change', function (el) {
+    //? Get its value
+    criteria = el.target.value;
+
+    //? Update Criteria Header
+    criteriaHeaderEl.textContent = criteria
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+
+    //? Update Criteria Values
+    clustersName.forEach((cn) => {
+      const criteriaValueEl = document.querySelector(`#update-clusters-name-criteria-value-${cn}`);
+      criteriaValueEl.textContent = centroids[cn][criteria].toFixed(2);
+    });
+  });
+
+  //? Form Submitted
+  updateClustersNameForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (updateClustersNameForm.checkValidity()) {
+      //? Create new clusters name object
+      const newClustersNameObj = {};
+
+      //? Create new clusters name
+      let hasInvalidInput = false;
+      clustersNameElList.forEach((el) => {
+        if (_hasSpacesOrUppercase(el.value)) {
+          showAlert('Invalid data: no spaces and no uppercase for clusters name', 'danger');
+          hasInvalidInput = true;
+          return;
+        } else {
+          newClustersNameObj[el.id] = 'cluster_' + el.value;
+        }
+      });
+
+      //? Check if clusters name input data is valid
+      if (hasInvalidInput) {
+        return;
+      }
+
+      //? Check if clusters name is unique
+      if (!_areValuesUnique(newClustersNameObj)) {
+        showAlert('Duplicate data: clusters name must be unique', 'danger');
+        return;
+      }
+
+      //? Create new centroids with new cluster name
+      let newCentroidsObj = {};
+      clustersName.forEach((cn) => {
+        newCentroidsObj[newClustersNameObj[cn]] = centroids[cn];
+      });
+
+      //? Sorting new centroids obj based on selected criteria
+      const clustersNameSortBy = clustersNameSortByEL.value;
+      if (clustersNameSortBy === 'asc') {
+        newCentroidsObj = Object.fromEntries(
+          Object.entries(newCentroidsObj).sort(([, a], [, b]) => a[criteria] - b[criteria]),
+        );
+      } else {
+        newCentroidsObj = Object.fromEntries(
+          Object.entries(newCentroidsObj).sort(([, a], [, b]) => b[criteria] - a[criteria]),
+        );
+      }
+
+      //? Update clusters name in database
+      updateClustersName(
+        clusteringId,
+        clustersName,
+        newClustersNameObj,
+        newCentroidsObj,
+        bsUpdateClustersNameModal,
+      );
+    }
+  });
 }
 
 //? Centroids Chart

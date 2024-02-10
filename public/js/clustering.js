@@ -254,6 +254,30 @@ const _deleteClustering = async (userId) => {
   }
 };
 
+const _updateClusteringById = async (clusteringId, data) => {
+  try {
+    await axios({
+      method: 'PATCH',
+      url: `/api/v1/clustering/${clusteringId}`,
+      data,
+    });
+  } catch (err) {
+    validationErrorAlert(err);
+  }
+};
+
+const _updateClusteringResultClusterByClusteringId = async (clusteringId, oldCluster, data) => {
+  try {
+    await axios({
+      method: 'PATCH',
+      url: `/api/v1/clustering-result/clustering/${clusteringId}/cluster/${oldCluster}`,
+      data,
+    });
+  } catch (err) {
+    validationErrorAlert(err);
+  }
+};
+
 //***************** Exported Functions ******************* */
 export const replaceClustering = async (data, form) => {
   //? Delete Previous Clustering Data
@@ -328,4 +352,29 @@ export const elbowMethod = (dataCuaca, criteria, numberOfRuns, maxClusters) => {
   }
 
   return results.map((el) => el.inertia);
+};
+
+export const updateClustersName = async (
+  clusteringId,
+  clustersName,
+  newClustersNameObj,
+  newCentroidsObj,
+  modal,
+) => {
+  //? Update clustering's centroid
+  await _updateClusteringById(clusteringId, { centroids: JSON.stringify(newCentroidsObj) });
+
+  //? Update clustering result's cluster
+  await Promise.all(
+    clustersName.map(async (cn) => {
+      const data = { cluster: newClustersNameObj[cn] };
+      await _updateClusteringResultClusterByClusteringId(clusteringId, cn, data);
+    }),
+  );
+
+  //? Hide modal
+  modal.hide();
+
+  //? Show Alert
+  delayAlert('Cluster name changed successfully', 'success');
 };

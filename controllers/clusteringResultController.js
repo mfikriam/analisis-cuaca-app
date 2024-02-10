@@ -58,3 +58,29 @@ exports.deleteClusteringResultByClusteringId = catchAsync(async (req, res, next)
     data: null,
   });
 });
+
+exports.updateClusteringResultClusterByClusteringId = catchAsync(async (req, res, next) => {
+  const { clusteringId, oldCluster } = req.params;
+
+  await ClusteringResult.update(req.body, {
+    where: { clustering_id: clusteringId, cluster: oldCluster },
+  });
+
+  const resultQuery = await ClusteringResult.findAll({
+    where: { clustering_id: clusteringId },
+  });
+  const resultQueryArr = await Promise.all(
+    resultQuery.map(async (instance) => {
+      const cuaca = (await instance.getCuaca()).toJSON();
+      return {
+        ...instance.toJSON(),
+        cuaca,
+      };
+    }),
+  );
+
+  res.status(200).json({
+    status: 'success',
+    data: { [`${ClusteringResult.name}s`]: resultQueryArr },
+  });
+});
