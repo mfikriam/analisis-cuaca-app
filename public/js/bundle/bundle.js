@@ -32360,7 +32360,7 @@ if (chartClusteringResult) {
     //? Add Centroids To Datasets
     clustersName.forEach(function (cn) {
       clusteringResultDatasets.push({
-        label: "centroids ".concat(cn),
+        label: "centroid ".concat(cn),
         data: [{
           x: centroids[cn][criteria1],
           y: centroids[cn][criteria2]

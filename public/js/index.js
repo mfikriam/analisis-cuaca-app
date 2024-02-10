@@ -659,7 +659,7 @@ if (chartClusteringResult) {
     //? Add Centroids To Datasets
     clustersName.forEach((cn) => {
       clusteringResultDatasets.push({
-        label: `centroids ${cn}`,
+        label: `centroid ${cn}`,
         data: [{ x: centroids[cn][criteria1], y: centroids[cn][criteria2] }],
         pointRadius: 9,
         hoverRadius: 10,
