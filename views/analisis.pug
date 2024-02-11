@@ -7,87 +7,81 @@ block main
         .card
           .card-body
             h5.card-title Compare Dataset
-            
             - let longestTanggal = [];
 
-            #accordion.accordion
-              .accordion-item
-                h2#heading.accordion-header
-                  button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion' aria-expanded='false' aria-controls='collapse-accordion')
-                    | Plot Data
-                #collapse-accordion.accordion-collapse.collapse.show(aria-labelledby='heading' data-bs-parent='#accordion')
-                  .accordion-body.row
-                    // Data Cuaca Attributes
-                    .col-12.mb-3
-                      legend.col-form-label.fw-bold Data Cuaca
-                      if cuaca.length > 0
-                        - if (cuaca.length > longestTanggal.length) longestTanggal = cuaca.map((el) => el.tanggal);
-                        - const cuaca_attr = ['temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
-                        each attr in cuaca_attr
-                          -
-                            const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                            const attr_data = cuaca.map((el) => { 
-                              const obj = {};
-                              obj.tanggal = el.tanggal;
-                              obj[attr] = el[attr];
-                              return obj;
-                            });
-                          .form-check.form-check-inline.form-switch
-                            input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
-                            label.form-check-label(for=attr)= attr_display
-                      else
-                        p No data
-                    
-                    // Data Wisatawan Attributes
-                    .col-lg-4.mb-3
-                      legend.col-form-label.fw-bold Data Wisatawan
-                      if wisatawan.length > 0
-                        - if (wisatawan.length > longestTanggal.length) longestTanggal = wisatawan.map((el) => el.tanggal);
-                        - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
-                        each attr in wisatawan_attr
-                          -
-                            const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                            const attr_data = wisatawan.map((el) => { 
-                              const obj = {};
-                              obj.tanggal = el.tanggal;
-                              obj[attr] = el[attr];
-                              return obj;
-                            });
-                          .form-check.form-check-inline.form-switch
-                            input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
-                            label.form-check-label(for=attr)= attr_display
-                      else
-                        p No data
-                    
-                    // Data Kecelakaan Attributes
-                    .col-lg-4.mb-3
-                      legend.col-form-label.fw-bold Data Kecelakaan
-                      if kecelakaan.length > 0
-                        - if (kecelakaan.length > longestTanggal.length) longestTanggal = kecelakaan.map((el) => el.tanggal);
-                        - const kecelakaan_attr = ['jum_kecelakaan'];
-                        each attr in kecelakaan_attr
-                          -
-                            const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                            const attr_data = kecelakaan.map((el) => { 
-                              const obj = {};
-                              obj.tanggal = el.tanggal;
-                              obj[attr] = el[attr];
-                              return obj;
-                            });
-                          .form-check.form-check-inline.form-switch
-                            input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
-                            label.form-check-label(for=attr)= attr_display
-                      else
-                        p No data
+            .row
+              // Data Cuaca Attributes
+              .col-12.mb-3
+                legend.col-form-label.fw-bold Data Cuaca
+                if cuaca.length > 0
+                  - if (cuaca.length > longestTanggal.length) longestTanggal = cuaca.map((el) => el.tanggal);
+                  - const cuaca_attr = ['temperatur_avg', 'kelembaban_avg', 'kecepatan_angin_avg', 'jum_curah_hujan', 'jum_hari_hujan', 'penyinaran_matahari_avg'];
+                  each attr in cuaca_attr
+                    -
+                      const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      const attr_data = cuaca.map((el) => { 
+                        const obj = {};
+                        obj.tanggal = el.tanggal;
+                        obj[attr] = el[attr];
+                        return obj;
+                      });
+                    .form-check.form-check-inline.form-switch
+                      input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
+                      label.form-check-label(for=attr)= attr_display
+                else
+                  p No data
+              
+              // Data Wisatawan Attributes
+              .col-lg-4.mb-3
+                legend.col-form-label.fw-bold Data Wisatawan
+                if wisatawan.length > 0
+                  - if (wisatawan.length > longestTanggal.length) longestTanggal = wisatawan.map((el) => el.tanggal);
+                  - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
+                  each attr in wisatawan_attr
+                    -
+                      const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      const attr_data = wisatawan.map((el) => { 
+                        const obj = {};
+                        obj.tanggal = el.tanggal;
+                        obj[attr] = el[attr];
+                        return obj;
+                      });
+                    .form-check.form-check-inline.form-switch
+                      input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
+                      label.form-check-label(for=attr)= attr_display
+                else
+                  p No data
+              
+              // Data Kecelakaan Attributes
+              .col-lg-4.mb-3
+                legend.col-form-label.fw-bold Data Kecelakaan
+                if kecelakaan.length > 0
+                  - if (kecelakaan.length > longestTanggal.length) longestTanggal = kecelakaan.map((el) => el.tanggal);
+                  - const kecelakaan_attr = ['jum_kecelakaan'];
+                  each attr in kecelakaan_attr
+                    -
+                      const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      const attr_data = kecelakaan.map((el) => { 
+                        const obj = {};
+                        obj.tanggal = el.tanggal;
+                        obj[attr] = el[attr];
+                        return obj;
+                      });
+                    .form-check.form-check-inline.form-switch
+                      input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
+                      label.form-check-label(for=attr)= attr_display
+                else
+                  p No data
 
-                    // Tanggal Slider
-                    .col-12.mb-3
-                      label.form-label.fw-bold.mb-5(for='tanggal-range') Tanggal Range
-                      .px-5
-                        input#tanggal-range(type='text' data-tanggal-arr=`${JSON.stringify(longestTanggal)}`)
-            //- End of accordion
-
-            canvas#chart-analisis.mt-2(style='max-height: 400px;')
+              // Tanggal Slider
+              .col-12.mb-3
+                label.form-label.fw-bold.mb-5(for='tanggal-range') Tanggal Range
+                .px-5
+                  input#tanggal-range(type='text' data-tanggal-arr=`${JSON.stringify(longestTanggal)}`)
+              
+              // Analisis Chart
+              .col-12
+                canvas#chart-analisis.mt-2(style='max-height: 400px;')
             
       if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
         -
