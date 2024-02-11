@@ -32643,14 +32643,52 @@ if (plotDataBtns) {
 
 //? Plot Dataset To Cluster Chart, Criteria Chart, & Comparison Chart
 if (chartCluster && chartCriteria && chartComparison) {
+  //? Local Functions
+  var _haveRelations = function _haveRelations(dataObj1, dataObj2, objKeys) {
+    function getSortedIndices(arr) {
+      // Create an array of indices [0, 1, 2, ...]
+      var indices = Array.from({
+        length: arr.length
+      }, function (_, index) {
+        return index;
+      });
+      // Sort the indices based on corresponding values in arr in ascending order
+      var sortedIndices = indices.sort(function (a, b) {
+        return arr[a] - arr[b];
+      });
+      return sortedIndices;
+    }
+    function arraysHaveSameValues(arr1, arr2) {
+      // Convert arrays to strings and compare
+      return arr1.toString() === arr2.toString();
+    }
+    var sortedIndicesObj1 = getSortedIndices(objKeys.map(function (key) {
+      return dataObj1[key];
+    }));
+    var sortedIndicesObj1Reversed = _toConsumableArray(sortedIndicesObj1).reverse();
+    var sortedIndicesObj2 = getSortedIndices(objKeys.map(function (key) {
+      return dataObj2[key];
+    }));
+    return arraysHaveSameValues(sortedIndicesObj1, sortedIndicesObj2) || arraysHaveSameValues(sortedIndicesObj1Reversed, sortedIndicesObj2);
+  };
+
   //? Get Elements
   var clusterDataBtns = document.querySelectorAll('.btn-switch-cluster-data');
   var selectCriteriaEl = document.querySelector('#select-criteria');
+  var relationValueEl = document.querySelector('#relation-value');
 
   //? Get Datasets
   var centroidsObj = JSON.parse(chartCriteria.dataset.centroids);
   var _clustersName4 = JSON.parse(chartCriteria.dataset.clustersName);
   var _criteria3 = selectCriteriaEl.value;
+  var dataObj1 = {};
+  var dataObj2 = {};
+  _clustersName4.forEach(function (cn) {
+    return dataObj2[cn] = centroidsObj[cn][_criteria3];
+  });
+  var relationStatus = false;
+  var statusTrueText = '<span class="badge bg-success">true</span>';
+  var statusFalseText = '<span class="badge bg-danger">false</span>';
 
   //? Cluster Chart Initialization
   var clusterLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
@@ -32784,6 +32822,16 @@ if (chartCluster && chartCriteria && chartComparison) {
           borderColor: 'rgba(255, 99, 132)'
         }];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Data Obj 1
+        dataObj1 = {};
+        _clustersName4.forEach(function (cn) {
+          return dataObj1[cn] = avgPredictionObj[cn];
+        });
+
+        //? Update Relation Value
+        relationStatus = _haveRelations(dataObj1, dataObj2, _clustersName4);
+        relationValueEl.innerHTML = relationStatus ? statusTrueText : statusFalseText;
       } else {
         //? Update Cluster Chart
         clusterDatasets = [];
@@ -32801,6 +32849,9 @@ if (chartCluster && chartCriteria && chartComparison) {
           borderColor: 'rgba(255, 255, 255, 0)'
         }];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Relation Value
+        relationValueEl.textContent = '-';
       }
     });
   });
@@ -32825,6 +32876,18 @@ if (chartCluster && chartCriteria && chartComparison) {
 
     //? Update Criteria Chart
     _updateChart(criteriaChart, criteriaLabels, criteriaDatasets);
+
+    //? Update Data Obj 2
+    dataObj2 = {};
+    _clustersName4.forEach(function (cn) {
+      return dataObj2[cn] = centroidsObj[cn][_criteria3];
+    });
+
+    //? Update Relation Value
+    if (Object.keys(dataObj1).length !== 0) {
+      relationStatus = _haveRelations(dataObj1, dataObj2, _clustersName4);
+      relationValueEl.innerHTML = relationStatus ? statusTrueText : statusFalseText;
+    }
   });
 }
 

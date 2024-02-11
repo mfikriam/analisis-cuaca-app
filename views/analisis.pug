@@ -87,7 +87,7 @@ block main
                         input#tanggal-range(type='text' data-tanggal-arr=`${JSON.stringify(longestTanggal)}`)
             //- End of accordion
 
-            canvas#chart-analisis(style='max-height: 400px;')
+            canvas#chart-analisis.mt-2(style='max-height: 400px;')
             
       if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
         -
@@ -176,7 +176,7 @@ block main
                   h2#heading.accordion-header
                     button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion-cluster-chart' aria-expanded='false' aria-controls='collapse-accordion')
                       | Cluster Chart
-                  #collapse-accordion-cluster-chart.accordion-collapse.collapse.show(aria-labelledby='heading' data-bs-parent='#accordion-cluster-chart')
+                  #collapse-accordion-cluster-chart.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion-cluster-chart')
                     .accordion-body
                       canvas#chart-cluster(style='max-height: 400px;')
 
@@ -193,6 +193,9 @@ block main
                       .col-md-6
                         canvas#chart-criteria(style='max-height: 400px;' data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
                       .col-12
-                        // F1-score
-                        //- h6.mt-2.text-center= 'F1 score: -'
+                        // Relation
+                        h6.mt-2.text-center= 'Relation: '
+                          span#relation-value -
+                            //- span.badge.bg-success true
+                            //- span.badge.bg-danger false
       // End if    

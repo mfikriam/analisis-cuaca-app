@@ -1003,15 +1003,48 @@ if (plotDataBtns) {
 
 //? Plot Dataset To Cluster Chart, Criteria Chart, & Comparison Chart
 if (chartCluster && chartCriteria && chartComparison) {
+  //? Local Functions
+  const _haveRelations = (dataObj1, dataObj2, objKeys) => {
+    function getSortedIndices(arr) {
+      // Create an array of indices [0, 1, 2, ...]
+      const indices = Array.from({ length: arr.length }, (_, index) => index);
+      // Sort the indices based on corresponding values in arr in ascending order
+      const sortedIndices = indices.sort((a, b) => arr[a] - arr[b]);
+      return sortedIndices;
+    }
+
+    function arraysHaveSameValues(arr1, arr2) {
+      // Convert arrays to strings and compare
+      return arr1.toString() === arr2.toString();
+    }
+
+    const sortedIndicesObj1 = getSortedIndices(objKeys.map((key) => dataObj1[key]));
+    const sortedIndicesObj1Reversed = [...sortedIndicesObj1].reverse();
+    const sortedIndicesObj2 = getSortedIndices(objKeys.map((key) => dataObj2[key]));
+
+    return (
+      arraysHaveSameValues(sortedIndicesObj1, sortedIndicesObj2) ||
+      arraysHaveSameValues(sortedIndicesObj1Reversed, sortedIndicesObj2)
+    );
+  };
+
   //? Get Elements
   const clusterDataBtns = document.querySelectorAll('.btn-switch-cluster-data');
   const selectCriteriaEl = document.querySelector('#select-criteria');
+  const relationValueEl = document.querySelector('#relation-value');
 
   //? Get Datasets
   const centroidsObj = JSON.parse(chartCriteria.dataset.centroids);
   const clustersName = JSON.parse(chartCriteria.dataset.clustersName);
 
   let criteria = selectCriteriaEl.value;
+  let dataObj1 = {};
+  let dataObj2 = {};
+  clustersName.forEach((cn) => (dataObj2[cn] = centroidsObj[cn][criteria]));
+
+  let relationStatus = false;
+  const statusTrueText = '<span class="badge bg-success">true</span>';
+  const statusFalseText = '<span class="badge bg-danger">false</span>';
 
   //? Cluster Chart Initialization
   let clusterLabels = [
@@ -1172,6 +1205,14 @@ if (chartCluster && chartCriteria && chartComparison) {
           },
         ];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Data Obj 1
+        dataObj1 = {};
+        clustersName.forEach((cn) => (dataObj1[cn] = avgPredictionObj[cn]));
+
+        //? Update Relation Value
+        relationStatus = _haveRelations(dataObj1, dataObj2, clustersName);
+        relationValueEl.innerHTML = relationStatus ? statusTrueText : statusFalseText;
       } else {
         //? Update Cluster Chart
         clusterDatasets = [];
@@ -1189,6 +1230,9 @@ if (chartCluster && chartCriteria && chartComparison) {
           },
         ];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Relation Value
+        relationValueEl.textContent = '-';
       }
     });
   });
@@ -1211,6 +1255,16 @@ if (chartCluster && chartCriteria && chartComparison) {
 
     //? Update Criteria Chart
     _updateChart(criteriaChart, criteriaLabels, criteriaDatasets);
+
+    //? Update Data Obj 2
+    dataObj2 = {};
+    clustersName.forEach((cn) => (dataObj2[cn] = centroidsObj[cn][criteria]));
+
+    //? Update Relation Value
+    if (Object.keys(dataObj1).length !== 0) {
+      relationStatus = _haveRelations(dataObj1, dataObj2, clustersName);
+      relationValueEl.innerHTML = relationStatus ? statusTrueText : statusFalseText;
+    }
   });
 }
 
