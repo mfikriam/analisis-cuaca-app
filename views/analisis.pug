@@ -90,13 +90,19 @@ block main
             canvas#chart-analisis(style='max-height: 400px;')
             
       if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
-        // Prediction
+        -
+          const centroids = JSON.parse(clustering.centroids);
+          const clusters_name = Object.keys(centroids);
+          const criteria_array = JSON.parse(clustering.kriteria_clustering);
+
+        // Relation
         .col-lg-12
           .card
             .card-body
-              h5.card-title Prediction
+              h5.card-title Relation
               
               .row
+                // Data Wisatawan Switch
                 .col-lg-5.mb-3
                   legend.col-form-label.fw-bold Data Wisatawan
                   if wisatawan.length > 0
@@ -121,12 +127,13 @@ block main
                         const tanggalArr = wisatawan.map((el) => el.tanggal);
 
                       .form-check.form-check-inline.form-switch
-                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
-                        label.form-check-label(for=attr)= attr_display
+                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        label.form-check-label(for=`prediction-${attr}`)= attr_display
                   else
                     p No data
                 
-                .col-lg-5.mb-3
+                // Data Kecelakaan Switch
+                .col-lg-3.mb-3
                   legend.col-form-label.fw-bold Data Kecelakaan
                   if kecelakaan.length > 0
                     - const kecelakaan_attr = ['jum_kecelakaan'];
@@ -150,11 +157,42 @@ block main
                         const tanggalArr = kecelakaan.map((el) => el.tanggal);
 
                       .form-check.form-check-inline.form-switch
-                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
-                        label.form-check-label(for=attr)= attr_display
+                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        label.form-check-label(for=`prediction-${attr}`)= attr_display
                   else
                     p No data
 
-              canvas#chart-prediction(style='max-height: 400px;')
-              h6.mt-2.text-center= 'F1 score: -'
+                // Criteria Select
+                .col-lg-4.mb-3
+                  legend.col-form-label.fw-bold Kriteria
+                  select#select-criteria.form-select
+                    each criteria in criteria_array
+                      - const criteria_display = criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      option(value=criteria)= criteria_display
+
+              // Cluster Chart
+              #accordion-cluster-chart.accordion.mb-3
+                .accordion-item
+                  h2#heading.accordion-header
+                    button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion-cluster-chart' aria-expanded='false' aria-controls='collapse-accordion')
+                      | Cluster Chart
+                  #collapse-accordion-cluster-chart.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion-cluster-chart')
+                    .accordion-body
+                      canvas#chart-prediction(style='max-height: 400px;')
+
+              // Relation Charts
+              #accordion-prediction-chart.accordion.mb-3
+                .accordion-item
+                  h2#heading.accordion-header
+                    button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion-prediction-chart' aria-expanded='false' aria-controls='collapse-accordion')
+                      | Relation Chart
+                  #collapse-accordion-prediction-chart.accordion-collapse.collapse.show(aria-labelledby='heading' data-bs-parent='#accordion-prediction-chart')
+                    .accordion-body.row
+                      .col-md-6
+                        canvas#chart-comparison(style='max-height: 400px;')
+                      .col-md-6
+                        canvas#chart-criteria(style='max-height: 400px;' data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
+                      .col-12
+                        // F1-score
+                        //- h6.mt-2.text-center= 'F1 score: -'
       // End if    

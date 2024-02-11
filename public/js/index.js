@@ -71,9 +71,10 @@ const chartElbowMethod = document.querySelector('#chart-elbow-method');
 // Analisis
 const tanggalRange = document.querySelector('#tanggal-range');
 const plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
-const predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
 const chartAnalisis = document.querySelector('#chart-analisis');
 const chartPrediction = document.querySelector('#chart-prediction');
+const chartCriteria = document.querySelector('#chart-criteria');
+const chartComparison = document.querySelector('#chart-comparison');
 
 //***************** Static Functions ******************* */
 const _addData = (modelName, form, inputData) => {
@@ -1000,8 +1001,19 @@ if (plotDataBtns) {
   });
 }
 
-//? Plot Dataset To Prediction Chart
-if (predictionDataBtns.length > 0) {
+//? Plot Dataset To Prediction Chart, Criteria Chart, & Comparison Chart
+if (chartPrediction && chartCriteria && chartComparison) {
+  //? Get Elements
+  const predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
+  const selectCriteriaEl = document.querySelector('#select-criteria');
+
+  //? Get Datasets
+  const centroidsObj = JSON.parse(chartCriteria.dataset.centroids);
+  const clustersName = JSON.parse(chartCriteria.dataset.clustersName);
+
+  let criteria = selectCriteriaEl.value;
+
+  //? Prediction Chart Initialization
   let predictionLabels = [
     'Jan 2024',
     'Feb 2024',
@@ -1035,7 +1047,6 @@ if (predictionDataBtns.length > 0) {
       },
     },
   };
-
   const predictionChart = _plotChart(
     chartPrediction,
     'scatter',
@@ -1044,16 +1055,80 @@ if (predictionDataBtns.length > 0) {
     predictionOptions,
   );
 
+  //? Comparison Chart Initialization
+  let comparisonLabels = [...clustersName];
+  let comparisonDatasets = [
+    {
+      label: '',
+      data: clustersName.map((cn) => 1),
+      borderWidth: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0)',
+      borderColor: 'rgba(255, 255, 255, 0)',
+    },
+  ];
+  let comparisonOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Datasets Cluster (Avg)',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+  const comparisonChart = _plotChart(
+    chartComparison,
+    'bar',
+    comparisonLabels,
+    comparisonDatasets,
+    comparisonOptions,
+  );
+
+  //? Criteria Chart Initialization
+  let criteriaLabels = [...clustersName];
+  let criteriaDatasets = [
+    {
+      label: criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+      data: clustersName.map((cn) => centroidsObj[cn][criteria]),
+      borderWidth: 1,
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgba(54, 162, 235)',
+    },
+  ];
+  let criteriaOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: "Criteria's Cluster",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+  const criteriaChart = _plotChart(
+    chartCriteria,
+    'bar',
+    criteriaLabels,
+    criteriaDatasets,
+    criteriaOptions,
+  );
+
+  //? Prediction Switch Event Listener
   predictionDataBtns.forEach(function (checkbox) {
     checkbox.addEventListener('change', function () {
-      const attrName = this.id;
+      const attrName = this.name;
       const formattedAttrName = attrName
         .replace(/_/g, ' ')
         .replace(/\b\w/g, (char) => char.toUpperCase());
 
       const predictionObj = JSON.parse(this.dataset.predictionObj);
       const predictionTanggalArr = JSON.parse(this.dataset.predictionTanggalArr);
-      const clustersName = Object.keys(predictionObj);
 
       //? Check if switch is on
       if (this.checked) {
@@ -1064,6 +1139,7 @@ if (predictionDataBtns.length > 0) {
           }
         });
 
+        //? Update Prediction Chart
         predictionLabels = [...predictionTanggalArr];
         predictionDatasets = clustersName.map((cn) => {
           return {
@@ -1076,17 +1152,65 @@ if (predictionDataBtns.length > 0) {
           };
         });
         predictionOptions.plugins.title.text = formattedAttrName;
-
-        //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+
+        //? Update Criteria Chart
+        const avgPredictionObj = {};
+        clustersName.forEach((cn) => {
+          const avg =
+            predictionObj[cn].reduce((sum, entry) => sum + entry[attrName], 0) /
+            predictionObj[cn].length;
+          avgPredictionObj[cn] = avg;
+        });
+        comparisonDatasets = [
+          {
+            label: formattedAttrName,
+            data: clustersName.map((cn) => avgPredictionObj[cn]),
+            borderWidth: 1,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132)',
+          },
+        ];
+        _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
       } else {
+        //? Update Criteria Chart
+        comparisonDatasets = [
+          {
+            label: '',
+            data: clustersName.map((cn) => 1),
+            borderWidth: 1,
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            borderColor: 'rgba(255, 255, 255, 0)',
+          },
+        ];
+        _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Prediction Chart
         predictionDatasets = [];
         predictionOptions.plugins.title.text = '';
-
-        //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       }
     });
+  });
+
+  //? Select Criteria Event Listener
+  selectCriteriaEl.addEventListener('change', function (el) {
+    //? Get its value
+    criteria = el.target.value;
+
+    //? Update Criteria Chart Datasets
+    criteriaDatasets = [
+      {
+        label: criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase()),
+        data: clustersName.map((cn) => centroidsObj[cn][criteria]),
+        borderWidth: 1,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235)',
+      },
+    ];
+
+    //? Update Criteria Chart
+    _updateChart(criteriaChart, criteriaLabels, criteriaDatasets);
   });
 }
 

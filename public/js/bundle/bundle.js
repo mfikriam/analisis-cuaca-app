@@ -31784,9 +31784,10 @@ var chartElbowMethod = document.querySelector('#chart-elbow-method');
 // Analisis
 var tanggalRange = document.querySelector('#tanggal-range');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
-var predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
 var chartAnalisis = document.querySelector('#chart-analisis');
 var chartPrediction = document.querySelector('#chart-prediction');
+var chartCriteria = document.querySelector('#chart-criteria');
+var chartComparison = document.querySelector('#chart-comparison');
 
 //***************** Static Functions ******************* */
 var _addData = function _addData(modelName, form, inputData) {
@@ -32640,8 +32641,18 @@ if (plotDataBtns) {
   });
 }
 
-//? Plot Dataset To Prediction Chart
-if (predictionDataBtns.length > 0) {
+//? Plot Dataset To Prediction Chart, Criteria Chart, & Comparison Chart
+if (chartPrediction && chartCriteria && chartComparison) {
+  //? Get Elements
+  var predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
+  var selectCriteriaEl = document.querySelector('#select-criteria');
+
+  //? Get Datasets
+  var centroidsObj = JSON.parse(chartCriteria.dataset.centroids);
+  var _clustersName4 = JSON.parse(chartCriteria.dataset.clustersName);
+  var _criteria3 = selectCriteriaEl.value;
+
+  //? Prediction Chart Initialization
   var predictionLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
   var predictionDatasets = [];
   var predictionOptions = {
@@ -32663,15 +32674,70 @@ if (predictionDataBtns.length > 0) {
     }
   };
   var predictionChart = _plotChart(chartPrediction, 'scatter', predictionLabels, predictionDatasets, predictionOptions);
+
+  //? Comparison Chart Initialization
+  var comparisonLabels = _toConsumableArray(_clustersName4);
+  var comparisonDatasets = [{
+    label: '',
+    data: _clustersName4.map(function (cn) {
+      return 1;
+    }),
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+    borderColor: 'rgba(255, 255, 255, 0)'
+  }];
+  var comparisonOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Datasets Cluster (Avg)'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+  var comparisonChart = _plotChart(chartComparison, 'bar', comparisonLabels, comparisonDatasets, comparisonOptions);
+
+  //? Criteria Chart Initialization
+  var criteriaLabels = _toConsumableArray(_clustersName4);
+  var criteriaDatasets = [{
+    label: _criteria3.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+      return char.toUpperCase();
+    }),
+    data: _clustersName4.map(function (cn) {
+      return centroidsObj[cn][_criteria3];
+    }),
+    borderWidth: 1,
+    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+    borderColor: 'rgba(54, 162, 235)'
+  }];
+  var criteriaOptions = {
+    plugins: {
+      title: {
+        display: true,
+        text: "Criteria's Cluster"
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+  var criteriaChart = _plotChart(chartCriteria, 'bar', criteriaLabels, criteriaDatasets, criteriaOptions);
+
+  //? Prediction Switch Event Listener
   predictionDataBtns.forEach(function (checkbox) {
     checkbox.addEventListener('change', function () {
-      var attrName = this.id;
+      var attrName = this.name;
       var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
         return char.toUpperCase();
       });
       var predictionObj = JSON.parse(this.dataset.predictionObj);
       var predictionTanggalArr = JSON.parse(this.dataset.predictionTanggalArr);
-      var clustersName = Object.keys(predictionObj);
 
       //? Check if switch is on
       if (this.checked) {
@@ -32681,8 +32747,10 @@ if (predictionDataBtns.length > 0) {
             otherCheckbox.checked = false;
           }
         });
+
+        //? Update Prediction Chart
         predictionLabels = _toConsumableArray(predictionTanggalArr);
-        predictionDatasets = clustersName.map(function (cn) {
+        predictionDatasets = _clustersName4.map(function (cn) {
           return {
             label: cn,
             data: predictionObj[cn].map(function (el) {
@@ -32696,17 +32764,67 @@ if (predictionDataBtns.length > 0) {
           };
         });
         predictionOptions.plugins.title.text = formattedAttrName;
-
-        //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+
+        //? Update Criteria Chart
+        var avgPredictionObj = {};
+        _clustersName4.forEach(function (cn) {
+          var avg = predictionObj[cn].reduce(function (sum, entry) {
+            return sum + entry[attrName];
+          }, 0) / predictionObj[cn].length;
+          avgPredictionObj[cn] = avg;
+        });
+        comparisonDatasets = [{
+          label: formattedAttrName,
+          data: _clustersName4.map(function (cn) {
+            return avgPredictionObj[cn];
+          }),
+          borderWidth: 1,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132)'
+        }];
+        _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
       } else {
+        //? Update Criteria Chart
+        comparisonDatasets = [{
+          label: '',
+          data: _clustersName4.map(function (cn) {
+            return 1;
+          }),
+          borderWidth: 1,
+          backgroundColor: 'rgba(255, 255, 255, 0)',
+          borderColor: 'rgba(255, 255, 255, 0)'
+        }];
+        _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
+
+        //? Update Prediction Chart
         predictionDatasets = [];
         predictionOptions.plugins.title.text = '';
-
-        //? Update Chart
         _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       }
     });
+  });
+
+  //? Select Criteria Event Listener
+  selectCriteriaEl.addEventListener('change', function (el) {
+    //? Get its value
+    _criteria3 = el.target.value;
+
+    //? Update Criteria Chart Datasets
+    criteriaDatasets = [{
+      label: _criteria3.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
+        return char.toUpperCase();
+      }),
+      data: _clustersName4.map(function (cn) {
+        return centroidsObj[cn][_criteria3];
+      }),
+      borderWidth: 1,
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      borderColor: 'rgba(54, 162, 235)'
+    }];
+
+    //? Update Criteria Chart
+    _updateChart(criteriaChart, criteriaLabels, criteriaDatasets);
   });
 }
 
@@ -32743,7 +32861,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64366" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52852" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
