@@ -32,8 +32,8 @@ block main
                       td= obj.fullname
                       td= obj.createdAt
                       td= obj.updatedAt
-                      td
-                        button.btn.btn-sm.btn-success.me-1.mb-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
+                      td.text-center
+                        button.btn.btn-sm.btn-success.me-1.m-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
                         button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
                           i.bi.bi-trash
