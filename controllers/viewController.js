@@ -21,7 +21,7 @@ const _formatDate = (inputDate) => {
   const dateObject = new Date(inputDate);
 
   // Get month and year
-  const month = dateObject.toLocaleString('id-ID', { month: 'short' });
+  const month = dateObject.toLocaleString('en-US', { month: 'short' });
   const year = dateObject.getFullYear();
 
   // Format the date
