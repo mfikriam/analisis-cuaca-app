@@ -31785,7 +31785,7 @@ var chartElbowMethod = document.querySelector('#chart-elbow-method');
 var tanggalRange = document.querySelector('#tanggal-range');
 var plotDataBtns = document.querySelectorAll('.btn-switch-plot-data');
 var chartAnalisis = document.querySelector('#chart-analisis');
-var chartPrediction = document.querySelector('#chart-prediction');
+var chartCluster = document.querySelector('#chart-cluster');
 var chartCriteria = document.querySelector('#chart-criteria');
 var chartComparison = document.querySelector('#chart-comparison');
 
@@ -32641,10 +32641,10 @@ if (plotDataBtns) {
   });
 }
 
-//? Plot Dataset To Prediction Chart, Criteria Chart, & Comparison Chart
-if (chartPrediction && chartCriteria && chartComparison) {
+//? Plot Dataset To Cluster Chart, Criteria Chart, & Comparison Chart
+if (chartCluster && chartCriteria && chartComparison) {
   //? Get Elements
-  var predictionDataBtns = document.querySelectorAll('.btn-switch-prediction-data');
+  var clusterDataBtns = document.querySelectorAll('.btn-switch-cluster-data');
   var selectCriteriaEl = document.querySelector('#select-criteria');
 
   //? Get Datasets
@@ -32652,10 +32652,10 @@ if (chartPrediction && chartCriteria && chartComparison) {
   var _clustersName4 = JSON.parse(chartCriteria.dataset.clustersName);
   var _criteria3 = selectCriteriaEl.value;
 
-  //? Prediction Chart Initialization
-  var predictionLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
-  var predictionDatasets = [];
-  var predictionOptions = {
+  //? Cluster Chart Initialization
+  var clusterLabels = ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'Mei 2024', 'Jun 2024', 'Jul 2024', 'Agu 2024', 'Sep 2024', 'Okt 2024', 'Nov 2024', 'Des 2024'];
+  var clusterDatasets = [];
+  var clusterOptions = {
     plugins: {
       title: {
         display: true,
@@ -32673,7 +32673,7 @@ if (chartPrediction && chartCriteria && chartComparison) {
       }
     }
   };
-  var predictionChart = _plotChart(chartPrediction, 'scatter', predictionLabels, predictionDatasets, predictionOptions);
+  var clusterChart = _plotChart(chartCluster, 'scatter', clusterLabels, clusterDatasets, clusterOptions);
 
   //? Comparison Chart Initialization
   var comparisonLabels = _toConsumableArray(_clustersName4);
@@ -32729,8 +32729,8 @@ if (chartPrediction && chartCriteria && chartComparison) {
   };
   var criteriaChart = _plotChart(chartCriteria, 'bar', criteriaLabels, criteriaDatasets, criteriaOptions);
 
-  //? Prediction Switch Event Listener
-  predictionDataBtns.forEach(function (checkbox) {
+  //? Cluster Switch Event Listener
+  clusterDataBtns.forEach(function (checkbox) {
     checkbox.addEventListener('change', function () {
       var attrName = this.name;
       var formattedAttrName = attrName.replace(/_/g, ' ').replace(/\b\w/g, function (char) {
@@ -32742,15 +32742,15 @@ if (chartPrediction && chartCriteria && chartComparison) {
       //? Check if switch is on
       if (this.checked) {
         //? Uncheck other switches
-        predictionDataBtns.forEach(function (otherCheckbox) {
+        clusterDataBtns.forEach(function (otherCheckbox) {
           if (otherCheckbox !== checkbox) {
             otherCheckbox.checked = false;
           }
         });
 
-        //? Update Prediction Chart
-        predictionLabels = _toConsumableArray(predictionTanggalArr);
-        predictionDatasets = _clustersName4.map(function (cn) {
+        //? Update Cluster Chart
+        clusterLabels = _toConsumableArray(predictionTanggalArr);
+        clusterDatasets = _clustersName4.map(function (cn) {
           return {
             label: cn,
             data: predictionObj[cn].map(function (el) {
@@ -32763,8 +32763,8 @@ if (chartPrediction && chartCriteria && chartComparison) {
             hoverRadius: 6
           };
         });
-        predictionOptions.plugins.title.text = formattedAttrName;
-        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
+        clusterOptions.plugins.title.text = formattedAttrName;
+        _updateChart(clusterChart, clusterLabels, clusterDatasets, clusterOptions);
 
         //? Update Criteria Chart
         var avgPredictionObj = {};
@@ -32785,6 +32785,11 @@ if (chartPrediction && chartCriteria && chartComparison) {
         }];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
       } else {
+        //? Update Cluster Chart
+        clusterDatasets = [];
+        clusterOptions.plugins.title.text = '';
+        _updateChart(clusterChart, clusterLabels, clusterDatasets, clusterOptions);
+
         //? Update Criteria Chart
         comparisonDatasets = [{
           label: '',
@@ -32796,11 +32801,6 @@ if (chartPrediction && chartCriteria && chartComparison) {
           borderColor: 'rgba(255, 255, 255, 0)'
         }];
         _updateChart(comparisonChart, comparisonLabels, comparisonDatasets);
-
-        //? Update Prediction Chart
-        predictionDatasets = [];
-        predictionOptions.plugins.title.text = '';
-        _updateChart(predictionChart, predictionLabels, predictionDatasets, predictionOptions);
       }
     });
   });

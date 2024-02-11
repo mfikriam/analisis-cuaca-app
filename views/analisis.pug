@@ -127,7 +127,7 @@ block main
                         const tanggalArr = wisatawan.map((el) => el.tanggal);
 
                       .form-check.form-check-inline.form-switch
-                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        input.form-check-input.btn-switch-cluster-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
                         label.form-check-label(for=`prediction-${attr}`)= attr_display
                   else
                     p No data
@@ -157,7 +157,7 @@ block main
                         const tanggalArr = kecelakaan.map((el) => el.tanggal);
 
                       .form-check.form-check-inline.form-switch
-                        input.form-check-input.btn-switch-prediction-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        input.form-check-input.btn-switch-cluster-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
                         label.form-check-label(for=`prediction-${attr}`)= attr_display
                   else
                     p No data
@@ -176,9 +176,9 @@ block main
                   h2#heading.accordion-header
                     button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion-cluster-chart' aria-expanded='false' aria-controls='collapse-accordion')
                       | Cluster Chart
-                  #collapse-accordion-cluster-chart.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion-cluster-chart')
+                  #collapse-accordion-cluster-chart.accordion-collapse.collapse.show(aria-labelledby='heading' data-bs-parent='#accordion-cluster-chart')
                     .accordion-body
-                      canvas#chart-prediction(style='max-height: 400px;')
+                      canvas#chart-cluster(style='max-height: 400px;')
 
               // Relation Charts
               #accordion-prediction-chart.accordion.mb-3
@@ -186,7 +186,7 @@ block main
                   h2#heading.accordion-header
                     button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target='#collapse-accordion-prediction-chart' aria-expanded='false' aria-controls='collapse-accordion')
                       | Relation Chart
-                  #collapse-accordion-prediction-chart.accordion-collapse.collapse.show(aria-labelledby='heading' data-bs-parent='#accordion-prediction-chart')
+                  #collapse-accordion-prediction-chart.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion-prediction-chart')
                     .accordion-body.row
                       .col-md-6
                         canvas#chart-comparison(style='max-height: 400px;')
