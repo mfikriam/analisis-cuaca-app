@@ -20,6 +20,7 @@ db.checkConnection(sequelize);
 // Synchronize Database
 // db.syncDB(sequelize); //? Create if not exist
 // db.forceSyncDB(sequelize); //? Drop and create
+// db.alterSyncDB(sequelize); //? Alter if changed
 
 // Start Server
 const port = process.env.PORT || 3000;

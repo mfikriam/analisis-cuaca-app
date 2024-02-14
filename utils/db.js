@@ -1,7 +1,6 @@
 exports.syncDB = (sequelize) => {
   sequelize
     .sync()
-    .sync({ force: true }) //? drop and create
     .then(() => {
       console.log('Synced MySQL Database');
     })
@@ -18,6 +17,17 @@ exports.forceSyncDB = (sequelize) => {
     })
     .catch((err) => {
       console.log('Failed to drop and sync db: ', err.message);
+    });
+};
+
+exports.alterSyncDB = (sequelize) => {
+  sequelize
+    .sync({ alter: true }) //? alter column and data types
+    .then(() => {
+      console.log('Alter and sync db');
+    })
+    .catch((err) => {
+      console.log('Failed to alter and sync db: ', err.message);
     });
 };
 
