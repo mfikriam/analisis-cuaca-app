@@ -31,29 +31,8 @@ block main
                 else
                   p No data
               
-              // Data Wisatawan Attributes
-              .col-lg-4.mb-3
-                legend.col-form-label.fw-bold Data Wisatawan
-                if wisatawan.length > 0
-                  - if (wisatawan.length > longestTanggal.length) longestTanggal = wisatawan.map((el) => el.tanggal);
-                  - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
-                  each attr in wisatawan_attr
-                    -
-                      const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                      const attr_data = wisatawan.map((el) => { 
-                        const obj = {};
-                        obj.tanggal = el.tanggal;
-                        obj[attr] = el[attr];
-                        return obj;
-                      });
-                    .form-check.form-check-inline.form-switch
-                      input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
-                      label.form-check-label(for=attr)= attr_display
-                else
-                  p No data
-              
               // Data Kecelakaan Attributes
-              .col-lg-4.mb-3
+              .col-lg-3.mb-3
                 legend.col-form-label.fw-bold Data Kecelakaan
                 if kecelakaan.length > 0
                   - if (kecelakaan.length > longestTanggal.length) longestTanggal = kecelakaan.map((el) => el.tanggal);
@@ -73,6 +52,27 @@ block main
                 else
                   p No data
 
+              // Data Wisatawan Attributes
+              .col-lg-5.mb-3
+                legend.col-form-label.fw-bold Data Wisatawan
+                if wisatawan.length > 0
+                  - if (wisatawan.length > longestTanggal.length) longestTanggal = wisatawan.map((el) => el.tanggal);
+                  - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
+                  each attr in wisatawan_attr
+                    -
+                      const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      const attr_data = wisatawan.map((el) => { 
+                        const obj = {};
+                        obj.tanggal = el.tanggal;
+                        obj[attr] = el[attr];
+                        return obj;
+                      });
+                    .form-check.form-check-inline.form-switch
+                      input.form-check-input.btn-switch-plot-data(type='checkbox' role='switch' id=attr data-attr-data=`${JSON.stringify(attr_data)}`)
+                      label.form-check-label(for=attr)= attr_display
+                else
+                  p No data
+              
               // Tanggal Slider
               .col-12.mb-3
                 label.form-label.fw-bold.mb-5(for='tanggal-range') Tanggal Range
@@ -83,7 +83,7 @@ block main
               .col-12
                 canvas#chart-analisis.mt-2(style='max-height: 400px;')
             
-      if (wisatawan.length > 0 || kecelakaan.length > 0) && clustering_result.length > 0
+      if (kecelakaan.length > 0 || wisatawan.length > 0) && clustering_result.length > 0
         -
           const centroids = JSON.parse(clustering.centroids);
           const clusters_name = Object.keys(centroids);
@@ -96,36 +96,6 @@ block main
               h5.card-title Relation
               
               .row
-                // Data Wisatawan Switch
-                .col-lg-5.mb-3
-                  legend.col-form-label.fw-bold Data Wisatawan
-                  if wisatawan.length > 0
-                    - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
-                    each attr in wisatawan_attr
-                      -
-                        const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-
-                        const formattedClusteringResult = {};
-                        clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
-                        const predictionObj = {};
-                        clusters_name.forEach((cn) => {
-                          predictionObj[cn] = wisatawan
-                            .filter((el) => cn === formattedClusteringResult[el.tanggal])
-                            .map((el) => {
-                              const obj = {};
-                              obj.tanggal = el.tanggal;
-                              obj[attr] = el[attr];
-                              return obj;
-                            });
-                        });
-                        const tanggalArr = wisatawan.map((el) => el.tanggal);
-
-                      .form-check.form-check-inline.form-switch
-                        input.form-check-input.btn-switch-cluster-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
-                        label.form-check-label(for=`prediction-${attr}`)= attr_display
-                  else
-                    p No data
-                
                 // Data Kecelakaan Switch
                 .col-lg-3.mb-3
                   legend.col-form-label.fw-bold Data Kecelakaan
@@ -156,6 +126,36 @@ block main
                   else
                     p No data
 
+                // Data Wisatawan Switch
+                .col-lg-5.mb-3
+                  legend.col-form-label.fw-bold Data Wisatawan
+                  if wisatawan.length > 0
+                    - const wisatawan_attr = ['jum_wisnus', 'jum_wisman'];
+                    each attr in wisatawan_attr
+                      -
+                        const attr_display = attr.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+
+                        const formattedClusteringResult = {};
+                        clustering_result.forEach((el) => formattedClusteringResult[el.tanggal] = el.cluster);
+                        const predictionObj = {};
+                        clusters_name.forEach((cn) => {
+                          predictionObj[cn] = wisatawan
+                            .filter((el) => cn === formattedClusteringResult[el.tanggal])
+                            .map((el) => {
+                              const obj = {};
+                              obj.tanggal = el.tanggal;
+                              obj[attr] = el[attr];
+                              return obj;
+                            });
+                        });
+                        const tanggalArr = wisatawan.map((el) => el.tanggal);
+
+                      .form-check.form-check-inline.form-switch
+                        input.form-check-input.btn-switch-cluster-data(type='checkbox' role='switch' id=`prediction-${attr}` name=attr data-prediction-obj=`${JSON.stringify(predictionObj)}` data-prediction-tanggal-arr=`${JSON.stringify(tanggalArr)}`)
+                        label.form-check-label(for=`prediction-${attr}`)= attr_display
+                  else
+                    p No data
+                
                 // Criteria Select
                 .col-lg-4.mb-3
                   legend.col-form-label.fw-bold Kriteria

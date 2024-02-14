@@ -16,19 +16,6 @@ block main
                 span.text-muted.small.pt-2.ps-1= `${cuaca.min_date} - ${cuaca.max_date}`
       // End Cuaca Card
 
-      // Wisatawan Card
-      .col-xxl-4.col-md-4
-        .card.info-card.wisatawan-card
-          .card-body
-            h5.card-title Data Wisatawan
-            .d-flex.align-items-center
-              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
-                i.bi.bi-people
-              .ps-3
-                h6= wisatawan.count
-                span.text-muted.small.pt-2.ps-1= `${wisatawan.min_date} - ${wisatawan.max_date}`
-      // End Wisatawan Card
-      
       // Kecelakaan Card
       .col-xxl-4.col-md-4
         .card.info-card.kecelakaan-card
@@ -41,6 +28,19 @@ block main
                 h6= kecelakaan.count
                 span.text-muted.small.pt-2.ps-1= `${kecelakaan.min_date} - ${kecelakaan.max_date}`
       // End Kecelakaan Card
+
+      // Wisatawan Card
+      .col-xxl-4.col-md-4
+        .card.info-card.wisatawan-card
+          .card-body
+            h5.card-title Data Wisatawan
+            .d-flex.align-items-center
+              .card-icon.rounded-circle.d-flex.align-items-center.justify-content-center
+                i.bi.bi-people
+              .ps-3
+                h6= wisatawan.count
+                span.text-muted.small.pt-2.ps-1= `${wisatawan.min_date} - ${wisatawan.max_date}`
+      // End Wisatawan Card
 
       if (local_user.role === 'admin')
         // User Card
