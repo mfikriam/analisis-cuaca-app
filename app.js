@@ -4,7 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const AppError = require('./utils/appError');
+// const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 const kecelakaanRouter = require('./routes/kecelakaanRoutes');
@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ROUTES
+// Routes
 app.use('/', viewRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/kecelakaan', kecelakaanRouter);
@@ -46,8 +46,14 @@ app.use('/api/v1/cuaca', cuacaRouter);
 app.use('/api/v1/clustering', clusteringRouter);
 app.use('/api/v1/clustering-result', clusteringResultRouter);
 
+// Not Found Routes
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  // next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+
+  res.status(200).render('error-404', {
+    title: 'Pages Not Found',
+    url: req.originalUrl,
+  });
 });
 
 // ? Error Handler/Middleware

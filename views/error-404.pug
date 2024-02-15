@@ -1,0 +1,16 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(content='width=device-width, initial-scale=1.0' name='viewport')
+  title= title
+  include _link
+
+body
+  main
+    .container
+      section.section.error-404.min-vh-100.d-flex.flex-column.align-items-center.justify-content-center
+        h1 404
+        h2= `Routes ${url} doesn't exist.`
+        a.btn(href='/dashboard') Back to home
+        img.img-fluid.py-5(src='/img/not-found.svg' alt='Page Not Found' style='width: 40vh;')
+  // End #main
