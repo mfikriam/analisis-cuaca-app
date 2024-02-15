@@ -16,7 +16,8 @@ header#header.header.fixed-top.d-flex.align-items-center
         ul.dropdown-menu.dropdown-menu-end.dropdown-menu-arrow.profile
           li.dropdown-header
             h6= local_user.email
-            span= local_user.role
+            - const role = local_user.role.charAt(0).toUpperCase() + local_user.role.slice(1);
+            span= role
           li
             hr.dropdown-divider
           li
