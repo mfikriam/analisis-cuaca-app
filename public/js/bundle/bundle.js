@@ -31744,6 +31744,7 @@ var inputData;
 var userTable = document.querySelector('#user-table');
 var addUserForm = document.querySelector('#form-add-user');
 var updateUserBtns = document.querySelectorAll('.btn-update-user');
+var updateUserPasswordBtns = document.querySelectorAll('.btn-update-user-password');
 var delUserBtns = document.querySelectorAll('.btn-del-user');
 
 // Manage Data Kecelakaan
@@ -31822,6 +31823,27 @@ var _updateData = function _updateData(modelName, inputData) {
         inputData.forEach(function (data) {
           dataObj[data] = form.querySelector("#update-".concat(data, "-").concat(objId)).value;
         });
+        (0, _manageData.updateDataById)(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
+      }
+    });
+  });
+};
+var _updatePassword = function _updatePassword(modelName) {
+  var updateDataModalList = document.querySelectorAll('[id^="modal-update-password-obj"]');
+  var bsUpdateDataModalList = Array.from(updateDataModalList).map(function (el) {
+    return new bootstrap.Modal(el);
+  });
+  var updateDataFormList = document.querySelectorAll("[id^=\"form-update-password-".concat(modelName, "\"]"));
+  updateDataFormList.forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      var objId = form.dataset.objId;
+      var userId = form.dataset.userId;
+      if (form.checkValidity()) {
+        var dataObj = {
+          password: form.querySelector("#update-password-".concat(objId)).value
+        };
         (0, _manageData.updateDataById)(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
       }
     });
@@ -31960,6 +31982,11 @@ if (addUserForm) {
 if (updateUserBtns.length > 0) {
   inputData = ['email', 'fullname'];
   _updateData('user', inputData);
+}
+
+//? Update Password
+if (updateUserPasswordBtns.length > 0) {
+  _updatePassword('user');
 }
 
 //? Delete Data

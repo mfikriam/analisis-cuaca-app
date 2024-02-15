@@ -31,6 +31,7 @@ let inputData;
 const userTable = document.querySelector('#user-table');
 const addUserForm = document.querySelector('#form-add-user');
 const updateUserBtns = document.querySelectorAll('.btn-update-user');
+const updateUserPasswordBtns = document.querySelectorAll('.btn-update-user-password');
 const delUserBtns = document.querySelectorAll('.btn-del-user');
 
 // Manage Data Kecelakaan
@@ -114,6 +115,30 @@ const _updateData = (modelName, inputData) => {
         inputData.forEach((data) => {
           dataObj[data] = form.querySelector(`#update-${data}-${objId}`).value;
         });
+        updateDataById(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
+      }
+    });
+  });
+};
+
+const _updatePassword = (modelName) => {
+  const updateDataModalList = document.querySelectorAll('[id^="modal-update-password-obj"]');
+  const bsUpdateDataModalList = Array.from(updateDataModalList).map(
+    (el) => new bootstrap.Modal(el),
+  );
+  const updateDataFormList = document.querySelectorAll(`[id^="form-update-password-${modelName}"]`);
+
+  updateDataFormList.forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.classList.add('was-validated');
+      const objId = form.dataset.objId;
+      const userId = form.dataset.userId;
+
+      if (form.checkValidity()) {
+        const dataObj = {
+          password: form.querySelector(`#update-password-${objId}`).value,
+        };
         updateDataById(modelName, objId, dataObj, form, bsUpdateDataModalList, userId);
       }
     });
@@ -260,6 +285,11 @@ if (addUserForm) {
 if (updateUserBtns.length > 0) {
   inputData = ['email', 'fullname'];
   _updateData('user', inputData);
+}
+
+//? Update Password
+if (updateUserPasswordBtns.length > 0) {
+  _updatePassword('user');
 }
 
 //? Delete Data

@@ -33,8 +33,10 @@ block main
                       td= obj.createdAt
                       td= obj.updatedAt
                       td.text-center
-                        button.btn.btn-sm.btn-success.me-1.m-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
+                        button.btn.btn-sm.btn-success(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-obj-${obj.id}`)
                           i.bi.bi-pencil-square
+                        button.btn.btn-sm.btn-primary.m-1(type='button' data-bs-toggle='modal' data-bs-target=`#modal-update-password-obj-${obj.id}`)
+                          i.bi.bi-key
                         button.btn.btn-sm.btn-danger.btn--trash-user(type='button' data-bs-toggle='modal' data-bs-target=`#modal-delete-obj-${obj.id}`)
                           i.bi.bi-trash
             // End Table with stripped rows
@@ -45,6 +47,9 @@ block main
   each obj in users
     // Update User Modals
     +updateUserModal(obj)
+
+    // Update User Password Modals
+    +updateUserPasswordModal(obj)
 
     // Delete User Modals
     +delUserModal(obj.id, obj.email)

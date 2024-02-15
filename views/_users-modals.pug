@@ -44,6 +44,23 @@ mixin updateUserModal(userObj)
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           button.btn.btn-info.btn-update-user(type='submit' form=`form-update-user-${userObj.id}`) Update
 
+mixin updateUserPasswordModal(userObj)
+  .modal.fade(id=`modal-update-password-obj-${userObj.id}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
+    .modal-dialog.modal-dialog-scrollable
+      .modal-content
+        .modal-header
+          h1.modal-title.fs-4= `Update User ${userObj.fullname}'s Password`
+          button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+          form.row(id=`form-update-password-user-${userObj.id}` novalidate data-obj-id=userObj.id)
+            .col-12.mb-3
+              label.form-label(for='password') New Password
+              input.form-control(id=`update-password-${userObj.id}` type='password' name='password' minlength='7' required)
+              .invalid-feedback Password minimum 7 characters
+        .modal-footer
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          button.btn.btn-info.btn-update-user-password(type='submit' form=`form-update-password-user-${userObj.id}`) Update
+
 mixin delUserModal(objId, objUnique)
   .modal.fade(id=`modal-delete-obj-${objId}` data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-hidden='true')
     .modal-dialog.modal-dialog-centered
