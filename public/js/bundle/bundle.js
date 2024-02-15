@@ -32891,6 +32891,20 @@ if (chartCluster && chartCriteria && chartComparison) {
   });
 }
 
+//************************** BACK TO TOP BUTTTON ********************************** */
+var backtotop = document.querySelector('.back-to-top');
+if (backtotop) {
+  var toggleBacktotop = function toggleBacktotop() {
+    if (window.scrollY > 100) {
+      backtotop.classList.add('active');
+    } else {
+      backtotop.classList.remove('active');
+    }
+  };
+  window.addEventListener('load', toggleBacktotop);
+  window.addEventListener('scroll', toggleBacktotop);
+}
+
 //************************** MUST BE IN THE LAST LINE ********************************** */
 var delayAlertMsg = sessionStorage.getItem('delay-alert-message');
 var delayAlertType = sessionStorage.getItem('delay-alert-type');
