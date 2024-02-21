@@ -692,8 +692,9 @@ if (chartClusteringResult) {
       clusteringResultDatasets.push({
         label: `centroid ${cn}`,
         data: [{ x: centroids[cn][criteria1], y: centroids[cn][criteria2] }],
-        pointRadius: 9,
-        hoverRadius: 10,
+        pointStyle: 'rectRot',
+        pointRadius: 10,
+        hoverRadius: 12,
       });
     });
   };
@@ -714,6 +715,13 @@ if (chartClusteringResult) {
   let clusteringResultDatasets = [];
   let clusteringResultOptions = {
     responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          usePointStyle: true,
+        },
+      },
+    },
     scales: {
       x: {
         type: 'linear',

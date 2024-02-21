@@ -32393,8 +32393,9 @@ if (chartClusteringResult) {
           x: centroids[cn][criteria1],
           y: centroids[cn][criteria2]
         }],
-        pointRadius: 9,
-        hoverRadius: 10
+        pointStyle: 'rectRot',
+        pointRadius: 10,
+        hoverRadius: 12
       });
     });
   };
@@ -32415,6 +32416,13 @@ if (chartClusteringResult) {
   var clusteringResultDatasets = [];
   var clusteringResultOptions = {
     responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          usePointStyle: true
+        }
+      }
+    },
     scales: {
       x: {
         type: 'linear',
