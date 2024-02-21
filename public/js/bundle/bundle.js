@@ -32722,9 +32722,13 @@ if (chartCluster && chartCriteria && chartComparison) {
   var clusterDatasets = [];
   var clusterOptions = {
     plugins: {
-      title: {
-        display: true,
-        text: ''
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          title: function title() {
+            return '';
+          } // Set the title callback to an empty string to hide the title
+        }
       }
     },
     scales: {
@@ -32734,7 +32738,11 @@ if (chartCluster && chartCriteria && chartComparison) {
       },
       y: {
         type: 'linear',
-        position: 'left'
+        position: 'left',
+        title: {
+          display: true,
+          text: ''
+        }
       }
     }
   };
@@ -32828,7 +32836,7 @@ if (chartCluster && chartCriteria && chartComparison) {
             hoverRadius: 6
           };
         });
-        clusterOptions.plugins.title.text = formattedAttrName;
+        clusterOptions.scales.y.title.text = formattedAttrName;
         _updateChart(clusterChart, clusterLabels, clusterDatasets, clusterOptions);
 
         //? Update Criteria Chart
@@ -32862,7 +32870,7 @@ if (chartCluster && chartCriteria && chartComparison) {
       } else {
         //? Update Cluster Chart
         clusterDatasets = [];
-        clusterOptions.plugins.title.text = '';
+        clusterOptions.scales.y.title.text = '';
         _updateChart(clusterChart, clusterLabels, clusterDatasets, clusterOptions);
 
         //? Update Criteria Chart
