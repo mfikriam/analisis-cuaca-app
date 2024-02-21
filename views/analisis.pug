@@ -96,6 +96,14 @@ block main
               h5.card-title Relation
               
               .row
+                // Criteria Select
+                .col-lg-4.mb-3
+                  legend.col-form-label.fw-bold Kriteria
+                  select#select-criteria.form-select
+                    each criteria in criteria_array
+                      - const criteria_display = criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+                      option(value=criteria)= criteria_display
+
                 // Data Kecelakaan Switch
                 .col-lg-3.mb-3
                   legend.col-form-label.fw-bold Data Kecelakaan
@@ -156,14 +164,6 @@ block main
                   else
                     p No data
                 
-                // Criteria Select
-                .col-lg-4.mb-3
-                  legend.col-form-label.fw-bold Kriteria
-                  select#select-criteria.form-select
-                    each criteria in criteria_array
-                      - const criteria_display = criteria.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                      option(value=criteria)= criteria_display
-
               // Cluster Chart
               #accordion-cluster-chart.accordion.mb-3
                 .accordion-item
@@ -182,12 +182,14 @@ block main
                       | Relation Chart
                   #collapse-accordion-prediction-chart.accordion-collapse.collapse(aria-labelledby='heading' data-bs-parent='#accordion-prediction-chart')
                     .accordion-body.row
-                      .col-md-6
-                        canvas#chart-comparison(style='max-height: 400px;')
+                      // Criteria Chart
                       .col-md-6
                         canvas#chart-criteria(style='max-height: 400px;' data-centroids=clustering.centroids data-clusters-name=`${JSON.stringify(clusters_name)}`)
+                      // Comparison Chart
+                      .col-md-6
+                        canvas#chart-comparison(style='max-height: 400px;')
+                      // Relation
                       .col-12
-                        // Relation
                         h6.mt-2.text-center= 'Relation: '
                           span#relation-value -
                             //- span.badge.bg-success true
