@@ -31528,9 +31528,11 @@ var deleteAllClusteringResult = exports.deleteAllClusteringResult = /*#__PURE__*
 }();
 var elbowMethod = exports.elbowMethod = function elbowMethod(dataCuaca, criteria, numberOfRuns, maxClusters) {
   var results = [];
-  for (var k = 1; k <= maxClusters; k++) {
+  // for (let k = 1; k <= maxClusters; k++) {
+  for (var k = 2; k <= maxClusters; k++) {
     results.push(_dataClustering(dataCuaca, criteria, k, numberOfRuns));
   }
+  console.log(results);
   return results.map(function (el) {
     return el.inertia;
   });
@@ -32537,9 +32539,11 @@ if (chartElbowMethod) {
       var numberOfRuns = _clustering.jum_percobaan;
 
       //? Update Chart's Labels
-      elbowMethodLabels = Array.from(Array(maxClusters).keys()).map(function (num) {
-        return num + 1;
+      // elbowMethodLabels = Array.from(Array(maxClusters).keys()).map((num) => num + 1);
+      elbowMethodLabels = Array.from(Array(maxClusters - 1).keys()).map(function (num) {
+        return num + 2;
       });
+      console.log(elbowMethodLabels);
 
       //? Update Chart's Datasets
       var elbowMethodResult = (0, _clustering2.elbowMethod)(_clusteringResult, _criteria2, numberOfRuns, maxClusters);
@@ -32981,7 +32985,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56660" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56724" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

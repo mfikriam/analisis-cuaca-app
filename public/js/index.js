@@ -880,7 +880,9 @@ if (chartElbowMethod) {
       const numberOfRuns = clustering.jum_percobaan;
 
       //? Update Chart's Labels
-      elbowMethodLabels = Array.from(Array(maxClusters).keys()).map((num) => num + 1);
+      // elbowMethodLabels = Array.from(Array(maxClusters).keys()).map((num) => num + 1);
+      elbowMethodLabels = Array.from(Array(maxClusters - 1).keys()).map((num) => num + 2);
+      console.log(elbowMethodLabels);
 
       //? Update Chart's Datasets
       const elbowMethodResult = elbowMethod(clusteringResult, criteria, numberOfRuns, maxClusters);
